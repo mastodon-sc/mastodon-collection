@@ -1,4 +1,4 @@
-package org.mastodon.graph.util;
+package gnu.trove.deque;
 
 import static org.junit.Assert.*;
 
