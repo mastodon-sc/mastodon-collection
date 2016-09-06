@@ -22,7 +22,7 @@ public class RefArrayStackTest
 	public void noSetup()
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
-		stack = new RefArrayStack< TestObject >( pool );
+		stack = new RefArrayStack< >( pool );
 		final TestObject A = pool.create().init( 1 );
 		final TestObject B = pool.create().init( 2 );
 		final TestObject C = pool.create().init( 3 );
@@ -30,7 +30,7 @@ public class RefArrayStackTest
 		final TestObject D = pool.create().init( 5 );
 		final TestObject F = pool.create().init( 6 );
 		final TestObject G = pool.create().init( 7 );
-		objects = new ArrayList< TestObject >( 7 );
+		objects = new ArrayList< >( 7 );
 		objects.add( A );
 		objects.add( B );
 		objects.add( C );

@@ -73,7 +73,7 @@ public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends
 			@Override
 			public MemPool< T > createPool( final int capacity, final int bytesPerElement )
 			{
-				return new SingleArrayMemPool< A, T >( arrayFactory, capacity, bytesPerElement );
+				return new SingleArrayMemPool<>( arrayFactory, capacity, bytesPerElement );
 			}
 		};
 	}

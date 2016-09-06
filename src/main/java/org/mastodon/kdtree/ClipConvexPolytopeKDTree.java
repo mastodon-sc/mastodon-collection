@@ -78,8 +78,8 @@ public class ClipConvexPolytopeKDTree< O extends RealLocalizable, T extends Mapp
 		xmax = new double[ n ];
 		final int depth = ( tree.size() <= 0 ) ? 0 :
 			( int ) ( Math.log( tree.size() ) / Math.log( 2 ) ) + 2;
-		activeStack = new ArrayList< boolean[] >( depth );
-		psStack = new ArrayList< boolean[] >( depth );
+		activeStack = new ArrayList<>( depth );
+		psStack = new ArrayList<>( depth );
 		inNodes = new TIntArrayList();
 		inSubtrees = new TIntArrayList();
 		outNodes = new TIntArrayList();
@@ -147,22 +147,22 @@ public class ClipConvexPolytopeKDTree< O extends RealLocalizable, T extends Mapp
 
 	public Iterable< O > getInsideValues()
 	{
-		return new KDTreeValueIterable< O, T >( inNodes, inSubtrees, tree, fastDoubleSearch != null );
+		return new KDTreeValueIterable<>( inNodes, inSubtrees, tree, fastDoubleSearch != null );
 	}
 
 	public Iterable< O > getOutsideValues()
 	{
-		return new KDTreeValueIterable< O, T >( outNodes, outSubtrees, tree, fastDoubleSearch != null );
+		return new KDTreeValueIterable<>( outNodes, outSubtrees, tree, fastDoubleSearch != null );
 	}
 
 	public Iterable< O > getValidInsideValues()
 	{
-		return new KDTreeValidValueIterable< O, T >( inNodes, inSubtrees, tree, fastDoubleSearch != null );
+		return new KDTreeValidValueIterable<>( inNodes, inSubtrees, tree, fastDoubleSearch != null );
 	}
 
 	public Iterable< O > getValidOutsideValues()
 	{
-		return new KDTreeValidValueIterable< O, T >( outNodes, outSubtrees, tree, fastDoubleSearch != null );
+		return new KDTreeValidValueIterable<>( outNodes, outSubtrees, tree, fastDoubleSearch != null );
 	}
 
 	private void initNewSearch( final int nPlanes )

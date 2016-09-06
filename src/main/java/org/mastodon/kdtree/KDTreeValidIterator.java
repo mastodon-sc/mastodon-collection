@@ -17,7 +17,7 @@ public class KDTreeValidIterator<
 			T extends MappedElement >
 		KDTreeValidIterator< O, T > create( final KDTree< O, T > kdtree )
 	{
-		return new KDTreeValidIterator< O, T >( kdtree );
+		return new KDTreeValidIterator<>( kdtree );
 	}
 
 	private final O ref;

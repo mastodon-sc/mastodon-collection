@@ -23,7 +23,7 @@ public class RefLinkedQueueTest
 	public void noSetup()
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
-		queue = new RefLinkedQueue< TestObject >( pool );
+		queue = new RefLinkedQueue< >( pool );
 		final TestObject A = pool.create().init( 1 );
 		final TestObject B = pool.create().init( 2 );
 		final TestObject C = pool.create().init( 3 );
@@ -31,7 +31,7 @@ public class RefLinkedQueueTest
 		final TestObject D = pool.create().init( 5 );
 		final TestObject F = pool.create().init( 6 );
 		final TestObject G = pool.create().init( 7 );
-		objects = new ArrayList< TestObject >( 7 );
+		objects = new ArrayList< >( 7 );
 		objects.add( A );
 		objects.add( B );
 		objects.add( C );

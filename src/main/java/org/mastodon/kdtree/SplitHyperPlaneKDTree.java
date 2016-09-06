@@ -113,12 +113,12 @@ public class SplitHyperPlaneKDTree< O extends RealLocalizable, T extends MappedE
 
 	public Iterable< O > getAboveValues()
 	{
-		return new KDTreeValueIterable< O, T >( aboveNodes, aboveSubtrees, tree, fastDoubleSearch != null );
+		return new KDTreeValueIterable<>( aboveNodes, aboveSubtrees, tree, fastDoubleSearch != null );
 	}
 
 	public Iterable< O > getBelowValues()
 	{
-		return new KDTreeValueIterable< O, T >( belowNodes, belowSubtrees, tree, fastDoubleSearch != null );
+		return new KDTreeValueIterable<>( belowNodes, belowSubtrees, tree, fastDoubleSearch != null );
 	}
 
 	private boolean allAbove()

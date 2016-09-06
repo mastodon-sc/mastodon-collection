@@ -135,7 +135,7 @@ public final class NearestNeighborSearchOnKDTree< O extends RealLocalizable, T e
 	@Override
 	public NearestNeighborSearchOnKDTree< O, T > copy()
 	{
-		final NearestNeighborSearchOnKDTree< O, T > copy = new NearestNeighborSearchOnKDTree< O, T >( tree );
+		final NearestNeighborSearchOnKDTree< O, T > copy = new NearestNeighborSearchOnKDTree<>( tree );
 		System.arraycopy( pos, 0, copy.pos, 0, pos.length );
 		copy.bestPointNodeIndex = bestPointNodeIndex;
 		copy.bestSquDistance = bestSquDistance;

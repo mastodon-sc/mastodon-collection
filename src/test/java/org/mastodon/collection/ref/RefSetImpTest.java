@@ -31,7 +31,7 @@ public class RefSetImpTest
 	public void setUp() throws Exception
 	{
 		pool = new TestObjectPool( 10 );
-		list = new ArrayList< TestObject >( 10 );
+		list = new ArrayList< >( 10 );
 		// Creates 10 objects and store them.
 		for ( int i = 0; i < 10; i++ )
 		{
@@ -134,7 +134,7 @@ public class RefSetImpTest
 		final boolean containsAll = set.containsAll( list );
 		assertFalse( "Large collection is not contained in the set.", containsAll );
 
-		final ArrayList< TestObject > smallList = new ArrayList< TestObject >( 2 );
+		final ArrayList< TestObject > smallList = new ArrayList< >( 2 );
 		for ( int i = 0; i < 2; i = i + 2 )
 		{
 			smallList.add( list.get( i ) );
@@ -210,7 +210,7 @@ public class RefSetImpTest
 	@Test
 	public void testRemoveAll()
 	{
-		final ArrayList< TestObject > smallList = new ArrayList< TestObject >( 2 );
+		final ArrayList< TestObject > smallList = new ArrayList< >( 2 );
 		// Not in the set.
 		for ( int i = 1; i < 2; i = i + 2 )
 		{
@@ -246,7 +246,7 @@ public class RefSetImpTest
 		assertFalse( "Retaining large collection of all present values should not change the set.", changed1 );
 		assertEquals( "Retaining small collection of present values should not change the set size.", size, set.size() );
 
-		final ArrayList< TestObject > smallList = new ArrayList< TestObject >( 2 );
+		final ArrayList< TestObject > smallList = new ArrayList< >( 2 );
 
 		// In the set + 1 not in the set
 		for ( int i = 0; i < 2; i = i + 2 )

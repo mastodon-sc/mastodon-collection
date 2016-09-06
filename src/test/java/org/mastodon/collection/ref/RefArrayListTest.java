@@ -24,7 +24,7 @@ public class RefArrayListTest
 	{
 		final int nobj = 1000;
 		final TestObjectPool pool = new TestObjectPool( nobj );
-		list = new RefArrayList< TestObject >( pool );
+		list = new RefArrayList< >( pool );
 
 		final Random rand = new Random();
 
@@ -41,7 +41,7 @@ public class RefArrayListTest
 			ids[ j ] = temp;
 		}
 
-		objects = new ArrayList< TestObject >( nobj );
+		objects = new ArrayList< >( nobj );
 		for ( int i = 0; i < ids.length; i++ )
 		{
 			final TestObject o = pool.create().init( ids[ i ] );

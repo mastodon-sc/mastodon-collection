@@ -4,8 +4,6 @@ import java.util.Random;
 
 import org.mastodon.collection.RefList;
 import org.mastodon.collection.ref.RefArrayList;
-import org.mastodon.kdtree.KDTree;
-import org.mastodon.kdtree.SplitHyperPlaneKDTree;
 import org.mastodon.pool.DoubleMappedElement;
 
 import net.imglib2.RandomAccess;
@@ -32,7 +30,7 @@ public class SplitHyperPlaneKDTreeExample
 		final Random rand = new Random( 123124 );
 		final RealPointPool pool = new RealPointPool( 2, nPoints );
 		final RealPoint pRef = pool.createRef();
-		final RefList< RealPoint > points = new RefArrayList< RealPoint >( pool, nPoints );
+		final RefList< RealPoint > points = new RefArrayList<>( pool, nPoints );
 		for ( int i = 0; i < nPoints; ++i )
 		{
 			final long x = rand.nextInt( w );
@@ -43,7 +41,7 @@ public class SplitHyperPlaneKDTreeExample
 		// split on hyperplane
 		final HyperPlane plane = new HyperPlane( 1, 0.5, 600 );
 		final KDTree< RealPoint, DoubleMappedElement > kdtree = KDTree.kdtree( points, pool );
-		final SplitHyperPlaneKDTree< RealPoint, DoubleMappedElement > split = new SplitHyperPlaneKDTree< RealPoint, DoubleMappedElement >( kdtree );
+		final SplitHyperPlaneKDTree< RealPoint, DoubleMappedElement > split = new SplitHyperPlaneKDTree<>( kdtree );
 		split.split( plane );
 
 		// show all points
@@ -62,7 +60,7 @@ public class SplitHyperPlaneKDTreeExample
 	{
 		final int radius = 2;
 		final RandomAccess< Neighborhood< ARGBType > > na = new HyperSphereShape( radius ).neighborhoodsRandomAccessible( Views.extendZero( output ) ).randomAccess();
-		final Round< RandomAccess< Neighborhood< ARGBType > > > rna = new Round< RandomAccess< Neighborhood< ARGBType > > >( na );
+		final Round< RandomAccess< Neighborhood< ARGBType > > > rna = new Round<>( na );
 		for ( final RealLocalizable l : points )
 		{
 			rna.setPosition( l );

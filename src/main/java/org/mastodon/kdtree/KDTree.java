@@ -10,10 +10,10 @@ import org.mastodon.pool.DoubleMappedElement;
 import org.mastodon.pool.DoubleMappedElementArray;
 import org.mastodon.pool.MappedElement;
 import org.mastodon.pool.MemPool;
+import org.mastodon.pool.MemPool.Factory;
 import org.mastodon.pool.Pool;
 import org.mastodon.pool.PoolObject;
 import org.mastodon.pool.SingleArrayMemPool;
-import org.mastodon.pool.MemPool.Factory;
 
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
@@ -68,7 +68,7 @@ public class KDTree<
 	public static < O extends RealLocalizable, T extends MappedElement >
 			KDTree< O, T > kdtree( final Collection< O > objects, final RefPool< O > objectPool, final MemPool.Factory< T > poolFactory )
 	{
-		final KDTree< O, T > kdtree = new NodeFactory< O, T >( objects, objectPool, poolFactory ).kdtree;
+		final KDTree< O, T > kdtree = new NodeFactory<>( objects, objectPool, poolFactory ).kdtree;
 		kdtree.build( objects );
 		return kdtree;
 	}
@@ -85,7 +85,7 @@ public class KDTree<
 		final RefPool< O > objPool = kdtree.getObjectPool();
 		final O ref = objPool.createRef();
 		final KDTreeNode< O, T > n = kdtree.createRef();
-		final RefRefMap< O, KDTreeNode< O, T > > map = new RefRefHashMap< O, KDTreeNode< O, T > >( objPool, kdtree );
+		final RefRefMap< O, KDTreeNode< O, T > > map = new RefRefHashMap<>( objPool, kdtree );
 		for ( final KDTreeNode< O, T > node : kdtree )
 		{
 			final O obj = objPool.getObject( node.getDataIndex(), ref );
@@ -122,7 +122,7 @@ public class KDTree<
 				this.numDimensions = objects.iterator().next().numDimensions();
 			this.sizeInBytes = KDTreeNode.sizeInBytes( numDimensions );
 			final int capacity = objects.size();
-			kdtree = new KDTree< O, T >( capacity, this, numDimensions, objects, objectPool );
+			kdtree = new KDTree<>( capacity, this, numDimensions, objects, objectPool );
 		}
 
 		@Override
@@ -134,7 +134,7 @@ public class KDTree<
 		@Override
 		public KDTreeNode< O, T > createEmptyRef()
 		{
-			return new KDTreeNode< O, T >( kdtree, numDimensions );
+			return new KDTreeNode<>( kdtree, numDimensions );
 		}
 
 		@Override

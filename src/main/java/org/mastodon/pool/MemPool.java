@@ -182,7 +182,7 @@ public abstract class MemPool< T extends MappedElement >
 	 */
 	public PoolIterator< T > iterator()
 	{
-		return new PoolIterator< T >( this );
+		return new PoolIterator<>( this );
 	}
 
 	/**

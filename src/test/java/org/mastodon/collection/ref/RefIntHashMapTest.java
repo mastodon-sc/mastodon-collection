@@ -45,7 +45,7 @@ public class RefIntHashMapTest
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
 		noEntryValue = -1;
-		map = new RefIntHashMap< TestObject >( pool, noEntryValue );
+		map = new RefIntHashMap< >( pool, noEntryValue );
 		final TestObject A = pool.create().init( 1 );
 		final TestObject B = pool.create().init( 2 );
 		final TestObject C = pool.create().init( 3 );
@@ -54,12 +54,12 @@ public class RefIntHashMapTest
 		final TestObject F = pool.create().init( 6 );
 		final TestObject G = pool.create().init( 7 );
 
-		notIns = new ArrayList< TestObject >( 7 );
+		notIns = new ArrayList< >( 7 );
 		notIns.add( E );
 		notIns.add( F );
 		notIns.add( G );
 
-		ins = new ArrayList< TestObject >( 4 );
+		ins = new ArrayList< >( 4 );
 		ins.add( A );
 		ins.add( B );
 		ins.add( C );
@@ -125,7 +125,7 @@ public class RefIntHashMapTest
 	public void testIsEmpty()
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
-		final RefIntHashMap< TestObject > lmap = new RefIntHashMap< TestObject >( pool, noEntryValue );
+		final RefIntHashMap< TestObject > lmap = new RefIntHashMap< >( pool, noEntryValue );
 		assertTrue( "Newly created map should be empty.", lmap.isEmpty() );
 	}
 
@@ -216,7 +216,7 @@ public class RefIntHashMapTest
 	@Test
 	public void testPutAllMapOfQextendsKQextendsInteger()
 	{
-		final Map< TestObject, Integer > nmap = new HashMap< TestObject, Integer >( notIns.size() + 1 );
+		final Map< TestObject, Integer > nmap = new HashMap< >( notIns.size() + 1 );
 		final int targetVal = 1000;
 		for ( final TestObject toPut : notIns )
 		{
@@ -245,7 +245,7 @@ public class RefIntHashMapTest
 	@Test
 	public void testPutAllTObjectIntMapOfQextendsK()
 	{
-		final TObjectIntHashMap< TestObject > nmap = new TObjectIntHashMap< TestObject >();
+		final TObjectIntHashMap< TestObject > nmap = new TObjectIntHashMap< >();
 		final int targetVal = 1000;
 		for ( final TestObject toPut : notIns )
 		{
@@ -291,7 +291,7 @@ public class RefIntHashMapTest
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
 		final int lNoEntryValue = 1000;
-		final RefIntHashMap< TestObject > lmap = new RefIntHashMap< TestObject >( pool, lNoEntryValue );
+		final RefIntHashMap< TestObject > lmap = new RefIntHashMap< >( pool, lNoEntryValue );
 		assertEquals( "Unexpected 'no_entry_value'.", lNoEntryValue, lmap.getNoEntryValue() );
 	}
 
@@ -410,7 +410,7 @@ public class RefIntHashMapTest
 		final int amount = new Random().nextInt( 1000 );
 		final int putAmount = -10 - new Random().nextInt( 1000 );
 
-		final Collection< TestObject > all = new ArrayList< TestObject >( ins );
+		final Collection< TestObject > all = new ArrayList< >( ins );
 		all.addAll( notIns );
 
 		for ( final TestObject key : all )

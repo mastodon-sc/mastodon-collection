@@ -4,8 +4,6 @@ import java.util.Random;
 
 import org.mastodon.collection.RefList;
 import org.mastodon.collection.ref.RefArrayList;
-import org.mastodon.kdtree.ClipConvexPolytopeKDTree;
-import org.mastodon.kdtree.KDTree;
 import org.mastodon.pool.DoubleMappedElement;
 
 import net.imglib2.util.BenchmarkHelper;
@@ -22,7 +20,7 @@ public class ClipConvexPolytopeKDTreeBenchmark
 
 		final RealPointPool pool = new RealPointPool( 2, nPoints );
 		final RealPoint pRef = pool.createRef();
-		final RefList< RealPoint > points = new RefArrayList< RealPoint >( pool, nPoints );
+		final RefList< RealPoint > points = new RefArrayList<>( pool, nPoints );
 		for ( int i = 0; i < nPoints; ++i )
 		{
 			final long x = rand.nextInt( w );
@@ -79,7 +77,7 @@ public class ClipConvexPolytopeKDTreeBenchmark
 
 		System.out.println( "partitioning kdtree of points:" );
 		final KDTree< RealPoint, DoubleMappedElement > kdtree = KDTree.kdtree( points, pool );
-		final ClipConvexPolytopeKDTree< RealPoint, DoubleMappedElement > clipper = new ClipConvexPolytopeKDTree< RealPoint, DoubleMappedElement >( kdtree );
+		final ClipConvexPolytopeKDTree< RealPoint, DoubleMappedElement > clipper = new ClipConvexPolytopeKDTree<>( kdtree );
 		BenchmarkHelper.benchmarkAndPrint( 20, false, new Runnable()
 		{
 			@Override
@@ -98,8 +96,8 @@ public class ClipConvexPolytopeKDTreeBenchmark
 	{
 		final int nPlanes = planes.length;
 		final int n = points.get( 0 ).numDimensions();
-		final RefList< RealPoint > inside = new RefArrayList< RealPoint >( pool );
-		final RefList< RealPoint > outside = new RefArrayList< RealPoint >( pool );
+		final RefList< RealPoint > inside = new RefArrayList<>( pool );
+		final RefList< RealPoint > outside = new RefArrayList<>( pool );
 		A: for ( final RealPoint p : points )
 		{
 			for ( int i = 0; i < nPlanes; ++i )

@@ -49,7 +49,7 @@ public class TIntObjectArrayMap< V > implements TIntObjectMap< V >
 
 	public TIntObjectArrayMap( final int initialCapacity )
 	{
-		this.keyToObjMap = new ArrayList< V >( initialCapacity );
+		this.keyToObjMap = new ArrayList<>( initialCapacity );
 		this.size = 0;
 	}
 
