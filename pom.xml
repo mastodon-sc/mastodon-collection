@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>sc.fiji</groupId>
 		<artifactId>pom-fiji</artifactId>
-		<version>24.2.0</version>
+		<version>26.1.0</version>
 	</parent>
 
 	<groupId>org.mastodon</groupId>
@@ -18,19 +18,10 @@
 	<name>Mastodon Collections</name>
 	<description>pool-objects, pools, and collections framework underlying mastodon graphs</description>
 
-	<properties>
-		<scijava.jvm.version>1.8</scijava.jvm.version>
-		<enforcer.skip>true</enforcer.skip>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>net.imglib2</groupId>
 			<artifactId>imglib2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.imglib2</groupId>
-			<artifactId>imglib2-ui</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.trove4j</groupId>
@@ -38,21 +29,9 @@
 			<version>3.0.3</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jdom</groupId>
-			<artifactId>jdom2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sc.fiji</groupId>
-			<artifactId>bigdataviewer-core</artifactId>
-			<version>2.5.2-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>net.imglib2</groupId>
 			<artifactId>imglib2-algorithm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>sc.fiji</groupId>
-			<artifactId>TrackMate_</artifactId>
+			<!-- TODO: this is only for ConvexPolytope and HyperPlane. Could these be moved to imglib2 core? -->
 		</dependency>
 
 		<!-- Test dependencies -->
