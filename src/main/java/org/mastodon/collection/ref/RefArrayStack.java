@@ -1,5 +1,6 @@
 package org.mastodon.collection.ref;
 
+import org.mastodon.Ref;
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefStack;
 import org.mastodon.pool.PoolObject;

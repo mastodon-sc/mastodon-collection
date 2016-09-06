@@ -3,6 +3,7 @@ package org.mastodon.collection.ref;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.mastodon.Ref;
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefSet;
 
