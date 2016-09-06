@@ -5,9 +5,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-import org.mastodon.graph.features.Feature;
-import org.mastodon.graph.features.FeatureRegistry;
-import org.mastodon.graph.features.Features;
+import org.mastodon.features.Feature;
+import org.mastodon.features.FeatureRegistry;
+import org.mastodon.features.Features;
 import org.mastodon.graph.io.RawGraphIO.FileIdToObjectMap;
 import org.mastodon.graph.io.RawGraphIO.ObjectToFileIdMap;
 

@@ -5,9 +5,9 @@ import static org.mastodon.pool.ByteUtils.DOUBLE_SIZE;
 import java.util.Map;
 
 import org.mastodon.collection.UniqueHashcodeArrayMap;
-import org.mastodon.graph.FeatureValue;
-import org.mastodon.graph.features.Feature;
-import org.mastodon.graph.features.Features;
+import org.mastodon.features.Feature;
+import org.mastodon.features.FeatureValue;
+import org.mastodon.features.Features;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.PoolObject;
 

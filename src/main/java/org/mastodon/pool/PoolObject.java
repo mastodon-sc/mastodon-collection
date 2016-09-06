@@ -1,7 +1,6 @@
 package org.mastodon.pool;
 
 import org.mastodon.Ref;
-import org.mastodon.graph.ref.AbstractEdge;
 
 /**
  * A proxy object that uses a {@link MappedElement} access to store its data in
@@ -75,7 +74,7 @@ public abstract class PoolObject< O extends PoolObject< O, T >, T extends Mapped
 	 * might reuse storage that was occupied by previously freed elements. This
 	 * is overridden by subclasses to set (some, important) fields to their
 	 * initial state. An example are indices used to start linked lists in
-	 * {@link AbstractEdge}.
+	 * {@code AbstractEdge}.
 	 */
 	protected abstract void setToUninitializedState();
 

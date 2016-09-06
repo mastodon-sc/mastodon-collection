@@ -7,8 +7,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.mastodon.graph.features.Feature;
-import org.mastodon.revised.model.AbstractModel;
+import org.mastodon.features.Feature;
+import org.mastodon.features.Features;
 
 import gnu.trove.map.TIntObjectArrayMap;
 
@@ -25,7 +25,7 @@ import gnu.trove.map.TIntObjectArrayMap;
  * </ul>
  *
  * This is used for the look up of feature-maps for {@link Feature} in
- * {@link AbstractModel}.
+ * {@link Features}.
  *
  * @param <K>
  *            key type.

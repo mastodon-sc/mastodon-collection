@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mastodon.collection.ref.RefArrayList;
-import org.mastodon.graph.features.DoubleFeature;
-import org.mastodon.graph.features.ObjFeature;
+import org.mastodon.features.DoubleFeature;
+import org.mastodon.features.ObjFeature;
 
 import net.imglib2.RealPoint;
 

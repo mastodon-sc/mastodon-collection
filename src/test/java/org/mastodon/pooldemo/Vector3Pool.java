@@ -1,6 +1,6 @@
 package org.mastodon.pooldemo;
 
-import org.mastodon.graph.features.Features;
+import org.mastodon.features.Features;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.ByteMappedElementArray;
 import org.mastodon.pool.MemPool;
