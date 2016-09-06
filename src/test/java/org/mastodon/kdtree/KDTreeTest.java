@@ -5,23 +5,17 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Random;
 
-import net.imglib2.RealLocalizable;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mastodon.collection.RefRefMap;
 import org.mastodon.collection.ref.RefArrayList;
 import org.mastodon.collection.ref.RefSetImp;
-import org.mastodon.kdtree.KDTree;
-import org.mastodon.kdtree.KDTreeNode;
-import org.mastodon.kdtree.NearestNeighborSearchOnKDTree;
-import org.mastodon.kdtree.NearestValidNeighborSearchOnKDTree;
-import org.mastodon.kdtree.RealLocalizableVertices.MyVertex;
-import org.mastodon.kdtree.RealLocalizableVertices.MyVertexPool;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.ByteMappedElementArray;
 import org.mastodon.pool.DoubleMappedElement;
 import org.mastodon.pool.SingleArrayMemPool;
+
+import net.imglib2.RealLocalizable;
 
 public class KDTreeTest
 {
@@ -35,23 +29,23 @@ public class KDTreeTest
 
 	final double maxCoordinateValue = 5.0;
 
-	MyVertexPool vertexPool;
+	RealPointPool vertexPool;
 
-	RefArrayList< MyVertex > dataVertices;
+	RefArrayList< RealPoint > dataVertices;
 
-	RefArrayList< MyVertex > testVertices;
+	RefArrayList< RealPoint > testVertices;
 
-	RefSetImp< MyVertex > invalidDataVertices;
+	RefSetImp< RealPoint > invalidDataVertices;
 
 	@Before
 	public void createDataVertices()
 	{
-		vertexPool = new MyVertexPool( numDataVertices + numTestVertices );
-		dataVertices = new RefArrayList< MyVertex >( vertexPool, numDataVertices );
-		testVertices = new RefArrayList< MyVertex >( vertexPool, numTestVertices );
-		invalidDataVertices = new RefSetImp< MyVertex >( vertexPool, numInvalidDataVertices );
+		vertexPool = new RealPointPool( 3, numDataVertices + numTestVertices );
+		dataVertices = new RefArrayList<>( vertexPool, numDataVertices );
+		testVertices = new RefArrayList<>( vertexPool, numTestVertices );
+		invalidDataVertices = new RefSetImp<>( vertexPool, numInvalidDataVertices );
 
-		final MyVertex vertex = vertexPool.createRef();
+		final RealPoint vertex = vertexPool.createRef();
 		final int n = vertex.numDimensions();
 		final double[] p = new double[ n ];
 		final double size = ( maxCoordinateValue - minCoordinateValue );
@@ -84,7 +78,7 @@ public class KDTreeTest
 	@Test
 	public void testCreateKDTree()
 	{
-		final KDTree< MyVertex, DoubleMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool );
+		final KDTree< RealPoint, DoubleMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool );
 		assertNotNull( kdtree );
 		assertEquals( kdtree.size(), dataVertices.size() );
 	}
@@ -97,7 +91,7 @@ public class KDTreeTest
 	 * @param t
 	 *            query
 	 */
-	private MyVertex findNearestNeighborExhaustive( final MyVertex nearest, final RealLocalizable t )
+	private RealPoint findNearestNeighborExhaustive( final RealPoint nearest, final RealLocalizable t )
 	{
 		double minDistance = Double.MAX_VALUE;
 
@@ -106,7 +100,7 @@ public class KDTreeTest
 		final double[] ppos = new double[ n ];
 		t.localize( tpos );
 
-		for ( final MyVertex p : dataVertices )
+		for ( final RealPoint p : dataVertices )
 		{
 			p.localize( ppos );
 			double dist = 0;
@@ -130,7 +124,7 @@ public class KDTreeTest
 	 * @param t
 	 *            query
 	 */
-	private MyVertex findNearestValidNeighborExhaustive( final MyVertex nearest, final RealLocalizable t )
+	private RealPoint findNearestValidNeighborExhaustive( final RealPoint nearest, final RealLocalizable t )
 	{
 		double minDistance = Double.MAX_VALUE;
 
@@ -139,7 +133,7 @@ public class KDTreeTest
 		final double[] ppos = new double[ n ];
 		t.localize( tpos );
 
-		for ( final MyVertex p : dataVertices )
+		for ( final RealPoint p : dataVertices )
 		{
 			if ( invalidDataVertices.contains( p ) )
 				continue;
@@ -161,9 +155,9 @@ public class KDTreeTest
 	@Test
 	public void testNearestNeighborSearch()
 	{
-		final KDTree< MyVertex, DoubleMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool );
-		final NearestNeighborSearchOnKDTree< MyVertex, DoubleMappedElement > kd = new NearestNeighborSearchOnKDTree< MyVertex, DoubleMappedElement >( kdtree );
-		final MyVertex nnExhaustive = vertexPool.createRef();
+		final KDTree< RealPoint, DoubleMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool );
+		final NearestNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > kd = new NearestNeighborSearchOnKDTree<>( kdtree );
+		final RealPoint nnExhaustive = vertexPool.createRef();
 		for ( final RealLocalizable t : testVertices )
 		{
 			kd.search( t );
@@ -177,9 +171,9 @@ public class KDTreeTest
 	@Test
 	public void testNearestNeighborSearchBytes()
 	{
-		final KDTree< MyVertex, ByteMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
-		final NearestNeighborSearchOnKDTree< MyVertex, ByteMappedElement > kd = new NearestNeighborSearchOnKDTree< MyVertex, ByteMappedElement >( kdtree );
-		final MyVertex nnExhaustive = vertexPool.createRef();
+		final KDTree< RealPoint, ByteMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
+		final NearestNeighborSearchOnKDTree< RealPoint, ByteMappedElement > kd = new NearestNeighborSearchOnKDTree<>( kdtree );
+		final RealPoint nnExhaustive = vertexPool.createRef();
 		for ( final RealLocalizable t : testVertices )
 		{
 			kd.search( t );
@@ -193,12 +187,12 @@ public class KDTreeTest
 	@Test
 	public void testNearestValidNeighborSearch()
 	{
-		final KDTree< MyVertex, DoubleMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool );
-		final RefRefMap< MyVertex, KDTreeNode< MyVertex, DoubleMappedElement > > map = KDTree.createRefToKDTreeNodeMap( kdtree );
-		for ( final MyVertex invalid : invalidDataVertices )
+		final KDTree< RealPoint, DoubleMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool );
+		final RefRefMap< RealPoint, KDTreeNode< RealPoint, DoubleMappedElement > > map = KDTree.createRefToKDTreeNodeMap( kdtree );
+		for ( final RealPoint invalid : invalidDataVertices )
 			map.get( invalid ).setValid( false );
-		final NearestValidNeighborSearchOnKDTree< MyVertex, DoubleMappedElement > kd = new NearestValidNeighborSearchOnKDTree< MyVertex, DoubleMappedElement >( kdtree );
-		final MyVertex nnExhaustive = vertexPool.createRef();
+		final NearestValidNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > kd = new NearestValidNeighborSearchOnKDTree<>( kdtree );
+		final RealPoint nnExhaustive = vertexPool.createRef();
 		for ( final RealLocalizable t : testVertices )
 		{
 			kd.search( t );
@@ -212,12 +206,12 @@ public class KDTreeTest
 	@Test
 	public void testNearestValidNeighborSearchBytes()
 	{
-		final KDTree< MyVertex, ByteMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
-		final RefRefMap< MyVertex, KDTreeNode< MyVertex, ByteMappedElement > > map = KDTree.createRefToKDTreeNodeMap( kdtree );
-		for ( final MyVertex invalid : invalidDataVertices )
+		final KDTree< RealPoint, ByteMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
+		final RefRefMap< RealPoint, KDTreeNode< RealPoint, ByteMappedElement > > map = KDTree.createRefToKDTreeNodeMap( kdtree );
+		for ( final RealPoint invalid : invalidDataVertices )
 			map.get( invalid ).setValid( false );
-		final NearestValidNeighborSearchOnKDTree< MyVertex, ByteMappedElement > kd = new NearestValidNeighborSearchOnKDTree< MyVertex, ByteMappedElement >( kdtree );
-		final MyVertex nnExhaustive = vertexPool.createRef();
+		final NearestValidNeighborSearchOnKDTree< RealPoint, ByteMappedElement > kd = new NearestValidNeighborSearchOnKDTree<>( kdtree );
+		final RealPoint nnExhaustive = vertexPool.createRef();
 		for ( final RealLocalizable t : testVertices )
 		{
 			kd.search( t );

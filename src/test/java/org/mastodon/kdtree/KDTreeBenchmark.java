@@ -3,12 +3,6 @@ package org.mastodon.kdtree;
 import java.util.Random;
 
 import org.mastodon.collection.ref.RefArrayList;
-import org.mastodon.kdtree.KDTree;
-import org.mastodon.kdtree.KDTreeNode;
-import org.mastodon.kdtree.NearestNeighborSearchOnKDTree;
-import org.mastodon.kdtree.NearestValidNeighborSearchOnKDTree;
-import org.mastodon.kdtree.RealLocalizableVertices.MyVertex;
-import org.mastodon.kdtree.RealLocalizableVertices.MyVertexPool;
 import org.mastodon.pool.DoubleMappedElement;
 
 import net.imglib2.RealLocalizable;
@@ -24,11 +18,11 @@ public class KDTreeBenchmark
 
 	private final double maxCoordinateValue;
 
-	private final MyVertexPool vertexPool;
+	private final RealPointPool vertexPool;
 
-	private final RefArrayList< MyVertex > dataVertices;
+	private final RefArrayList< RealPoint > dataVertices;
 
-	private final RefArrayList< MyVertex > testVertices;
+	private final RefArrayList< RealPoint > testVertices;
 
 	public KDTreeBenchmark(final int numDataVertices, final int numTestVertices, final double minCoordinateValue, final double maxCoordinateValue)
 	{
@@ -36,15 +30,15 @@ public class KDTreeBenchmark
 		this.numTestVertices = numTestVertices;
 		this.minCoordinateValue = minCoordinateValue;
 		this.maxCoordinateValue = maxCoordinateValue;
-		vertexPool = new MyVertexPool( numDataVertices + numTestVertices );
-		dataVertices = new RefArrayList< MyVertex >( vertexPool, numDataVertices );
-		testVertices = new RefArrayList< MyVertex >( vertexPool, numTestVertices );
+		vertexPool = new RealPointPool( 3, numDataVertices + numTestVertices );
+		dataVertices = new RefArrayList<>( vertexPool, numDataVertices );
+		testVertices = new RefArrayList<>( vertexPool, numTestVertices );
 		createDataVertices();
 	}
 
 	private void createDataVertices()
 	{
-		final MyVertex vertex = vertexPool.createRef();
+		final RealPoint vertex = vertexPool.createRef();
 		final int n = vertex.numDimensions();
 		final double[] p = new double[ n ];
 		final double size = ( maxCoordinateValue - minCoordinateValue );
@@ -68,7 +62,7 @@ public class KDTreeBenchmark
 		vertexPool.releaseRef( vertex );
 	}
 
-	private KDTree< MyVertex, DoubleMappedElement > kdtree;
+	private KDTree< RealPoint, DoubleMappedElement > kdtree;
 
 	public void createKDTree()
 	{
@@ -79,7 +73,7 @@ public class KDTreeBenchmark
 	{
 		final int numInvalidDataVertices = numDataVertices / 2;
 		final Random rnd = new Random( 124 );
-		final KDTreeNode< MyVertex, DoubleMappedElement > node = kdtree.createRef();
+		final KDTreeNode< RealPoint, DoubleMappedElement > node = kdtree.createRef();
 		for ( int i = 0; i < numInvalidDataVertices; ++i )
 		{
 			final int j = rnd.nextInt( kdtree.size() );
@@ -90,7 +84,7 @@ public class KDTreeBenchmark
 
 	public void nearestNeighborSearch( final int numRuns )
 	{
-		final NearestNeighborSearchOnKDTree< MyVertex, DoubleMappedElement > kd = new NearestNeighborSearchOnKDTree< MyVertex, DoubleMappedElement >( kdtree );
+		final NearestNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > kd = new NearestNeighborSearchOnKDTree<>( kdtree );
 		for ( int i = 0; i < numRuns; ++i )
 			for ( final RealLocalizable t : testVertices )
 			{
@@ -101,7 +95,7 @@ public class KDTreeBenchmark
 
 	public void nearestValidNeighborSearch( final int numRuns )
 	{
-		final NearestValidNeighborSearchOnKDTree< MyVertex, DoubleMappedElement > kd = new NearestValidNeighborSearchOnKDTree< MyVertex, DoubleMappedElement >( kdtree );
+		final NearestValidNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > kd = new NearestValidNeighborSearchOnKDTree<>( kdtree );
 		for ( int i = 0; i < numRuns; ++i )
 			for ( final RealLocalizable t : testVertices )
 			{
@@ -110,16 +104,16 @@ public class KDTreeBenchmark
 			}
 	}
 
-	private net.imglib2.KDTree< MyVertex > kdtreeImgLib2;
+	private net.imglib2.KDTree< RealPoint > kdtreeImgLib2;
 
 	public void createKDTreeImgLib2()
 	{
-		kdtreeImgLib2 = new net.imglib2.KDTree< MyVertex >( dataVertices, dataVertices );
+		kdtreeImgLib2 = new net.imglib2.KDTree<>( dataVertices, dataVertices );
 	}
 
 	public void nearestNeighborSearchImgLib2( final int numRuns )
 	{
-		final net.imglib2.neighborsearch.NearestNeighborSearchOnKDTree< MyVertex > kd = new net.imglib2.neighborsearch.NearestNeighborSearchOnKDTree< MyVertex >( kdtreeImgLib2 );
+		final net.imglib2.neighborsearch.NearestNeighborSearchOnKDTree< RealPoint > kd = new net.imglib2.neighborsearch.NearestNeighborSearchOnKDTree<>( kdtreeImgLib2 );
 		for ( int i = 0; i < numRuns; ++i )
 			for ( final RealLocalizable t : testVertices )
 			{
