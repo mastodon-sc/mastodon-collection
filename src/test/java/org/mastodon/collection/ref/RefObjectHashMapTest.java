@@ -8,26 +8,24 @@ import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mastodon.collection.ref.RefObjectHashMap;
-import org.mastodon.collection.ref.RefSetImp;
-import org.mastodon.graph.TestVertex;
-import org.mastodon.graph.TestVertexPool;
+import org.mastodon.pool.TestObject;
+import org.mastodon.pool.TestObjectPool;
 
 public class RefObjectHashMapTest
 {
 
-	private RefObjectHashMap< TestVertex, String > map;
+	private RefObjectHashMap< TestObject, String > map;
 
-	private TestVertex A;
+	private TestObject A;
 
-	private TestVertex B;
+	private TestObject B;
 
-	private TestVertexPool pool;
+	private TestObjectPool pool;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		pool = new TestVertexPool( 10 );
+		pool = new TestObjectPool( 10 );
 
 		A = pool.createRef();
 		A = pool.create( A ).init( 0 );
@@ -35,16 +33,16 @@ public class RefObjectHashMapTest
 		B = pool.createRef();
 		B = pool.create( B ).init( 0 );
 
-		TestVertex C = pool.createRef();
+		TestObject C = pool.createRef();
 		C = pool.create( C ).init( 0 );
 
-		TestVertex D = pool.createRef();
+		TestObject D = pool.createRef();
 		D = pool.create( D ).init( 0 );
 
-		TestVertex E = pool.createRef();
+		TestObject E = pool.createRef();
 		E = pool.create( E ).init( 0 );
 
-		map = new RefObjectHashMap< TestVertex, String >( pool );
+		map = new RefObjectHashMap<>( pool );
 		map.put( A, "a" );
 		map.put( B, "b" );
 		map.put( C, "c" );
@@ -64,7 +62,7 @@ public class RefObjectHashMapTest
 	{
 		assertTrue( "Map should contain the key 'A', does not.", map.containsKey( A ) );
 		assertTrue( "Map should contain the key 'B', does not.", map.containsKey( B ) );
-		TestVertex ref = map.createKeyRef();
+		TestObject ref = map.createKeyRef();
 		ref = pool.create( ref ).init( 10 );
 		assertFalse( "Map should not contain the key 'ref', but does.", map.containsKey( ref ) );
 	}
@@ -87,13 +85,13 @@ public class RefObjectHashMapTest
 	@Test
 	public void testIsEmpty()
 	{
-		assertTrue( "A new map should be empty, but is not.", new RefObjectHashMap< TestVertex, String >( pool ).isEmpty() );
+		assertTrue( "A new map should be empty, but is not.", new RefObjectHashMap< TestObject, String >( pool ).isEmpty() );
 	}
 
 	@Test
 	public void testPut()
 	{
-		TestVertex Z = pool.createRef();
+		TestObject Z = pool.createRef();
 		Z = pool.create( Z ).init( 11 );
 		map.put( Z, "z" );
 		assertTrue( "Could not retrieve the desired value for key 'Z'.", map.get( Z ).equals( "z" ) );
@@ -130,7 +128,7 @@ public class RefObjectHashMapTest
 	@Test
 	public void testKeySet()
 	{
-		final RefSetImp< TestVertex > keySet = map.keySet();
+		final RefSetImp< TestObject > keySet = map.keySet();
 		assertEquals( "Key set does not have the expected size.", 5, keySet.size() );
 		assertTrue( "Key set does not contain the expected key 'A'.", keySet.contains( A ) );
 		assertTrue( "Key set does not contain the expected key 'B'.", keySet.contains( B ) );

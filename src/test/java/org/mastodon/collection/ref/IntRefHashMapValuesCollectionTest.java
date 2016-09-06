@@ -11,34 +11,31 @@ import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mastodon.collection.ref.IntRefHashMap;
-import org.mastodon.collection.ref.RefArrayList;
-import org.mastodon.collection.ref.RefSetImp;
-import org.mastodon.graph.TestVertex;
-import org.mastodon.graph.TestVertexPool;
+import org.mastodon.pool.TestObject;
+import org.mastodon.pool.TestObjectPool;
 
 public class IntRefHashMapValuesCollectionTest
 {
 
-	private TestVertexPool pool;
+	private TestObjectPool pool;
 
-	private IntRefHashMap< TestVertex > map;
+	private IntRefHashMap< TestObject > map;
 
 	private HashMap< Integer, Integer > truthMap;
 
 	private int[] storedIds;
 
-	private Collection< TestVertex > valueCollection;
+	private Collection< TestObject > valueCollection;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		pool = new TestVertexPool( 10 );
+		pool = new TestObjectPool( 10 );
 		truthMap = new HashMap<>( 10 );
-		final TestVertex ref = pool.createRef();
+		final TestObject ref = pool.createRef();
 		for ( int i = 0; i < 10; i++ )
 		{
-			final TestVertex a = pool.create( ref ).init( i );
+			final TestObject a = pool.create( ref ).init( i );
 			truthMap.put( Integer.valueOf( a.getId() ), Integer.valueOf( a.getInternalPoolIndex() ) );
 		}
 
@@ -57,15 +54,15 @@ public class IntRefHashMapValuesCollectionTest
 	@Test( expected = UnsupportedOperationException.class )
 	public void testAdd()
 	{
-		final TestVertex v = pool.create( pool.createRef() ).init( 100 );
+		final TestObject v = pool.create( pool.createRef() ).init( 100 );
 		valueCollection.add( v );
 	}
 
 	@Test( expected = UnsupportedOperationException.class )
 	public void testAddAll()
 	{
-		final RefSetImp< TestVertex > set = new RefSetImp<>( pool );
-		final TestVertex ref = pool.createRef();
+		final RefSetImp< TestObject > set = new RefSetImp<>( pool );
+		final TestObject ref = pool.createRef();
 		for ( int i = 0; i < 5; i++ )
 		{
 			set.add( pool.create( ref ).init( 100 + i ) );
@@ -84,7 +81,7 @@ public class IntRefHashMapValuesCollectionTest
 	@Test
 	public void testContains()
 	{
-		final TestVertex ref = pool.createRef();
+		final TestObject ref = pool.createRef();
 		for ( final int id : storedIds )
 		{
 			final Integer poolIndex = truthMap.get( id );
@@ -136,11 +133,11 @@ public class IntRefHashMapValuesCollectionTest
 	public void testIterator()
 	{
 		// Test iterate in the right order.
-		final Iterator< TestVertex > it = valueCollection.iterator();
+		final Iterator< TestObject > it = valueCollection.iterator();
 		int count = 0;
 		while ( it.hasNext() )
 		{
-			final TestVertex actual = it.next();
+			final TestObject actual = it.next();
 			assertTrue( "Iterator returns unexpected value: " + actual, map.containsValue( actual ) );
 			count++;
 		}
@@ -149,16 +146,16 @@ public class IntRefHashMapValuesCollectionTest
 		// Test iterator removal.
 		// Remove the 3rd whatsoever value.
 		final int size = map.size();
-		final Iterator< TestVertex > it2 = valueCollection.iterator();
+		final Iterator< TestObject > it2 = valueCollection.iterator();
 		it2.next();
 		it2.next();
-		final TestVertex val = it2.next();
+		final TestObject val = it2.next();
 		it2.remove();
 		assertEquals( "Map does not have the expected size after removal by keyset iterator.", size - 1, map.size() );
 		assertFalse( "Map should not contain a mapping for key " + val + " after removal by keyset iterator.", map.containsValue( val ) );
 
 		// Remove all.
-		final Iterator< TestVertex > it3 = valueCollection.iterator();
+		final Iterator< TestObject > it3 = valueCollection.iterator();
 		while ( it3.hasNext() )
 		{
 			it3.next();
@@ -217,7 +214,7 @@ public class IntRefHashMapValuesCollectionTest
 	public void testSize()
 	{
 		assertEquals( "ValueCollection and the map do not have the same size.", map.size(), valueCollection.size() );
-		final TestVertex ref = pool.createRef();
+		final TestObject ref = pool.createRef();
 		for ( int i = 0; i < 5; i++ )
 		{
 			map.put( 100 + i, ref );
@@ -237,19 +234,19 @@ public class IntRefHashMapValuesCollectionTest
 			assertTrue( "Unexpected object in the array returned by toArray(): ", map.containsValue( obj ) );
 		}
 	}
-	
+
 	@Test
 	public void testToArrayArray()
 	{
-		final TestVertex[] arr = new TestVertex[ 100 ];
+		final TestObject[] arr = new TestObject[ 100 ];
 		// Initialize it with non-null values.
-		final TestVertex v = pool.create(pool.createRef()).init( 100 );
+		final TestObject v = pool.create(pool.createRef()).init( 100 );
 		for ( int i = 0; i < arr.length; i++ )
 		{
 			arr[ i ] = v;
 		}
 
-		final TestVertex[] array = valueCollection.toArray( arr );
+		final TestObject[] array = valueCollection.toArray( arr );
 		for ( int i = 0; i < map.size(); i++ )
 		{
 			assertTrue( "Unexpected object in the array returned by toArray(): " + array[ i ], map.containsValue( array[ i ] ) );
@@ -260,10 +257,10 @@ public class IntRefHashMapValuesCollectionTest
 		}
 	}
 
-	private RefArrayList< TestVertex > createListFromKeys( final int[] keys )
+	private RefArrayList< TestObject > createListFromKeys( final int[] keys )
 	{
-		final RefArrayList< TestVertex > set = new RefArrayList<>( pool );
-		final TestVertex ref = pool.createRef();
+		final RefArrayList< TestObject > set = new RefArrayList<>( pool );
+		final TestObject ref = pool.createRef();
 		for ( final int key : keys )
 		{
 			final int poolIndex = truthMap.get( key );

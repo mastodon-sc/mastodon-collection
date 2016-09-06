@@ -3,11 +3,6 @@ package org.mastodon.collection.ref;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import gnu.trove.TIntCollection;
-import gnu.trove.iterator.TIntIterator;
-import gnu.trove.list.array.TIntArrayList;
-import gnu.trove.procedure.TIntProcedure;
-import gnu.trove.set.TIntSet;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,16 +11,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mastodon.collection.ref.IntRefHashMap;
-import org.mastodon.graph.TestVertex;
-import org.mastodon.graph.TestVertexPool;
+import org.mastodon.pool.TestObject;
+import org.mastodon.pool.TestObjectPool;
+
+import gnu.trove.TIntCollection;
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.list.array.TIntArrayList;
+import gnu.trove.procedure.TIntProcedure;
+import gnu.trove.set.TIntSet;
 
 public class IntRefHashMapKeySetTest
 {
 
-	private TestVertexPool pool;
+	private TestObjectPool pool;
 
-	private IntRefHashMap< TestVertex > map;
+	private IntRefHashMap< TestObject > map;
 
 	private HashMap< Integer, Integer > truthMap;
 
@@ -36,13 +36,13 @@ public class IntRefHashMapKeySetTest
 	@Before
 	public void setUp() throws Exception
 	{
-		pool = new TestVertexPool( 10 );
+		pool = new TestObjectPool( 10 );
 		truthMap = new HashMap<>( 10 );
-		final TestVertex ref = pool.createRef();
+		final TestObject ref = pool.createRef();
 		for ( int i = 0; i < 10; i++ )
 		{
 			final int id = 20 + i;
-			final TestVertex a = pool.create( ref ).init( id );
+			final TestObject a = pool.create( ref ).init( id );
 			truthMap.put( Integer.valueOf( a.getId() ), Integer.valueOf( a.getInternalPoolIndex() ) );
 		}
 

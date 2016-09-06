@@ -2,18 +2,18 @@ package org.mastodon.pool;
 
 import static org.mastodon.pool.ByteUtils.INT_SIZE;
 
-public class TestObject extends PoolObject< TestObject, ByteMappedElement >
+public class OtherTestObject extends PoolObject< OtherTestObject, ByteMappedElement >
 {
 	protected static final int ID_OFFSET = 0;
 
 	protected static final int SIZE_IN_BYTES = ID_OFFSET + INT_SIZE;
 
-	TestObject( final TestObjectPool pool )
+	OtherTestObject( final OtherTestObjectPool pool )
 	{
 		super( pool );
 	}
 
-	public TestObject init( final int id )
+	public OtherTestObject init( final int id )
 	{
 		setId( id );
 		return this;
@@ -39,7 +39,7 @@ public class TestObject extends PoolObject< TestObject, ByteMappedElement >
 	public String toString()
 	{
 		final StringBuilder sb = new StringBuilder();
-		sb.append( "TestObject(" );
+		sb.append( "OtherTestObject(" );
 		sb.append( getId() );
 		sb.append( ")" );
 		return sb.toString();

@@ -10,14 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Test;
-import org.mastodon.collection.RefList;
 import org.mastodon.collection.RefCollections;
-import org.mastodon.graph.TestEdge;
-import org.mastodon.graph.TestVertex;
+import org.mastodon.collection.RefList;
+import org.mastodon.pool.OtherTestObject;
+import org.mastodon.pool.TestObject;
 
 public class RefRefHashMapValuesTest extends RefRefHashMapAbstractTest
 {
-	private Collection< TestEdge > values;
+	private Collection< OtherTestObject > values;
 
 	@Override
 	public void setUp() throws Exception
@@ -30,15 +30,15 @@ public class RefRefHashMapValuesTest extends RefRefHashMapAbstractTest
 	@Test( expected = UnsupportedOperationException.class )
 	public void testAdd()
 	{
-		values.add( eAB );
+		values.add( v0 );
 	}
 
 	@Test( expected = UnsupportedOperationException.class )
 	public void testAddAll()
 	{
-		final List< TestEdge > list = RefCollections.createRefList( graph.edges() );
-		list.add( eAB );
-		list.add( eAC );
+		final List< OtherTestObject > list = RefCollections.createRefList( otherPool.asRefCollection() );
+		list.add( v0 );
+		list.add( v1 );
 		values.addAll( list );
 	}
 
@@ -53,43 +53,43 @@ public class RefRefHashMapValuesTest extends RefRefHashMapAbstractTest
 	@Test
 	public void testContains()
 	{
-		assertTrue( "Expected value could not be found in the value collection.", values.contains( eAB ) );
-		final TestEdge edge = graph.addEdge( Dk, Ek );
-		map.put( Ak, edge );
-		assertTrue( "Value added could not be found in the value collection after map modification.", values.contains( edge ) );
+		assertTrue( "Expected value could not be found in the value collection.", values.contains( v0 ) );
+		final OtherTestObject v5 = otherPool.create().init( 5 );
+		map.put( k0, v5 );
+		assertTrue( "Value added could not be found in the value collection after map modification.", values.contains( v5 ) );
 	}
 
 	@Test
 	public void testContainsAll()
 	{
-		final List< TestEdge > list = RefCollections.createRefList( graph.edges() );
-		list.add( eAB );
-		list.add( eAC );
+		final List< OtherTestObject > list = RefCollections.createRefList( otherPool.asRefCollection() );
+		list.add( v0 );
+		list.add( v1 );
 
 		assertTrue( "Expected values could not be found in the value collection.", values.containsAll( list ) );
 
-		final TestEdge edge = graph.addEdge( Dk, Ek );
-		list.add( edge );
+		final OtherTestObject v5 = otherPool.create().init( 5 );
+		list.add( v5 );
 		assertFalse( "Newly created value should not be found in the value collection before map modification.", values.containsAll( list ) );
 
-		map.put( Ak, edge );
+		map.put( k0, v5 );
 		assertTrue( "Value added could not be found in the value collection after map modification.", values.containsAll( list ) );
 	}
 
 	@Test
 	public void testIsEmpty()
 	{
-		final RefRefHashMap< TestVertex, TestEdge > map2 = new RefRefHashMap< TestVertex, TestEdge >( graph.getVertexPool(), graph.getEdgePool() );
+		final RefRefHashMap< TestObject, OtherTestObject > map2 = new RefRefHashMap<>( pool, otherPool );
 		assertTrue( "Value collection of newly created map should be empty.", map2.values().isEmpty() );
 
-		map2.put( Ak, eAB );
+		map2.put( k0, v0 );
 		assertFalse( "Value collection of map with 1 mappting should not be empty.", map2.values().isEmpty() );
 	}
 
 	@Test
 	public void testIteratorIterates()
 	{
-		final Iterator< TestEdge > iterator = values.iterator();
+		final Iterator< OtherTestObject > iterator = values.iterator();
 		assertTrue( "Newly created iterator should have a next element.", iterator.hasNext() );
 		int counter = 0;
 		while ( iterator.hasNext() )
@@ -104,10 +104,10 @@ public class RefRefHashMapValuesTest extends RefRefHashMapAbstractTest
 	public void testIteratorRemoves()
 	{
 		final int initSize = values.size();
-		final Iterator< TestEdge > iterator = values.iterator();
+		final Iterator< OtherTestObject > iterator = values.iterator();
 		while ( iterator.hasNext() )
 		{
-			if ( iterator.next().equals( eAB ) )
+			if ( iterator.next().equals( v0 ) )
 			{
 				iterator.remove();
 			}
@@ -115,7 +115,7 @@ public class RefRefHashMapValuesTest extends RefRefHashMapAbstractTest
 
 		assertEquals( "Value collection has not been shrinked by iterator.remove().", initSize - 1, values.size() );
 		assertEquals( "Corresponding map has not been shrinked by iterator.remove().", initSize - 1, map.size() );
-		assertFalse( "Mapping whose value has been removed should not be in the map.", map.containsKey( Bk ) );
+		assertFalse( "Mapping whose value has been removed should not be in the map.", map.containsKey( k1 ) );
 	}
 
 	@Test
@@ -140,20 +140,20 @@ public class RefRefHashMapValuesTest extends RefRefHashMapAbstractTest
 	public void testRemoveAll()
 	{
 		final int initSize = values.size();
-		final RefList< TestEdge > toRemove = RefCollections.createRefList( graph.edges(), 2 );
+		final RefList< OtherTestObject > toRemove = RefCollections.createRefList( otherPool.asRefCollection(), 2 );
 
 		// Remove stuff not in the map.
-		final TestEdge edge1 = graph.addEdge( Ek, Dk );
-		final TestEdge edge2 = graph.addEdge( Bk, Ck );
-		toRemove.add( edge1 );
-		toRemove.add( edge2 );
+		final OtherTestObject k5 = otherPool.create().init( 5 );
+		final OtherTestObject k6 = otherPool.create().init( 6 );
+		toRemove.add( k5 );
+		toRemove.add( k6 );
 		final boolean changed1 = values.removeAll( toRemove );
 		assertFalse( "Removing values not in the collection should not change the collection.", changed1 );
 		assertEquals( "Value collection should not have been shrinked by this removeAll().", initSize, values.size() );
 
 		// Remove stuff in the map.
-		toRemove.add( eAB );
-		toRemove.add( eAC );
+		toRemove.add( v0 );
+		toRemove.add( v1 );
 		final boolean changed2 = values.removeAll( toRemove );
 		assertTrue( "Removing values in the collection should change the collection.", changed2 );
 //		assertEquals( "Value collection should have been shrinked by this removeAll().", initSize - 2, values.size() );
@@ -162,17 +162,16 @@ public class RefRefHashMapValuesTest extends RefRefHashMapAbstractTest
 	@Test
 	public void testRetainAll()
 	{
-		final RefList< TestEdge > toRetain = RefCollections.createRefList( graph.edges(), 2 );
-		toRetain.add( eAB );
-		toRetain.add( eAC );
+		final RefList< OtherTestObject > toRetain = RefCollections.createRefList( otherPool.asRefCollection(), 2 );
+		toRetain.add( v0 );
+		toRetain.add( v1 );
 
 		final boolean changed = values.retainAll( toRetain );
 		assertTrue( "Removing values in the collection should change the collection.", changed );
 		assertEquals( "Value collection should have been shrinked by this retainAll().", 2, values.size() );
-		assertTrue( "Kept values should still be in the collection.", values.contains( eAB ) );
-		assertTrue( "Kept values should still be in the collection.", values.contains( eAC ) );
-		assertTrue( "Kept values should still be in the map.", map.containsValue( eAB ) );
-		assertTrue( "Kept values should still be in the map.", map.containsValue( eAC ) );
+		assertTrue( "Kept values should still be in the collection.", values.contains( v0 ) );
+		assertTrue( "Kept values should still be in the collection.", values.contains( v1 ) );
+		assertTrue( "Kept values should still be in the map.", map.containsValue( v0 ) );
+		assertTrue( "Kept values should still be in the map.", map.containsValue( v1 ) );
 	}
-
 }

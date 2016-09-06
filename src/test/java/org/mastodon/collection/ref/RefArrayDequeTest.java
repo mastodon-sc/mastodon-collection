@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Iterator;
 
 import org.junit.Test;
-import org.mastodon.collection.ref.RefArrayDeque;
 import org.mastodon.pool.TestObject;
 import org.mastodon.pool.TestObjectPool;
 
@@ -18,7 +17,7 @@ public class RefArrayDequeTest
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
 		final TestObject _ref = pool.createRef();
-		final RefArrayDeque< TestObject > deque = new RefArrayDeque< TestObject >( pool );
+		final RefArrayDeque< TestObject > deque = new RefArrayDeque<>( pool );
 
 		deque.addFirst( pool.create( _ref ).init( 10 ) );
 		deque.addFirst( pool.create( _ref ).init( 11 ) );
@@ -30,7 +29,7 @@ public class RefArrayDequeTest
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
 		final TestObject _ref = pool.createRef();
-		final RefArrayDeque< TestObject > deque = new RefArrayDeque< TestObject >( pool );
+		final RefArrayDeque< TestObject > deque = new RefArrayDeque<>( pool );
 
 		deque.addLast( pool.create( _ref ).init( 10 ) );
 		deque.addLast( pool.create( _ref ).init( 11 ) );
@@ -42,7 +41,7 @@ public class RefArrayDequeTest
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
 		final TestObject _ref = pool.createRef();
-		final RefArrayDeque< TestObject > deque = new RefArrayDeque< TestObject >( pool );
+		final RefArrayDeque< TestObject > deque = new RefArrayDeque<>( pool );
 
 		deque.addFirst( pool.create( _ref ).init( 10 ) );
 		deque.addFirst( pool.create( _ref ).init( 11 ) );
@@ -54,7 +53,7 @@ public class RefArrayDequeTest
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
 		final TestObject _ref = pool.createRef();
-		final RefArrayDeque< TestObject > deque = new RefArrayDeque< TestObject >( pool );
+		final RefArrayDeque< TestObject > deque = new RefArrayDeque<>( pool );
 
 		deque.addLast( pool.create( _ref ).init( 10 ) );
 		deque.addLast( pool.create( _ref ).init( 11 ) );
@@ -66,7 +65,7 @@ public class RefArrayDequeTest
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
 		final TestObject _ref = pool.createRef();
-		final RefArrayDeque< TestObject > deque = new RefArrayDeque< TestObject >( pool );
+		final RefArrayDeque< TestObject > deque = new RefArrayDeque<>( pool );
 
 		deque.addLast( pool.create( _ref ).init( 10 ) );
 		deque.addLast( pool.create( _ref ).init( 11 ) );
@@ -83,7 +82,7 @@ public class RefArrayDequeTest
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
 		final TestObject _ref = pool.createRef();
-		final RefArrayDeque< TestObject > deque = new RefArrayDeque< TestObject >( pool );
+		final RefArrayDeque< TestObject > deque = new RefArrayDeque<>( pool );
 
 		deque.addLast( pool.create( _ref ).init( 10 ) );
 		deque.addLast( pool.create( _ref ).init( 11 ) );
@@ -99,7 +98,7 @@ public class RefArrayDequeTest
 	public void containsTest()
 	{
 		final TestObjectPool pool = new TestObjectPool( 10 );
-		final RefArrayDeque< TestObject > deque = new RefArrayDeque< TestObject >( pool );
+		final RefArrayDeque< TestObject > deque = new RefArrayDeque<>( pool );
 		final TestObject o10 = pool.create().init( 10 );
 		final TestObject o11 = pool.create().init( 11 );
 		final TestObject o29 = pool.create().init( 29 );

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gnu.trove.set.TIntSet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,26 +11,27 @@ import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mastodon.collection.ref.RefSetImp;
-import org.mastodon.graph.TestVertex;
-import org.mastodon.graph.TestVertexPool;
+import org.mastodon.pool.TestObject;
+import org.mastodon.pool.TestObjectPool;
+
+import gnu.trove.set.TIntSet;
 
 public class RefSetImpTest
 {
 
-	private ArrayList< TestVertex > list;
+	private ArrayList< TestObject > list;
 
-	private RefSetImp< TestVertex > set;
+	private RefSetImp< TestObject > set;
 
-	private TestVertexPool pool;
+	private TestObjectPool pool;
 
 	private int[] storedIds;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		pool = new TestVertexPool( 10 );
-		list = new ArrayList< TestVertex >( 10 );
+		pool = new TestObjectPool( 10 );
+		list = new ArrayList< TestObject >( 10 );
 		// Creates 10 objects and store them.
 		for ( int i = 0; i < 10; i++ )
 		{
@@ -56,7 +56,7 @@ public class RefSetImpTest
 	@Test
 	public void testReleaseRef()
 	{
-		final TestVertex ref = set.createRef();
+		final TestObject ref = set.createRef();
 		set.releaseRef( ref );
 	}
 
@@ -65,7 +65,7 @@ public class RefSetImpTest
 	{
 		final TIntSet ic = set.getIndexCollection();
 		assertEquals( "Index collection does not have the expected size.", set.size(), ic.size() );
-		final Iterator< TestVertex > it = set.iterator();
+		final Iterator< TestObject > it = set.iterator();
 		while ( it.hasNext() )
 		{
 			final int poolIndex = it.next().getInternalPoolIndex();
@@ -98,7 +98,7 @@ public class RefSetImpTest
 		final boolean changed = set.addAll( list );
 		assertTrue( "Adding new values should change the set.", changed );
 		assertEquals( "Set does not have the expected size after addition.", list.size(), set.size() );
-		for ( final TestVertex testVertex : list )
+		for ( final TestObject testVertex : list )
 		{
 			assertTrue( "New value should be present in the set.", set.contains( testVertex ) );
 		}
@@ -134,7 +134,7 @@ public class RefSetImpTest
 		final boolean containsAll = set.containsAll( list );
 		assertFalse( "Large collection is not contained in the set.", containsAll );
 
-		final ArrayList< TestVertex > smallList = new ArrayList< TestVertex >( 2 );
+		final ArrayList< TestObject > smallList = new ArrayList< TestObject >( 2 );
 		for ( int i = 0; i < 2; i = i + 2 )
 		{
 			smallList.add( list.get( i ) );
@@ -155,12 +155,12 @@ public class RefSetImpTest
 	public void testIterator()
 	{
 		// Test iterate over all set.
-		final Iterator< TestVertex > it = set.iterator();
+		final Iterator< TestObject > it = set.iterator();
 		Arrays.sort( storedIds );
 		int count = 0;
 		while ( it.hasNext() )
 		{
-			final TestVertex v = it.next();
+			final TestObject v = it.next();
 			final int i = Arrays.binarySearch( storedIds, v.getInternalPoolIndex() );
 			assertTrue( "Iterator returns object: " + v, i >= 0 );
 			count++;
@@ -170,16 +170,16 @@ public class RefSetImpTest
 		// Test iterator removal.
 		// Remove the 3rd whatsoever value.
 		final int size = set.size();
-		final Iterator< TestVertex > it2 = set.iterator();
+		final Iterator< TestObject > it2 = set.iterator();
 		it2.next();
 		it2.next();
-		final TestVertex val = it2.next();
+		final TestObject val = it2.next();
 		it2.remove();
 		assertEquals( "Map does not have the expected size after removal by keyset iterator.", size - 1, set.size() );
 		assertFalse( "Map should not contain a mapping for key " + val + " after removal by keyset iterator.", set.contains( val ) );
 
 		// Remove all.
-		final Iterator< TestVertex > it3 = set.iterator();
+		final Iterator< TestObject > it3 = set.iterator();
 		while ( it3.hasNext() )
 		{
 			it3.next();
@@ -210,7 +210,7 @@ public class RefSetImpTest
 	@Test
 	public void testRemoveAll()
 	{
-		final ArrayList< TestVertex > smallList = new ArrayList< TestVertex >( 2 );
+		final ArrayList< TestObject > smallList = new ArrayList< TestObject >( 2 );
 		// Not in the set.
 		for ( int i = 1; i < 2; i = i + 2 )
 		{
@@ -246,7 +246,7 @@ public class RefSetImpTest
 		assertFalse( "Retaining large collection of all present values should not change the set.", changed1 );
 		assertEquals( "Retaining small collection of present values should not change the set size.", size, set.size() );
 
-		final ArrayList< TestVertex > smallList = new ArrayList< TestVertex >( 2 );
+		final ArrayList< TestObject > smallList = new ArrayList< TestObject >( 2 );
 
 		// In the set + 1 not in the set
 		for ( int i = 0; i < 2; i = i + 2 )
@@ -257,7 +257,7 @@ public class RefSetImpTest
 		final boolean changed2 = set.retainAll( smallList );
 		assertTrue( "Retaining small collection of present values should change the set.", changed2 );
 		assertEquals( "Retaining small collection of present values should change the set size.", smallList.size() - 1, set.size() );
-		for ( final TestVertex v : set )
+		for ( final TestObject v : set )
 		{
 			assertTrue( "All values of the set should not be in the small collection.", smallList.contains( v ) );
 		}
@@ -304,15 +304,15 @@ public class RefSetImpTest
 	@Test
 	public void testToArrayAArray()
 	{
-		final TestVertex[] arr = new TestVertex[ 100 ];
+		final TestObject[] arr = new TestObject[ 100 ];
 		// Initialize it with non-null values.
-		final TestVertex v = pool.create( pool.createRef() ).init( 100 );
+		final TestObject v = pool.create( pool.createRef() ).init( 100 );
 		for ( int i = 0; i < arr.length; i++ )
 		{
 			arr[ i ] = v;
 		}
 
-		final TestVertex[] array = set.toArray( arr );
+		final TestObject[] array = set.toArray( arr );
 		for ( int i = 0; i < set.size(); i++ )
 		{
 			assertTrue( "Unexpected object in the array returned by toArray(): " + array[ i ], set.contains( array[ i ] ) );

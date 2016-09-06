@@ -11,15 +11,9 @@ import java.util.Set;
 import org.junit.Test;
 import org.mastodon.collection.RefCollections;
 import org.mastodon.collection.RefSet;
-import org.mastodon.pool.OtherTestObject;
 import org.mastodon.pool.TestObject;
 
-/**
- * Test map from vertices to edges, both belong to the same graph.
- *
- * @author Jean-Yves Tinevez - 2015
- */
-public class RefRefHashMapTest extends RefRefHashMapAbstractTest
+public class RefRefHashMapSamePoolTest extends RefRefHashMapSamePoolAbstractTest
 {
 	@Test
 	public void testClear()
@@ -32,45 +26,45 @@ public class RefRefHashMapTest extends RefRefHashMapAbstractTest
 	@Test
 	public void testContainsKey()
 	{
-		assertFalse( "Map should not contain key k0.", map.containsKey( k0 ) );
-		assertTrue( "Map should contain key k1.", map.containsKey( k1 ) );
+		assertFalse( "Map should not contain k0 as a key.", map.containsKey( k0 ) );
+		assertTrue( "Map should contain k1 as a key.", map.containsKey( k1 ) );
 	}
 
 	@Test
 	public void testContainsValue()
 	{
-		assertFalse( "Map should not contain value v4.", map.containsValue( v4 ) );
-		assertTrue( "Map should contain a value v0.", map.containsValue( v0 ) );
+		assertFalse( "Map should not contain k1 as a value.", map.containsValue( k1 ) );
+		assertTrue( "Map should contain k0 as a value.", map.containsValue( k0 ) );
 	}
 
 	@Test
 	public void testGetObject()
 	{
-		assertEquals( "Unexpected mapping for k1 (expected k1 -> v0).", v0, map.get( k1 ) );
-		assertEquals( "Unexpected mapping for k2 (expected k2 -> v1).", v1, map.get( k2 ) );
-		assertEquals( "Unexpected mapping for k4 (expected k4 -> v3).", v3, map.get( k4 ) );
-		assertEquals( "Unexpected mapping for k3 (expected k3 -> v2).", v2, map.get( k3 ) );
+		assertEquals( "Unexpected mapping for k1 (expected k1 -> k2).", k2, map.get( k1 ) );
+		assertEquals( "Unexpected mapping for k3 (expected k3 -> k4).", k4, map.get( k3 ) );
+		assertEquals( "Unexpected mapping for k2 (expected k2 -> k3).", k3, map.get( k2 ) );
+		assertEquals( "Unexpected mapping for k4 (expected k4 -> k0).", k0, map.get( k4 ) );
 		assertNull( "There should not be a mapping for key k0.", map.get( k0 ) );
 	}
 
 	@Test
 	public void testGetObjectL()
 	{
-		final OtherTestObject ref = map.createValueRef();
+		final TestObject ref = map.createValueRef();
 		map.get( k1, ref );
-		assertEquals( "Unexpected mapping for key k1 (expected k1 -> v0).", v0, ref );
+		assertEquals( "Unexpected mapping for key k1 (expected k1 -> k2).", k2, ref );
 		map.get( k3, ref );
-		assertEquals( "Unexpected mapping for k3 (expected k3 -> v2)", v2, ref );
+		assertEquals( "Unexpected mapping for k3 (expected k3 -> k4)", k4, ref );
 		map.get( k2, ref );
-		assertEquals( "Unexpected mapping for k2 (expected k2 -> v1)", v1, ref );
+		assertEquals( "Unexpected mapping for k2 (expected k2 -> k3)", k3, ref );
 		map.get( k4, ref );
-		assertEquals( "Unexpected mapping for k4 (expected k4 -> v3)", v3, ref );
+		assertEquals( "Unexpected mapping for k4 (expected k4 -> k0)", k0, ref );
 		assertNull( "There should not be a mapping for key k0.", map.get( k0, ref ) );
 
-		assertEquals( "Unexpected mapping for k1 (expected k1 -> v0).", v0, map.get( k1 ) );
-		assertEquals( "Unexpected mapping for k3 (expected k3 -> v2).", v2, map.get( k3 ) );
-		assertEquals( "Unexpected mapping for k2 (expected k2 -> v1).", v1, map.get( k2 ) );
-		assertEquals( "Unexpected mapping for k4 (expected k4 -> v3).", v3, map.get( k4 ) );
+		assertEquals( "Unexpected mapping for k1 (expected k1 -> k2).", k2, map.get( k1 ) );
+		assertEquals( "Unexpected mapping for k3 (expected k3 -> k4).", k4, map.get( k3 ) );
+		assertEquals( "Unexpected mapping for k2 (expected k2 -> k3).", k3, map.get( k2 ) );
+		assertEquals( "Unexpected mapping for k4 (expected k4 -> k0).", k0, map.get( k4 ) );
 	}
 
 	@Test
@@ -95,63 +89,63 @@ public class RefRefHashMapTest extends RefRefHashMapAbstractTest
 	@Test
 	public void testPutKLL()
 	{
-		final OtherTestObject ref = otherPool.createRef();
+		final TestObject ref = pool.createRef();
 
 		// Add a new key
-		final OtherTestObject put = map.put( k0, v0, ref );
+		final TestObject put = map.put( k0, k0, ref );
 		assertNull( "There should not be any mapping prior to adding this key.", put );
-		assertEquals( "Could not find the expected value for the new key.", v0, map.get( k0, ref ) );
+		assertEquals( "Could not find the expected value for the new key.", k0, map.get( k0, ref ) );
 
 		// Replace an existing key
-		final OtherTestObject put2 = map.put( k1, v4, ref );
-		assertEquals( "Could not retrieve the expected value for the old key.", v0, put2 );
-		assertEquals( "Could not find the expected value for the new key.", v4, map.get( k1, ref ) );
+		final TestObject put2 = map.put( k1, k4, ref );
+		assertEquals( "Could not retrieve the expected value for the old key.", k2, put2 );
+		assertEquals( "Could not find the expected value for the new key.", k4, map.get( k1, ref ) );
 	}
 
 	@Test
 	public void testPutKL()
 	{
 		// Add a new key
-		final OtherTestObject put = map.put( k0, v0 );
+		final TestObject put = map.put( k0, k1 );
 		assertNull( "There should not be any mapping prior to adding this key.", put );
-		assertEquals( "Could not find the expected value for the new key.", v0, map.get( k0 ) );
+		assertEquals( "Could not find the expected value for the new key.", k1, map.get( k0 ) );
 
 		// Replace an existing key
-		final OtherTestObject put2 = map.put( k1, v4 );
-		assertEquals( "Could not retrieve the expected value for the old key.", v0, put2 );
-		assertEquals( "Could not find the expected value for the new key.", v4, map.get( k1 ) );
+		final TestObject put2 = map.put( k1, k0 );
+		assertEquals( "Could not retrieve the expected value for the old key.", k2, put2 );
+		assertEquals( "Could not find the expected value for the new key.", k0, map.get( k1 ) );
 	}
 
 	@Test
 	public void testPutAll()
 	{
-		final RefRefHashMap< TestObject, OtherTestObject > extraMap = new RefRefHashMap<>( pool, otherPool );
-		extraMap.put( k0, v0 );
+		final RefRefHashMap< TestObject, TestObject > extraMap = new RefRefHashMap<>( pool, pool );
+		extraMap.put( k0, k1 );
 		// Careful to add 1 mapping not already present in the map.
-		extraMap.put( k1, v1 );
+		extraMap.put( k1, k0 );
 		// Change one mapping.
 
 		final int initSize = map.size();
 		map.putAll( extraMap );
 		assertEquals( "Map after putAll does not have the expected size.", initSize + 1, map.size() );
-		assertEquals( "New mapping is not right.", v0, map.get( k0 ) );
-		assertEquals( "New mapping is not right.", v1, map.get( k1 ) );
+		assertEquals( "New mapping is not right.", k1, map.get( k0 ) );
+		assertEquals( "New mapping is not right.", k0, map.get( k1 ) );
 	}
 
 	@Test
 	public void testRemoveObjectL()
 	{
 		final int size = map.size();
-		final OtherTestObject ref = otherPool.createRef();
+		final TestObject ref = pool.createRef();
 
 		// Remove a non existing mapping
-		final OtherTestObject remove = map.removeWithRef( k0, ref );
+		final TestObject remove = map.removeWithRef( k0, ref );
 		assertNull( "Removing a non-exiting mapping should return null.", remove );
 		assertEquals( "Map size should not have changed.", size, map.size() );
 
 		// Remove an existing mapping
-		final OtherTestObject remove2 = map.removeWithRef( k1, ref );
-		assertEquals( "Did not retrieve the expected value upong key removal.", v0, remove2 );
+		final TestObject remove2 = map.removeWithRef( k1, ref );
+		assertEquals( "Did not retrieve the expected value upong key removal.", k2, remove2 );
 		assertEquals( "Map size should have decreased by 1.", size - 1, map.size() );
 	}
 
@@ -161,13 +155,13 @@ public class RefRefHashMapTest extends RefRefHashMapAbstractTest
 		final int size = map.size();
 
 		// Remove a non existing mapping
-		final OtherTestObject remove = map.remove( k0 );
+		final TestObject remove = map.remove( k0 );
 		assertNull( "Removing a non-exiting mapping should return null.", remove );
 		assertEquals( "Map size should not have changed.", size, map.size() );
 
 		// Remove an existing mapping
-		final OtherTestObject remove2 = map.remove( k1 );
-		assertEquals( "Did not retrieve the expected value upong key removal.", v0, remove2 );
+		final TestObject remove2 = map.remove( k1 );
+		assertEquals( "Did not retrieve the expected value upong key removal.", k2, remove2 );
 		assertEquals( "Map size should have decreased by 1.", size - 1, map.size() );
 	}
 
@@ -192,7 +186,7 @@ public class RefRefHashMapTest extends RefRefHashMapAbstractTest
 	@Test
 	public void testCreateValueRef()
 	{
-		final OtherTestObject ref = map.createValueRef();
+		final TestObject ref = map.createValueRef();
 		assertNotNull( "Created reference object is null.", ref );
 	}
 }
