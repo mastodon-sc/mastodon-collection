@@ -1,4 +1,4 @@
-package org.mastodon.graph.io;
+package org.mastodon.io.features;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -6,9 +6,9 @@ import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.mastodon.graph.io.RawFeatureIO.Serializer;
-import org.mastodon.graph.io.RawGraphIO.FileIdToObjectMap;
-import org.mastodon.graph.io.RawGraphIO.ObjectToFileIdMap;
+import org.mastodon.io.FileIdToObjectMap;
+import org.mastodon.io.ObjectToFileIdMap;
+import org.mastodon.io.features.RawFeatureIO.Serializer;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
 

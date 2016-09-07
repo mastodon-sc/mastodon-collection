@@ -1,4 +1,4 @@
-package org.mastodon.graph.io;
+package org.mastodon.io.features;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -8,8 +8,8 @@ import java.util.List;
 import org.mastodon.features.Feature;
 import org.mastodon.features.FeatureRegistry;
 import org.mastodon.features.Features;
-import org.mastodon.graph.io.RawGraphIO.FileIdToObjectMap;
-import org.mastodon.graph.io.RawGraphIO.ObjectToFileIdMap;
+import org.mastodon.io.FileIdToObjectMap;
+import org.mastodon.io.ObjectToFileIdMap;
 
 public class RawFeatureIO
 {

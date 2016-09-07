@@ -1,9 +1,9 @@
-package org.mastodon.graph.io;
+package org.mastodon.io.features;
 
 import java.util.HashMap;
 
 import org.mastodon.features.Feature;
-import org.mastodon.graph.io.RawFeatureIO.Serializer;
+import org.mastodon.io.features.RawFeatureIO.Serializer;
 
 public class FeatureSerializers
 {

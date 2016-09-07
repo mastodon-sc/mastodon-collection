@@ -7,7 +7,7 @@ import java.util.Map;
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.UniqueHashcodeArrayMap;
-import org.mastodon.graph.io.RawFeatureIO;
+import org.mastodon.io.features.RawFeatureIO;
 
 /**
  * Manage {@link Feature}s associated with a specific object type {@code O},
