@@ -65,13 +65,13 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 	public void updateAccess( final ByteMappedElement access, final int index )
 	{
 		access.setDataArray( this );
-		access.setElementIndex( ( int ) index );
+		access.setElementIndex( index );
 	}
 
 	/**
 	 * {@inheritDoc} Moves the data using
 	 * {@link System#arraycopy(Object, int, Object, int, int)}, using
-	 * {@link #swapTmp} as a temporary.
+	 * <code>swapTmp</code> as a temporary.
 	 */
 	@Override
 	public void swapElement( final int index, final ByteMappedElementArray array, final int arrayIndex )

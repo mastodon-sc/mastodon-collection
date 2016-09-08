@@ -60,7 +60,7 @@ public final class Features< O >
 	 * <p>
 	 * Returns the feature map for the given {@code feature}. If the feature map
 	 * doesn't exist yet, it is created (see
-	 * {@link Feature#createFeatureMap(RefCollection)}) and
+	 * <code>Feature#createFeatureMap(RefCollection)</code>) and
 	 * {@link CreateFeatureMapListener}s are notified.
 	 *
 	 * @return feature map for the given {@code feature}.

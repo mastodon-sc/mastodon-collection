@@ -70,13 +70,13 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 	public void updateAccess( final DoubleMappedElement access, final int index )
 	{
 		access.setDataArray( this );
-		access.setElementIndex( ( int ) index );
+		access.setElementIndex( index );
 	}
 
 	/**
 	 * {@inheritDoc} Moves the data using
 	 * {@link System#arraycopy(Object, int, Object, int, int)}, using
-	 * {@link #swapTmp} as a temporary.
+	 * <code>swapTmp</code> as a temporary.
 	 */
 	@Override
 	public void swapElement( final int index, final DoubleMappedElementArray array, final int arrayIndex )

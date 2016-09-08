@@ -5,8 +5,8 @@ import org.mastodon.Ref;
 /**
  * A proxy object that uses a {@link MappedElement} access to store its data in
  * a {@link MemPool}. The data block that it references to can be set by
- * {@link #updateAccess(MemPool, int)}. Methods to modify the data itself are
- * defined in subclasses.
+ * <code>updateAccess(MemPool, int)</code>. Methods to modify the data itself
+ * are defined in subclasses.
  *
  * <p>
  * In principle, this could extend {@link MappedElement}, but we rather use

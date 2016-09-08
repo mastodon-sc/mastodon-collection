@@ -18,7 +18,6 @@ import org.mastodon.pool.SingleArrayMemPool;
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
-
 /**
  * KDTree of {@link RealLocalizable} objects.
  *
@@ -61,8 +60,8 @@ public class KDTree<
 	 * @param objectPool
 	 *            the pool that contains the {@code objects}.
 	 * @param poolFactory
-	 *            The {@link MemPool.Factory} that should be used to create
-	 *            storage for {@link KDTreeNode nodes}
+	 *            The {@link org.mastodon.pool.MemPool.Factory} that should be
+	 *            used to create storage for {@link KDTreeNode nodes}
 	 * @return the tree.
 	 */
 	public static < O extends RealLocalizable, T extends MappedElement >
@@ -77,7 +76,6 @@ public class KDTree<
 	 * TODO
 	 *
 	 * @param kdtree
-	 * @return
 	 */
 	public static < O extends RealLocalizable, T extends MappedElement >
 			RefRefMap< O, KDTreeNode< O, T > > createRefToKDTreeNodeMap( final KDTree< O, T > kdtree )
