@@ -7,6 +7,8 @@ package org.mastodon.pool;
  *
  * @param <T>
  *            the {@link MappedElement} type stored in this array.
+ * @param <A>
+ *            the type of the primitive array.
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
@@ -42,13 +44,18 @@ public interface MappedElementArray< A extends MappedElementArray< A, T >, T ext
 	public T createAccess();
 
 	/**
-	 * Update the given {@link MappedElement} to refer the element at
+	 * Updates the given {@link MappedElement} to refer the element at
 	 * {@code index} in this array.
+	 * 
+	 * @param access
+	 *            the mapped element.
+	 * @param index
+	 *            the element index.
 	 */
 	public void updateAccess( final T access, final int index );
 
 	/**
-	 * Set the size of this array to contain {@code numElements}
+	 * Sets the size of this array to contain {@code numElements}
 	 * {@link MappedElement elements}.
 	 *
 	 * @param numElements
@@ -57,7 +64,7 @@ public interface MappedElementArray< A extends MappedElementArray< A, T >, T ext
 	public void resize( final int numElements );
 
 	/**
-	 * Swap the {@link MappedElement} data at {@code index} in this
+	 * Swaps the {@link MappedElement} data at {@code index} in this
 	 * {@link MappedElementArray} with the element at {@code arrayIndex} in the
 	 * {@link MappedElementArray} {@code array}.
 	 *
@@ -80,8 +87,14 @@ public interface MappedElementArray< A extends MappedElementArray< A, T >, T ext
 	public static interface Factory< A > // A extends MappedElementArray< T >
 	{
 		/**
-		 * Create an array containing {@code numElements} elements of
+		 * Creates an array containing {@code numElements} elements of
 		 * {@code bytesPerElement} bytes each.
+		 * 
+		 * @param numElements
+		 *            the number of elements to store in the array.
+		 * @param bytesPerElement
+		 *            the number of bytes occupied b a single element.
+		 * @return a new array.
 		 */
 		public A createArray( final int numElements, final int bytesPerElement );
 	}

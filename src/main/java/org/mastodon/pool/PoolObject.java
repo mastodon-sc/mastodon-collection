@@ -57,12 +57,6 @@ public abstract class PoolObject< O extends PoolObject< O, T >, T extends Mapped
 		this.access = memPool.createAccess();
 	}
 
-	/**
-	 * Get the element index that this {@link PoolObject} currently refers to.
-	 *
-	 * @return the element index that this {@link PoolObject} currently refers
-	 *         to.
-	 */
 	@Override
 	public int getInternalPoolIndex()
 	{
@@ -105,12 +99,6 @@ public abstract class PoolObject< O extends PoolObject< O, T >, T extends Mapped
 		memPool.updateAccess( access, index );
 	}
 
-	/**
-	 * Make this {@link PoolObject} refer to the same data as {@code obj}
-	 *
-	 * @param obj
-	 *            A {@link PoolObject}, usually of the same type as this one.
-	 */
 	@Override
 	@SuppressWarnings( "unchecked" )
 	public O refTo( final O obj )

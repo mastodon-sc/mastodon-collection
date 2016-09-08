@@ -123,11 +123,13 @@ public class RefLinkedQueue< O > implements IntBackedRefCollection< O >, RefPool
 	}
 
 	/**
-	 * Retrieves and removes the head of this queue, or returns
-	 * {@code null} if this queue is empty.
+	 * Retrieves and removes the head of this queue, or returns {@code null} if
+	 * this queue is empty.
 	 *
-	 * @return the head of this queue, or {@code null} if this queue is
-	 *         empty
+	 * @param obj
+	 *            the pool object ref to update with the content of the top
+	 *            item.
+	 * @return the head of this queue, or {@code null} if this queue is empty
 	 */
 	public O poll( final O obj )
 	{

@@ -41,13 +41,21 @@ public class RawFeatureIO
 	}
 
 	/**
-	 * TODO javadoc
-	 *
+	 * Writes the specified list of features to an object output stream.
+	 * 
 	 * @param idmap
+	 *            the object-to-file id map.
 	 * @param features
+	 *            the collection of features.
 	 * @param featuresToSerialize
+	 *            the list of features to serialize.
 	 * @param oos
+	 *            the output stream for serializing.
+	 * @param <O>
+	 *            type of object to which features are attached.
 	 * @throws IOException
+	 *             if a serializer cannot be found for the specified feature, or
+	 *             for usual I/O errors.
 	 */
 	public static < O > void writeFeatureMaps(
 			final ObjectToFileIdMap< O > idmap,
@@ -66,6 +74,25 @@ public class RawFeatureIO
 			serializeFeatureMap( idmap, feature, features.getFeatureMap( feature ), oos );
 	}
 
+	/**
+	 * Serializes the specified feature to an object output stream.
+	 * 
+	 * @param idmap
+	 *            the object-to-file id map.
+	 * @param feature
+	 *            the feature to serialize.
+	 * @param featureMap
+	 *            the feature map.
+	 * @param oos
+	 *            the output stream for serializing.
+	 * @param <M>
+	 *            the type of the feature.
+	 * @param <V>
+	 *            the type of object to which the feature is attached.
+	 * @throws IOException
+	 *             if a serializer cannot be found for the specified feature, or
+	 *             for usual I/O errors.
+	 */
 	@SuppressWarnings( "unchecked" )
 	private static < M, V > void serializeFeatureMap(
 			final ObjectToFileIdMap< V > idmap,
@@ -81,12 +108,21 @@ public class RawFeatureIO
 	}
 
 	/**
-	 * TODO javadoc
-	 *
+	 * Read a collection of features with data read from an object input stream.
+	 * 
 	 * @param idmap
+	 *            the file id-to-object map.
 	 * @param features
+	 *            the feature collection to read. Will be filled with the
+	 *            feature maps read from the input stream.
 	 * @param ois
+	 *            the object input stream to read from.
+	 * @param <O>
+	 *            the type of object to which features are attached.
 	 * @throws IOException
+	 *             if a serializer cannot be found for the specified feature, or
+	 *             the class of serialized object cannot be found, or for usual
+	 *             I/O errors.
 	 */
 	public static < O > void readFeatureMaps(
 			final FileIdToObjectMap< O > idmap,
@@ -110,6 +146,23 @@ public class RawFeatureIO
 		}
 	}
 
+	/**
+	 * De-serializes a feature map from an object input stream.
+	 * 
+	 * @param idmap
+	 *            the file id-to-object map.
+	 * @param feature
+	 *            the feature to read.
+	 * @param featureMap
+	 *            the feature map to fill.
+	 * @param ois
+	 *            the object input stream to read from.
+	 * @throws IOException
+	 *             if a serializer cannot be found for the specified feature, or
+	 *             for usual I/O errors.
+	 * @throws ClassNotFoundException
+	 *             if the class of the serialized object cannot be found.
+	 */
 	@SuppressWarnings( "unchecked" )
 	private static < M, V > void deserializeFeatureMap(
 			final FileIdToObjectMap< V > idmap,

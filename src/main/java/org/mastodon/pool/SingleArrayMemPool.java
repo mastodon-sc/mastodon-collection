@@ -5,8 +5,11 @@ package org.mastodon.pool;
  * A {@link MemPool} that keeps data in a single {@link MappedElementArray}.
  *
  * @param <T>
+ *            the {@link MappedElement} type stored in this pool.
  * @param <A>
- *
+ *            the type of the primitive array used in the
+ *            {@link MappedElementArray}.
+ * 
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
 public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends MappedElement > extends MemPool< T >
@@ -53,7 +56,9 @@ public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends
 	}
 
 	/**
-	 * For internal use only!
+	 * <b>For internal use only!</b>
+	 * 
+	 * @return the data array used in this class.
 	 */
 	public A getDataArray()
 	{
@@ -61,9 +66,19 @@ public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends
 	}
 
 	/**
-	 * Create a factory for {@link SingleArrayMemPool}s that use the specified
+	 * Creates a factory for {@link SingleArrayMemPool}s that use the specified
 	 * {@code arrayFactory} for creating their storage
 	 * {@link MappedElementArray}.
+	 * 
+	 * @param arrayFactory
+	 *            the array factory.
+	 * @return a new factory that can create {@link MemPool}.
+	 *
+	 * @param <T>
+	 *            the {@link MappedElement} type stored in the pool.
+	 * @param <A>
+	 *            the type of the primitive array used in the
+	 *            {@link MappedElementArray}.
 	 */
 	public static < A extends MappedElementArray< A, T >, T extends MappedElement >
 			MemPool.Factory< T > factory( final MappedElementArray.Factory< A > arrayFactory )

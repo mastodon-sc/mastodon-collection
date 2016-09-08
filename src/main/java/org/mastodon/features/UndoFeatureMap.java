@@ -12,10 +12,12 @@ package org.mastodon.features;
 public interface UndoFeatureMap< O >
 {
 	/**
-	 * Store the feature value of {@code object} with the key {@code undoId}.
+	 * Stores the feature value of {@code object} with the key {@code undoId}.
 	 *
 	 * @param undoId
+	 *            the undo id.
 	 * @param object
+	 *            the object to store the undo event for.
 	 */
 	public void store( int undoId, O object );
 
@@ -25,7 +27,9 @@ public interface UndoFeatureMap< O >
 	 * clear the feature in {@code object}.
 	 *
 	 * @param undoId
+	 *            the undo id.
 	 * @param object
+	 *            the object to store the undo event for.
 	 */
 	public void retrieve( int undoId, O object );
 
@@ -34,9 +38,11 @@ public interface UndoFeatureMap< O >
 	 * and replace it with the feature value currently stored with key
 	 * {@code undoId}. If there is no value currently associated with
 	 * {@code undoId}, clear the feature in {@code object}.
-	 *
+	 * 
 	 * @param undoId
+	 *            the undo id.
 	 * @param object
+	 *            the object to store the undo event for.
 	 */
 	public void swap( int undoId, O object );
 
@@ -44,6 +50,7 @@ public interface UndoFeatureMap< O >
 	 * Clear the feature value associated with key {@code undoId} (if any).
 	 *
 	 * @param undoId
+	 *            the undo id.
 	 */
 	public void clear( int undoId );
 }

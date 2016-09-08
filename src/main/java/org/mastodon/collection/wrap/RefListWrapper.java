@@ -13,6 +13,7 @@ import org.mastodon.collection.RefList;
  * Wraps a standard {@link List} in a {@link RefList}.
  *
  * @param <O>
+ *            the type of elements in this list.
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */

@@ -108,7 +108,9 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 	}
 
 	/**
-	 * For internal use only!
+	 * <b>For internal use only!</b>
+	 * 
+	 * @return the data array used in this class.
 	 */
 	public double[] getCurrentDataArray()
 	{

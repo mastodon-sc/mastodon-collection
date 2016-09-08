@@ -37,7 +37,7 @@ public class KDTree<
 	private static final MemPool.Factory< DoubleMappedElement > defaultPoolFactory = SingleArrayMemPool.factory( DoubleMappedElementArray.factory );
 
 	/**
-	 * Build a KDTree of the given {@code objects}. The KDTree is stored in a
+	 * Builds a KDTree of the given {@code objects}. The KDTree is stored in a
 	 * {@link SingleArrayMemPool} of {@link DoubleMappedElement}s.
 	 *
 	 * @param objects
@@ -45,6 +45,8 @@ public class KDTree<
 	 * @param objectPool
 	 *            the pool that contains the {@code objects}.
 	 * @return the tree.
+	 * @param <O>
+	 *            the type of objects stored in the tree.
 	 */
 	public static < O extends RealLocalizable >
 			KDTree< O, DoubleMappedElement > kdtree( final Collection< O > objects, final RefPool< O > objectPool )
@@ -53,7 +55,7 @@ public class KDTree<
 	}
 
 	/**
-	 * Build a KDTree of the given {@code objects}.
+	 * Builds a KDTree of the given {@code objects}.
 	 *
 	 * @param objects
 	 *            objects to build tree from.
@@ -63,6 +65,10 @@ public class KDTree<
 	 *            The {@link org.mastodon.pool.MemPool.Factory} that should be
 	 *            used to create storage for {@link KDTreeNode nodes}
 	 * @return the tree.
+	 * @param <O>
+	 *            the type of objects stored in the tree.
+	 * @param <T>
+	 *            the {@link MappedElement} type of the created pool of nodes.
 	 */
 	public static < O extends RealLocalizable, T extends MappedElement >
 			KDTree< O, T > kdtree( final Collection< O > objects, final RefPool< O > objectPool, final MemPool.Factory< T > poolFactory )
@@ -73,9 +79,16 @@ public class KDTree<
 	}
 
 	/**
-	 * TODO
+	 * Creates a mapping from the objects stored in the specified tree and its
+	 * nodes.
 	 *
 	 * @param kdtree
+	 *            the tree to create the map from.
+	 * @return a new map that links objects to tree nodes.
+	 * @param <O>
+	 *            the type of objects stored in the tree.
+	 * @param <T>
+	 *            the {@link MappedElement} type of the created pool of nodes.
 	 */
 	public static < O extends RealLocalizable, T extends MappedElement >
 			RefRefMap< O, KDTreeNode< O, T > > createRefToKDTreeNodeMap( final KDTree< O, T > kdtree )

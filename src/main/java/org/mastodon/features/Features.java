@@ -53,7 +53,7 @@ public final class Features< O >
 	}
 
 	/**
-	 * For internal use only.
+	 * <b>For internal use only.</b>
 	 * <p>
 	 * This is only public because it needs to be accessed from
 	 * {@link RawFeatureIO}.
@@ -63,6 +63,10 @@ public final class Features< O >
 	 * <code>Feature#createFeatureMap(RefCollection)</code>) and
 	 * {@link CreateFeatureMapListener}s are notified.
 	 *
+	 * @param feature
+	 *            the feature to retrieve.
+	 * @param <M>
+	 *            the feature map type.
 	 * @return feature map for the given {@code feature}.
 	 */
 	@SuppressWarnings( "unchecked" )
@@ -87,9 +91,10 @@ public final class Features< O >
 	}
 
 	/**
-	 * For internal use only.
+	 * <b>For internal use only.</b>
 	 *
 	 * @param object
+	 *            the object to delete.
 	 */
 	public void delete( final O object )
 	{
@@ -102,6 +107,7 @@ public final class Features< O >
 	 * happens once per newly occurring feature in a graph).
 	 *
 	 * @param <O>
+	 *            the type of object to which a feature is attached.
 	 *
 	 * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
 	 */

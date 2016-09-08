@@ -70,7 +70,7 @@ public abstract class MemPool< T extends MappedElement >
 	protected int firstFreeIndex;
 
 	/**
-	 * Create an empty pool which can hold {@code capacity} elements of
+	 * Creates an empty pool which can hold {@code capacity} elements of
 	 * {@code ByteMappedElement} bytes each.
 	 *
 	 * @param capacity
@@ -86,7 +86,7 @@ public abstract class MemPool< T extends MappedElement >
 	}
 
 	/**
-	 * Free all allocated elements.
+	 * Frees all allocated elements.
 	 */
 	public void clear()
 	{
@@ -96,7 +96,7 @@ public abstract class MemPool< T extends MappedElement >
 	}
 
 	/**
-	 * Get the number of elements currently allocated in this pool.
+	 * Gets the number of elements currently allocated in this pool.
 	 *
 	 * @return number of elements.
 	 */
@@ -106,7 +106,7 @@ public abstract class MemPool< T extends MappedElement >
 	}
 
 	/**
-	 * Allocate a new element. This is either taken from the free-element list
+	 * Allocates a new element. This is either taken from the free-element list
 	 * or appended to the end of the pool.
 	 *
 	 * @return element index of the new element.
@@ -126,7 +126,7 @@ public abstract class MemPool< T extends MappedElement >
 	}
 
 	/**
-	 * Free the element at the given element index.
+	 * Frees the element at the given element index.
 	 *
 	 * @param index
 	 *            element index.
@@ -148,7 +148,7 @@ public abstract class MemPool< T extends MappedElement >
 	}
 
 	/**
-	 * Create a new proxy access. This can be made to refer the element at a
+	 * Creates a new proxy access. This can be made to refer the element at a
 	 * given index in this pool by {@link #updateAccess(MappedElement, int)}.
 	 *
 	 * @return a new proxy access.
@@ -156,29 +156,42 @@ public abstract class MemPool< T extends MappedElement >
 	public abstract T createAccess();
 
 	/**
-	 * Make {@code access} refer to the element at {@code index}.
+	 * Makes {@code access} refer to the element at {@code index}.
+	 * 
+	 * @param access
+	 *            the proxy to update.
+	 * @param index
+	 *            the element index.
 	 */
 	public abstract void updateAccess( final T access, final int index );
 
 	/**
-	 * Swap the element at {@code index0} with the element at {@code index1}.
+	 * Swaps the element at {@code index0} with the element at {@code index1}.
+	 * 
+	 * @param index0
+	 *            the index of the first element.
+	 * @param index1
+	 *            the index of the second element.
 	 */
 	public abstract void swap( final int index0, final int index1 );
 
 	/**
-	 * Append a new element at the end of the list. Must be implemented in
+	 * Appends a new element at the end of the list. Must be implemented in
 	 * subclasses. It is called when allocating an element and the free-element
 	 * list is empty.
+	 * 
+	 * @return the index of the appended new element.
 	 */
 	protected abstract int append();
 
 	/**
-	 * Get a {@link PoolIterator} of this pool.
-	 *
+	 * Gets a {@link PoolIterator} of this pool.
 	 * <p>
-	 * A {@link PoolIterator} is not an {@link Iterator Iterator&lt;T&gt;} of the
-	 * allocated elements themselves, but rather an iterator of their element
-	 * indices.
+	 * A {@link PoolIterator} is not an {@link Iterator Iterator&lt;T&gt;} of
+	 * the allocated elements themselves, but rather an iterator of their
+	 * element indices.
+	 * 
+	 * @return a new iterator.
 	 */
 	public PoolIterator< T > iterator()
 	{

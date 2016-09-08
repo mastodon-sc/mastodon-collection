@@ -12,6 +12,15 @@ import org.mastodon.pool.PoolObject;
 
 import net.imglib2.RealLocalizable;
 
+/**
+ * 
+ * @author Tobias Pietzsch
+ *
+ * @param <O>
+ *            type of objects stored in the tree.
+ * @param <T>
+ *            the {@link MappedElement} type of the created pool of nodes.
+ */
 public class KDTreeNode<
 			O extends RealLocalizable,
 			T extends MappedElement >
@@ -123,6 +132,12 @@ public class KDTreeNode<
 
 	/**
 	 * Compute the squared distance from p to this node.
+	 * 
+	 * @param p
+	 *            coordinates to compute squared distance to. Must have at least
+	 *            <code>numDimensions</code> elements. Only the first
+	 *            <code>numDimensions</code> elements are used.
+	 * @return the square distance.
 	 */
 	public final float squDistanceTo( final float[] p )
 	{
@@ -137,6 +152,12 @@ public class KDTreeNode<
 
 	/**
 	 * Compute the squared distance from p to this node.
+	 * 
+	 * @param p
+	 *            coordinates to compute squared distance to. Must have at least
+	 *            <code>numDimensions</code> elements. Only the first
+	 *            <code>numDimensions</code> elements are used.
+	 * @return the square distance.
 	 */
 	public final double squDistanceTo( final double[] p )
 	{
@@ -151,6 +172,11 @@ public class KDTreeNode<
 
 	/**
 	 * Compute the squared distance from p to this node.
+	 * 
+	 * @param p
+	 *            coordinates to compute squared distance to. Must be at least
+	 *            <code>numDimensions</code>-dimensional.
+	 * @return the square distance.
 	 */
 	public final double squDistanceTo( final RealLocalizable p )
 	{

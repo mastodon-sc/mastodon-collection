@@ -46,7 +46,10 @@ public final class FeatureRegistry
 	}
 
 	/**
+	 * Returns a new feature id for the feature identified by the specified key.
+	 * 
 	 * @param key
+	 *            the feature key.
 	 * @return unique ID assigned to feature.
 	 */
 	public static synchronized int getUniqueFeatureId( final String key )
