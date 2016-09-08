@@ -49,7 +49,9 @@ public class Vector3Example
 		{
 			final Vector3 ref = pool.createRef();
 
+			@SuppressWarnings( "unused" )
 			final Vector3 v2 = pool.create( ref ).init( 2, 2, 2 );
+			@SuppressWarnings( "unused" )
 			final Vector3 v3 = pool.create( ref ).init( 3, 3, 3 ); // v3 == v2 == ref !!!
 
 			pool.releaseRef( ref );
