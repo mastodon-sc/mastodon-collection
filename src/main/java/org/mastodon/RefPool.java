@@ -1,5 +1,6 @@
 package org.mastodon;
 
+import org.mastodon.collection.util.HashBimap;
 import org.mastodon.pool.Pool;
 import org.mastodon.pool.PoolObject;
 
@@ -14,8 +15,8 @@ import org.mastodon.pool.PoolObject;
  * Implemented in {@link Pool}.</li>
  * <li>A mapping between Java objects and IDs that are assigned upon first
  * access. In this case, {@link #createRef()} and {@link #releaseRef(Object)}
- * simply return {@code null} and do nothing, respectively. Not implemented yet.
- * </li>
+ * simply return {@code null} and do nothing, respectively (see
+ * {@link HashBimap}).</li>
  * </ul>
  *
  * @param <O>
