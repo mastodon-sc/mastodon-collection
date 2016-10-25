@@ -22,7 +22,7 @@ public class ByteMappedElement implements MappedElement
 	 * The current base offset (in bytes) into the underlying
 	 * {@link ByteMappedElementArray#data storage array}.
 	 */
-	private int baseOffset;
+	private long baseOffset;
 
 	/**
 	 * Contains the {@link ByteMappedElementArray#data storage array}.
@@ -59,7 +59,7 @@ public class ByteMappedElement implements MappedElement
 	 *            index of the element that this {@link MappedElement} should
 	 *            point to.
 	 */
-	void setElementIndex( final int index )
+	void setElementIndex( final long index )
 	{
 		this.baseOffset = index * bytesPerElement;
 	}
@@ -110,6 +110,18 @@ public class ByteMappedElement implements MappedElement
 	public int getIndex( final int offset )
 	{
 		return ByteUtils.getIndex( dataArray.data, baseOffset + offset );
+	}
+
+	@Override
+	public void putLongIndex( final long value, final int offset )
+	{
+		ByteUtils.putLong( value, dataArray.data, baseOffset + offset );
+	}
+
+	@Override
+	public long getLongIndex( final int offset )
+	{
+		return ByteUtils.getLong( dataArray.data, baseOffset + offset );
 	}
 
 	@Override
@@ -167,6 +179,6 @@ public class ByteMappedElement implements MappedElement
 	@Override
 	public int hashCode()
 	{
-		return dataArray.hashCode() + baseOffset;
+		return dataArray.hashCode() + Long.hashCode( baseOffset );
 	}
 }

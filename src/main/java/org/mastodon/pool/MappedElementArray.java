@@ -19,7 +19,7 @@ public interface MappedElementArray< A extends MappedElementArray< A, T >, T ext
 	 *
 	 * @return number of {@link MappedElement elements} in this array.
 	 */
-	public int size();
+	public long size();
 
 	/**
 	 * The maximum number of {@link MappedElement elements} that could be
@@ -34,7 +34,7 @@ public interface MappedElementArray< A extends MappedElementArray< A, T >, T ext
 	 * @return maximum number of {@link MappedElement elements} storable in a
 	 *         {@link MappedElementArray} of the same type.
 	 */
-	public int maxSize();
+	public long maxSize();
 
 	/**
 	 * Create a new proxy referring to the element at index 0.
@@ -46,13 +46,13 @@ public interface MappedElementArray< A extends MappedElementArray< A, T >, T ext
 	/**
 	 * Updates the given {@link MappedElement} to refer the element at
 	 * {@code index} in this array.
-	 * 
+	 *
 	 * @param access
 	 *            the mapped element.
 	 * @param index
 	 *            the element index.
 	 */
-	public void updateAccess( final T access, final int index );
+	public void updateAccess( final T access, final long index );
 
 	/**
 	 * Sets the size of this array to contain {@code numElements}
@@ -61,7 +61,7 @@ public interface MappedElementArray< A extends MappedElementArray< A, T >, T ext
 	 * @param numElements
 	 *            new number of {@link MappedElement elements} in this array.
 	 */
-	public void resize( final int numElements );
+	public void resize( final long numElements );
 
 	/**
 	 * Swaps the {@link MappedElement} data at {@code index} in this
@@ -75,7 +75,7 @@ public interface MappedElementArray< A extends MappedElementArray< A, T >, T ext
 	 * @param arrayIndex
 	 *            index of element to swap in other array.
 	 */
-	public void swapElement( final int index, final A array, final int arrayIndex );
+	public void swapElement( final long index, final A array, final long arrayIndex );
 
 	/**
 	 * A factory for {@link MappedElementArray}.
@@ -89,13 +89,13 @@ public interface MappedElementArray< A extends MappedElementArray< A, T >, T ext
 		/**
 		 * Creates an array containing {@code numElements} elements of
 		 * {@code bytesPerElement} bytes each.
-		 * 
+		 *
 		 * @param numElements
 		 *            the number of elements to store in the array.
 		 * @param bytesPerElement
 		 *            the number of bytes occupied b a single element.
 		 * @return a new array.
 		 */
-		public A createArray( final int numElements, final int bytesPerElement );
+		public A createArray( final long numElements, final int bytesPerElement );
 	}
 }

@@ -43,6 +43,10 @@ public interface MappedElement
 
 	public int getIndex( final int offset );
 
+	public void putLongIndex( final long value, final int offset );
+
+	public long getLongIndex( final int offset );
+
 	public void putLong( final long value, final int offset );
 
 	public long getLong( final int offset );

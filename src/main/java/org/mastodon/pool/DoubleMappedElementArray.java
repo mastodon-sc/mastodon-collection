@@ -24,7 +24,7 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 	/**
 	 * How many elements are stored in this array.
 	 */
-	private int size;
+	private long size;
 
 	private long doubleSizeFromByteSize( final long byteSize )
 	{
@@ -35,9 +35,9 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 	 * Create a new array containing {@code numElements} elements of
 	 * {@code bytesPerElement} bytes each.
 	 */
-	private DoubleMappedElementArray( final int numElements, final int bytesPerElement )
+	private DoubleMappedElementArray( final long numElements, final int bytesPerElement )
 	{
-		final long numDoubles = doubleSizeFromByteSize( ( long ) numElements * bytesPerElement );
+		final long numDoubles = doubleSizeFromByteSize( numElements * bytesPerElement );
 		if ( numDoubles > Integer.MAX_VALUE )
 			throw new IllegalArgumentException(
 					"trying to create a " + getClass().getName() + " with more than " + maxSize() + " elements of " + bytesPerElement + " bytes.");
@@ -49,15 +49,15 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 	}
 
 	@Override
-	public int size()
+	public long size()
 	{
 		return size;
 	}
 
 	@Override
-	public int maxSize()
+	public long maxSize()
 	{
-		return Integer.MAX_VALUE / bytesPerElement;
+		return 8l * Integer.MAX_VALUE / bytesPerElement;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 	}
 
 	@Override
-	public void updateAccess( final DoubleMappedElement access, final int index )
+	public void updateAccess( final DoubleMappedElement access, final long index )
 	{
 		access.setDataArray( this );
 		access.setElementIndex( index );
@@ -79,10 +79,10 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 	 * <code>swapTmp</code> as a temporary.
 	 */
 	@Override
-	public void swapElement( final int index, final DoubleMappedElementArray array, final int arrayIndex )
+	public void swapElement( final long index, final DoubleMappedElementArray array, final long arrayIndex )
 	{
-		final long baseOffset = ( long ) index * bytesPerElement;
-		final long arrayBaseOffset = ( long ) arrayIndex * bytesPerElement;
+		final long baseOffset = index * bytesPerElement;
+		final long arrayBaseOffset = arrayIndex * bytesPerElement;
 		DoubleUtils.copyBytes( data, baseOffset, swapTmp, 0, bytesPerElement );
 		DoubleUtils.copyBytes( array.data, arrayBaseOffset, data, baseOffset, bytesPerElement );
 		DoubleUtils.copyBytes( swapTmp, 0, array.data, arrayBaseOffset, bytesPerElement );
@@ -93,9 +93,9 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 	 * copied over.
 	 */
 	@Override
-	public void resize( final int numElements )
+	public void resize( final long numElements )
 	{
-		final long numDoubles = doubleSizeFromByteSize( ( long ) numElements * bytesPerElement );
+		final long numDoubles = doubleSizeFromByteSize( numElements * bytesPerElement );
 		if ( numDoubles > Integer.MAX_VALUE )
 			throw new IllegalArgumentException(
 					"trying to resize a " + getClass().getName() + " to more than " + maxSize() + " elements of " + bytesPerElement + " bytes.");
@@ -109,7 +109,7 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 
 	/**
 	 * <b>For internal use only!</b>
-	 * 
+	 *
 	 * @return the data array used in this class.
 	 */
 	public double[] getCurrentDataArray()
@@ -123,7 +123,7 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 	public static final MappedElementArray.Factory< DoubleMappedElementArray > factory = new MappedElementArray.Factory< DoubleMappedElementArray >()
 	{
 		@Override
-		public DoubleMappedElementArray createArray( final int numElements, final int bytesPerElement )
+		public DoubleMappedElementArray createArray( final long numElements, final int bytesPerElement )
 		{
 			return new DoubleMappedElementArray( numElements, bytesPerElement );
 		}

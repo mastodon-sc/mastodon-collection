@@ -24,15 +24,15 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 	/**
 	 * How many elements are stored in this array.
 	 */
-	private int size;
+	private long size;
 
 	/**
 	 * Create a new array containing {@code numElements} elements of
 	 * {@code bytesPerElement} bytes each.
 	 */
-	private ByteMappedElementArray( final int numElements, final int bytesPerElement )
+	private ByteMappedElementArray( final long numElements, final int bytesPerElement )
 	{
-		final long numBytes = ( long ) numElements * bytesPerElement;
+		final long numBytes = numElements * bytesPerElement;
 		if ( numBytes > Integer.MAX_VALUE )
 			throw new IllegalArgumentException(
 					"trying to create a " + getClass().getName() + " with more than " + maxSize() + " elements of " + bytesPerElement + " bytes.");
@@ -44,13 +44,13 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 	}
 
 	@Override
-	public int size()
+	public long size()
 	{
 		return size;
 	}
 
 	@Override
-	public int maxSize()
+	public long maxSize()
 	{
 		return Integer.MAX_VALUE / bytesPerElement;
 	}
@@ -62,7 +62,7 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 	}
 
 	@Override
-	public void updateAccess( final ByteMappedElement access, final int index )
+	public void updateAccess( final ByteMappedElement access, final long index )
 	{
 		access.setDataArray( this );
 		access.setElementIndex( index );
@@ -74,10 +74,10 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 	 * <code>swapTmp</code> as a temporary.
 	 */
 	@Override
-	public void swapElement( final int index, final ByteMappedElementArray array, final int arrayIndex )
+	public void swapElement( final long index, final ByteMappedElementArray array, final long arrayIndex )
 	{
-		final int baseOffset = index * bytesPerElement;
-		final int arrayBaseOffset = arrayIndex * bytesPerElement;
+		final int baseOffset = ( int ) index * bytesPerElement;
+		final int arrayBaseOffset = ( int ) arrayIndex * bytesPerElement;
 		System.arraycopy( data, baseOffset, swapTmp, 0, bytesPerElement );
 		System.arraycopy( array.data, arrayBaseOffset, data, baseOffset, bytesPerElement );
 		System.arraycopy( swapTmp, 0, array.data, arrayBaseOffset, bytesPerElement );
@@ -88,9 +88,9 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 	 * copied over.
 	 */
 	@Override
-	public void resize( final int numElements )
+	public void resize( final long numElements )
 	{
-		final long numBytes = ( long ) numElements * bytesPerElement;
+		final long numBytes = numElements * bytesPerElement;
 		if ( numBytes > Integer.MAX_VALUE )
 			throw new IllegalArgumentException(
 					"trying to resize a " + getClass().getName() + " to more than " + maxSize() + " elements of " + bytesPerElement + " bytes.");
@@ -108,7 +108,7 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 	public static final MappedElementArray.Factory< ByteMappedElementArray > factory = new MappedElementArray.Factory< ByteMappedElementArray >()
 	{
 		@Override
-		public ByteMappedElementArray createArray( final int numElements, final int bytesPerElement )
+		public ByteMappedElementArray createArray( final long numElements, final int bytesPerElement )
 		{
 			return new ByteMappedElementArray( numElements, bytesPerElement );
 		}

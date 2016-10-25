@@ -22,7 +22,7 @@ public class DoubleMappedElement implements MappedElement
 	 * The current base offset (in bytes) into the underlying
 	 * {@link DoubleMappedElementArray#data storage array}.
 	 */
-	private int baseOffset;
+	private long baseOffset;
 
 	/**
 	 * Contains the {@link DoubleMappedElementArray#data storage array}.
@@ -59,7 +59,7 @@ public class DoubleMappedElement implements MappedElement
 	 *            index of the element that this {@link MappedElement} should
 	 *            point to.
 	 */
-	void setElementIndex( final int index )
+	void setElementIndex( final long index )
 	{
 		this.baseOffset = index * bytesPerElement;
 	}
@@ -110,6 +110,18 @@ public class DoubleMappedElement implements MappedElement
 	public int getIndex( final int offset )
 	{
 		return DoubleUtils.getIndex( dataArray.data, baseOffset + offset );
+	}
+
+	@Override
+	public void putLongIndex( final long value, final int offset )
+	{
+		DoubleUtils.putLong( value, dataArray.data, baseOffset + offset );
+	}
+
+	@Override
+	public long getLongIndex( final int offset )
+	{
+		return DoubleUtils.getLong( dataArray.data, baseOffset + offset );
 	}
 
 	@Override
@@ -167,6 +179,6 @@ public class DoubleMappedElement implements MappedElement
 	@Override
 	public int hashCode()
 	{
-		return dataArray.hashCode() + baseOffset;
+		return dataArray.hashCode() + Long.hashCode( baseOffset );
 	}
 }

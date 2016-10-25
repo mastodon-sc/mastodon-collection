@@ -15,74 +15,84 @@ import sun.misc.Unsafe;
 @SuppressWarnings( "restriction" )
 public class DoubleUtils
 {
-	public static void putByte( final byte value, final double[] array, final int offset )
+	public static void putByte( final byte value, final double[] array, final long offset )
 	{
 		UNSAFE.putByte( array, DOUBLE_ARRAY_OFFSET + offset, value );
 	}
 
-	public static byte getByte( final double[] array, final int offset )
+	public static byte getByte( final double[] array, final long offset )
 	{
 		return UNSAFE.getByte( array, DOUBLE_ARRAY_OFFSET + offset );
 	}
 
-	public static void putBoolean( final boolean value, final double[] array, final int offset )
+	public static void putBoolean( final boolean value, final double[] array, final long offset )
 	{
 		putByte( value ? ( byte ) 1 : ( byte ) 0, array, offset );
 	}
 
-	public static boolean getBoolean( final double[] array, final int offset )
+	public static boolean getBoolean( final double[] array, final long offset )
 	{
 		return getByte( array, offset ) == ( byte ) 0 ? false : true;
 	}
 
-	public static void putInt( final int value, final double[] array, final int offset )
+	public static void putInt( final int value, final double[] array, final long offset )
 	{
 		UNSAFE.putInt( array, DOUBLE_ARRAY_OFFSET + offset, value );
 	}
 
-	public static int getInt( final double[] array, final int offset )
+	public static int getInt( final double[] array, final long offset )
 	{
 		return UNSAFE.getInt( array, DOUBLE_ARRAY_OFFSET + offset );
 	}
 
-	public static void putLong( final long value, final double[] array, final int offset )
+	public static void putLong( final long value, final double[] array, final long offset )
 	{
 		UNSAFE.putLong( array, DOUBLE_ARRAY_OFFSET + offset, value );
 	}
 
-	public static long getLong( final double[] array, final int offset )
+	public static long getLong( final double[] array, final long offset )
 	{
 		return UNSAFE.getLong( array, DOUBLE_ARRAY_OFFSET + offset );
 	}
 
-	public static void putFloat( final float value, final double[] array, final int offset )
+	public static void putFloat( final float value, final double[] array, final long offset )
 	{
 		UNSAFE.putFloat( array, DOUBLE_ARRAY_OFFSET + offset, value );
 	}
 
-	public static float getFloat( final double[] array, final int offset )
+	public static float getFloat( final double[] array, final long offset )
 	{
 		return UNSAFE.getFloat( array, DOUBLE_ARRAY_OFFSET + offset );
 	}
 
-	public static void putDouble( final double value, final double[] array, final int offset )
+	public static void putDouble( final double value, final double[] array, final long offset )
 	{
 		UNSAFE.putDouble( array, DOUBLE_ARRAY_OFFSET + offset, value );
 	}
 
-	public static double getDouble( final double[] array, final int offset )
+	public static double getDouble( final double[] array, final long offset )
 	{
 		return UNSAFE.getDouble( array, DOUBLE_ARRAY_OFFSET + offset );
 	}
 
-	public static void putIndex( final int value, final double[] array, final int offset )
+	public static void putIndex( final int value, final double[] array, final long offset )
 	{
 		putInt( value, array, offset );
 	}
 
-	public static int getIndex( final double[] array, final int offset )
+	public static int getIndex( final double[] array, final long offset )
 	{
 		return getInt( array, offset );
+	}
+
+	public static void putLongIndex( final long value, final double[] array, final long offset )
+	{
+		putLong( value, array, offset );
+	}
+
+	public static long getLongIndex( final double[] array, final long offset )
+	{
+		return getLong( array, offset );
 	}
 
 	// Note: offsets in bytes!

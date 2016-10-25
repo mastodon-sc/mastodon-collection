@@ -59,7 +59,7 @@ public class Pool< O extends PoolObject< O, T >, T extends MappedElement > imple
 	 */
 	public int size()
 	{
-		return memPool.size();
+		return ( int ) memPool.size();
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public class Pool< O extends PoolObject< O, T >, T extends MappedElement > imple
 			@Override
 			public O next()
 			{
-				final int index = pi.next();
+				final int index = ( int ) pi.next();
 				obj.updateAccess( memPool, index );
 				return obj;
 			}
@@ -152,7 +152,7 @@ public class Pool< O extends PoolObject< O, T >, T extends MappedElement > imple
 
 	protected O create( final O obj )
 	{
-		final int index = memPool.create();
+		final int index = ( int ) memPool.create();
 		obj.updateAccess( memPool, index );
 		obj.setToUninitializedState();
 		return obj;

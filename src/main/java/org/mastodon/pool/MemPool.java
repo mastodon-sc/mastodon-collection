@@ -50,24 +50,24 @@ public abstract class MemPool< T extends MappedElement >
 	 * Current capacity of the pool. The underlying storage can hold this many
 	 * elements before it must be resized.
 	 */
-	protected int capacity;
+	protected long capacity;
 
 	/**
 	 * The number of elements currently allocated in this pool.
 	 */
-	protected int size;
+	protected long size;
 
 	/**
 	 * The max size this pool ever had. This equals {@link #size} the number of
 	 * elements in the free-element linked list.
 	 */
-	protected int allocatedSize;
+	protected long allocatedSize;
 
 	/**
 	 * The element index of the first free element, that is, the start of the
 	 * free-element linekd list.
 	 */
-	protected int firstFreeIndex;
+	protected long firstFreeIndex;
 
 	/**
 	 * Creates an empty pool which can hold {@code capacity} elements of
@@ -78,9 +78,9 @@ public abstract class MemPool< T extends MappedElement >
 	 * @param bytesPerElement
 	 *            how many bytes each element occupies.
 	 */
-	public MemPool( final int capacity, final int bytesPerElement )
+	public MemPool( final long capacity, final int bytesPerElement )
 	{
-		this.bytesPerElement = Math.max( bytesPerElement, 8 );
+		this.bytesPerElement = Math.max( bytesPerElement, ByteUtils.INT_SIZE + ByteUtils.LONGINDEX_SIZE );
 		this.capacity = capacity;
 		clear();
 	}
@@ -100,7 +100,7 @@ public abstract class MemPool< T extends MappedElement >
 	 *
 	 * @return number of elements.
 	 */
-	public int size()
+	public long size()
 	{
 		return size;
 	}
@@ -111,16 +111,16 @@ public abstract class MemPool< T extends MappedElement >
 	 *
 	 * @return element index of the new element.
 	 */
-	public int create()
+	public long create()
 	{
 		++size;
 		if ( firstFreeIndex < 0 )
 			return append();
 		else
 		{
-			final int index = firstFreeIndex;
+			final long index = firstFreeIndex;
 			updateAccess( dataAccess, firstFreeIndex );
-			firstFreeIndex = dataAccess.getIndex( 4 );
+			firstFreeIndex = dataAccess.getLongIndex( 4 );
 			return index;
 		}
 	}
@@ -131,7 +131,7 @@ public abstract class MemPool< T extends MappedElement >
 	 * @param index
 	 *            element index.
 	 */
-	public void free( final int index )
+	public void free( final long index )
 	{
 		if ( index >= 0 && index < allocatedSize )
 		{
@@ -140,8 +140,8 @@ public abstract class MemPool< T extends MappedElement >
 			if ( !isFree )
 			{
 				--size;
-				dataAccess.putIndex( FREE_ELEMENT_MAGIC_NUMBER, 0 );
-				dataAccess.putIndex( firstFreeIndex, 4 );
+				dataAccess.putInt( FREE_ELEMENT_MAGIC_NUMBER, 0 );
+				dataAccess.putLongIndex( firstFreeIndex, 4 );
 				firstFreeIndex = index;
 			}
 		}
@@ -157,32 +157,32 @@ public abstract class MemPool< T extends MappedElement >
 
 	/**
 	 * Makes {@code access} refer to the element at {@code index}.
-	 * 
+	 *
 	 * @param access
 	 *            the proxy to update.
 	 * @param index
 	 *            the element index.
 	 */
-	public abstract void updateAccess( final T access, final int index );
+	public abstract void updateAccess( final T access, final long index );
 
 	/**
 	 * Swaps the element at {@code index0} with the element at {@code index1}.
-	 * 
+	 *
 	 * @param index0
 	 *            the index of the first element.
 	 * @param index1
 	 *            the index of the second element.
 	 */
-	public abstract void swap( final int index0, final int index1 );
+	public abstract void swap( final long index0, final long index1 );
 
 	/**
 	 * Appends a new element at the end of the list. Must be implemented in
 	 * subclasses. It is called when allocating an element and the free-element
 	 * list is empty.
-	 * 
+	 *
 	 * @return the index of the appended new element.
 	 */
-	protected abstract int append();
+	protected abstract long append();
 
 	/**
 	 * Gets a {@link PoolIterator} of this pool.
@@ -190,7 +190,7 @@ public abstract class MemPool< T extends MappedElement >
 	 * A {@link PoolIterator} is not an {@link Iterator Iterator&lt;T&gt;} of
 	 * the allocated elements themselves, but rather an iterator of their
 	 * element indices.
-	 * 
+	 *
 	 * @return a new iterator.
 	 */
 	public PoolIterator< T > iterator()
@@ -205,9 +205,9 @@ public abstract class MemPool< T extends MappedElement >
 	{
 		private final MemPool< T > pool;
 
-		private int nextIndex;
+		private long nextIndex;
 
-		private int currentIndex;
+		private long currentIndex;
 
 		private final T element;
 
@@ -244,7 +244,7 @@ public abstract class MemPool< T extends MappedElement >
 			return nextIndex < pool.allocatedSize;
 		}
 
-		public int next()
+		public long next()
 		{
 			currentIndex = nextIndex;
 			prepareNextElement();
@@ -266,6 +266,6 @@ public abstract class MemPool< T extends MappedElement >
 	 */
 	public static interface Factory< T extends MappedElement >
 	{
-		public MemPool< T > createPool( final int capacity, final int bytesPerElement );
+		public MemPool< T > createPool( final long capacity, final int bytesPerElement );
 	}
 }

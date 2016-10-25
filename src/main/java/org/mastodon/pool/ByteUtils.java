@@ -29,74 +29,86 @@ public class ByteUtils
 
 	public static final int INDEX_SIZE = INT_SIZE;
 
-	public static void putByte( final byte value, final byte[] array, final int offset )
+	public static final int LONGINDEX_SIZE = LONG_SIZE;
+
+	public static void putByte( final byte value, final byte[] array, final long offset )
 	{
-		array[ offset ] = value;
+		array[ ( int ) offset ] = value;
 	}
 
-	public static byte getByte( final byte[] array, final int offset )
+	public static byte getByte( final byte[] array, final long offset )
 	{
-		return array[ offset ];
+		return array[ ( int ) offset ];
 	}
 
-	public static void putBoolean( final boolean value, final byte[] array, final int offset )
+	public static void putBoolean( final boolean value, final byte[] array, final long offset )
 	{
-		array[ offset ] = value ? ( byte ) 1 : ( byte ) 0;
+		array[ ( int ) offset ] = value ? ( byte ) 1 : ( byte ) 0;
 	}
 
-	public static boolean getBoolean( final byte[] array, final int offset )
+	public static boolean getBoolean( final byte[] array, final long offset )
 	{
-		return array[ offset ] == ( byte ) 0 ? false : true;
+		return array[ ( int ) offset ] == ( byte ) 0 ? false : true;
 	}
 
-	public static void putInt( final int value, final byte[] array, final int offset )
+	public static void putInt( final int value, final byte[] array, final long offset )
 	{
 		UNSAFE.putInt( array, BYTE_ARRAY_OFFSET + offset, value );
 	}
 
-	public static int getInt( final byte[] array, final int offset )
+	public static int getInt( final byte[] array, final long offset )
 	{
 		return UNSAFE.getInt( array, BYTE_ARRAY_OFFSET + offset );
 	}
 
-	public static void putLong( final long value, final byte[] array, final int offset )
+	public static void putLong( final long value, final byte[] array, final long offset )
 	{
 		UNSAFE.putLong( array, BYTE_ARRAY_OFFSET + offset, value );
 	}
 
-	public static long getLong( final byte[] array, final int offset )
+	public static long getLong( final byte[] array, final long offset )
 	{
 		return UNSAFE.getLong( array, BYTE_ARRAY_OFFSET + offset );
 	}
 
-	public static void putFloat( final float value, final byte[] array, final int offset )
+	public static void putFloat( final float value, final byte[] array, final long offset )
 	{
 		UNSAFE.putFloat( array, BYTE_ARRAY_OFFSET + offset, value );
 	}
 
-	public static float getFloat( final byte[] array, final int offset )
+	public static float getFloat( final byte[] array, final long offset )
 	{
 		return UNSAFE.getFloat( array, BYTE_ARRAY_OFFSET + offset );
 	}
 
-	public static void putDouble( final double value, final byte[] array, final int offset )
+	public static void putDouble( final double value, final byte[] array, final long offset )
 	{
 		UNSAFE.putDouble( array, BYTE_ARRAY_OFFSET + offset, value );
 	}
 
-	public static double getDouble( final byte[] array, final int offset )
+	public static double getDouble( final byte[] array, final long offset )
 	{
 		return UNSAFE.getDouble( array, BYTE_ARRAY_OFFSET + offset );
 	}
 
-	public static void putIndex( final int value, final byte[] array, final int offset )
+	public static void putIndex( final int value, final byte[] array, final long offset )
 	{
 		putInt( value, array, offset );
 	}
 
-	public static int getIndex( final byte[] array, final int offset )
+	public static int getIndex( final byte[] array, final long offset )
 	{
 		return getInt( array, offset );
+	}
+
+	public static void putLongIndex( final long value, final byte[] array, final long offset )
+	{
+		putLong( value, array, offset );
+	}
+
+	public static long getLongIndex( final byte[] array, final long offset )
+	{
+		return getLong( array, offset );
 	}
 
 	private static final Unsafe UNSAFE;
