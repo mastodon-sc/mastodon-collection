@@ -30,10 +30,12 @@ public class MultiArrayMemPool< A extends MappedElementArray< A, T >, T extends 
 		elementsPerArray = arrayFactory.createArray( 0, this.bytesPerElement ).maxSize();
 
 		final int numFullArrays = ( int ) ( capacity / elementsPerArray );
+		final long remaining = capacity - numFullArrays * elementsPerArray;
 		data = new ArrayList<>( numFullArrays + 1 );
-		for ( int i = 0; i < numFullArrays - 1; ++i )
+		for ( int i = 0; i < numFullArrays; ++i )
 			data.add( arrayFactory.createArray( elementsPerArray, this.bytesPerElement ) );
-		data.add( arrayFactory.createArray( capacity - numFullArrays * elementsPerArray, this.bytesPerElement ) );
+		if ( remaining != 0 )
+			data.add( arrayFactory.createArray( remaining, this.bytesPerElement ) );
 
 		dataAccess = data.get( 0 ).createAccess();
 	}
