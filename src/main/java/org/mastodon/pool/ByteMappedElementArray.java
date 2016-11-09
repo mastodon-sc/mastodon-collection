@@ -33,13 +33,13 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 	private ByteMappedElementArray( final int numElements, final int bytesPerElement )
 	{
 		final long numBytes = ( long ) numElements * bytesPerElement;
+		this.bytesPerElement = bytesPerElement;
 		if ( numBytes > Integer.MAX_VALUE )
 			throw new IllegalArgumentException(
 					"trying to create a " + getClass().getName() + " with more than " + maxSize() + " elements of " + bytesPerElement + " bytes.");
 
 		this.data = new byte[ ( int ) numBytes ];
 		this.swapTmp = new byte[ bytesPerElement ];
-		this.bytesPerElement = bytesPerElement;
 		this.size = numElements;
 	}
 
