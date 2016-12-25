@@ -33,7 +33,7 @@ public final class DoubleFeatureValue< O > implements FeatureValue< Double >
 		if ( value == null )
 			featureMap.remove( object );
 		else
-			featureMap.put( object, value.intValue() );
+			featureMap.put( object, value.doubleValue() );
 	}
 
 	public void set( final double value )
