@@ -5,6 +5,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.mastodon.RefPool;
 import org.mastodon.pool.MemPool.PoolIterator;
+import org.mastodon.properties.HasPropertyMaps;
+import org.mastodon.properties.PropertyMaps;
 
 /**
  * A pool of {@link PoolObject PoolObjects} all stored in a common
@@ -20,7 +22,7 @@ import org.mastodon.pool.MemPool.PoolIterator;
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
-public class Pool< O extends PoolObject< O, T >, T extends MappedElement > implements RefPool< O >, Iterable< O >
+public class Pool< O extends PoolObject< O, T >, T extends MappedElement > implements RefPool< O >, Iterable< O >, HasPropertyMaps< O >
 {
 	private final PoolObject.Factory< O, T > objFactory;
 
@@ -30,6 +32,8 @@ public class Pool< O extends PoolObject< O, T >, T extends MappedElement > imple
 
 	private final PoolCollectionWrapper< O > asRefCollection;
 
+	private final PropertyMaps< O > propertyMaps;
+
 	public Pool(
 			final int initialCapacity,
 			final PoolObject.Factory< O, T > objFactory )
@@ -38,6 +42,7 @@ public class Pool< O extends PoolObject< O, T >, T extends MappedElement > imple
 		this.memPool = objFactory.getMemPoolFactory().createPool( initialCapacity, objFactory.getSizeInBytes() );
 		this.tmpObjRefs = new ConcurrentLinkedQueue<>();
 		this.asRefCollection = new PoolCollectionWrapper<>( this );
+		this.propertyMaps = new PropertyMaps<>();
 	}
 
 	/**
@@ -145,6 +150,12 @@ public class Pool< O extends PoolObject< O, T >, T extends MappedElement > imple
 		};
 	}
 
+	@Override
+	public PropertyMaps< O > getPropertyMaps()
+	{
+		return propertyMaps;
+	}
+
 	protected MemPool< T > getMemPool()
 	{
 		return memPool;
@@ -155,6 +166,7 @@ public class Pool< O extends PoolObject< O, T >, T extends MappedElement > imple
 		final int index = memPool.create();
 		obj.updateAccess( memPool, index );
 		obj.setToUninitializedState();
+		propertyMaps.create( obj );
 		return obj;
 	}
 
