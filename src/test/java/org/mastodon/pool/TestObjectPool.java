@@ -1,12 +1,5 @@
 package org.mastodon.pool;
 
-import org.mastodon.pool.ByteMappedElement;
-import org.mastodon.pool.ByteMappedElementArray;
-import org.mastodon.pool.MemPool;
-import org.mastodon.pool.Pool;
-import org.mastodon.pool.PoolObject;
-import org.mastodon.pool.SingleArrayMemPool;
-
 public class TestObjectPool extends Pool< TestObject, ByteMappedElement >
 {
 	public TestObjectPool( final int initialCapacity )
@@ -25,9 +18,10 @@ public class TestObjectPool extends Pool< TestObject, ByteMappedElement >
 		return super.create( createRef() );
 	}
 
+	@Override
 	public void delete( final TestObject obj )
 	{
-		deleteByInternalPoolIndex( obj.getInternalPoolIndex() );
+		super.delete( obj );
 	}
 
 	private TestObjectPool( final int initialCapacity, final TestObjectPool.TestObjectFactory f )

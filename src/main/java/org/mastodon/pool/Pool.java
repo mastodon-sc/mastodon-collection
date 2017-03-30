@@ -170,9 +170,10 @@ public class Pool< O extends PoolObject< O, T >, T extends MappedElement > imple
 		return obj;
 	}
 
-	protected void deleteByInternalPoolIndex( final int index )
+	protected void delete( final O obj )
 	{
-		memPool.free( index );
+		propertyMaps.remove( obj );
+		memPool.free( obj.getInternalPoolIndex() );
 	}
 
 	public PoolCollectionWrapper< O > asRefCollection()

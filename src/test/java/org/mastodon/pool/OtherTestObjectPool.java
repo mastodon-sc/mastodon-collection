@@ -18,9 +18,10 @@ public class OtherTestObjectPool extends Pool< OtherTestObject, ByteMappedElemen
 		return super.create( createRef() );
 	}
 
+	@Override
 	public void delete( final OtherTestObject obj )
 	{
-		deleteByInternalPoolIndex( obj.getInternalPoolIndex() );
+		super.delete( obj );
 	}
 
 	private OtherTestObjectPool( final int initialCapacity, final OtherTestObjectPool.TestObjectFactory f )

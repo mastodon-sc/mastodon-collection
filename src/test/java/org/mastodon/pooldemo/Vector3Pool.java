@@ -26,9 +26,10 @@ public class Vector3Pool extends Pool< Vector3, ByteMappedElement >
 		return super.create( createRef() );
 	}
 
+	@Override
 	public void delete( final Vector3 obj )
 	{
-		deleteByInternalPoolIndex( obj.getInternalPoolIndex() );
+		super.delete( obj );
 	}
 
 	private Vector3Pool( final int initialCapacity, final Vector3Pool.Vector3Factory f )
