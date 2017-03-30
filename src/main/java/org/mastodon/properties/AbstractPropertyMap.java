@@ -20,20 +20,31 @@ public abstract class AbstractPropertyMap< O, T > implements PropertyMap< O, T >
 			propertyChangeListener.beforePropertyChange( this, obj );
 	}
 
-	protected void tryRegisterPropertyMaps( final RefCollection< O > collection )
+	private PropertyMaps< O > propertyMaps;
+
+	@SuppressWarnings( "unchecked" )
+	protected void tryRegisterPropertyMap( final RefPool< O > pool )
 	{
-		if ( collection instanceof RefPoolBackedRefCollection )
-			tryRegisterPropertyMaps( ( ( RefPoolBackedRefCollection< O > ) collection ).getRefPool() );
+		if ( pool instanceof HasPropertyMaps )
+		{
+			propertyMaps = ( ( HasPropertyMaps< O > ) pool ).getPropertyMaps();
+			propertyMaps.addPropertyMap( this );
+		}
 		else
 			System.err.println( "WARNING: Creating property map for a collection/pool that does not manage PropertyMaps!" );
 	}
 
-	@SuppressWarnings( "unchecked" )
-	protected void tryRegisterPropertyMaps( final RefPool< O > pool )
+	protected void tryRegisterPropertyMap( final RefCollection< O > collection )
 	{
-		if ( pool instanceof HasPropertyMaps )
-			( ( HasPropertyMaps< O > ) pool ).getPropertyMaps().addPropertyMap( this );
+		if ( collection instanceof RefPoolBackedRefCollection )
+			tryRegisterPropertyMap( ( ( RefPoolBackedRefCollection< O > ) collection ).getRefPool() );
 		else
 			System.err.println( "WARNING: Creating property map for a collection/pool that does not manage PropertyMaps!" );
+	}
+
+	protected void tryUnregisterPropertyMap()
+	{
+		if ( propertyMaps != null )
+			propertyMaps.removePropertyMap( this );
 	}
 }

@@ -13,13 +13,13 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	public ObjPropertyMap( final RefCollection< O > pool )
 	{
 		map = RefCollections.createRefObjectMap( pool );
-		tryRegisterPropertyMaps( pool );
+		tryRegisterPropertyMap( pool );
 	}
 
 	public ObjPropertyMap( final RefPool< O > pool )
 	{
 		map = new RefObjectHashMap<>( pool );
-		tryRegisterPropertyMaps( pool );
+		tryRegisterPropertyMap( pool );
 	}
 
 	@Override
@@ -46,5 +46,11 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	public boolean isSet( final O key )
 	{
 		return map.containsKey( key );
+	}
+
+	public void release()
+	{
+		map.clear();
+		tryUnregisterPropertyMap();
 	}
 }

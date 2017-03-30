@@ -14,13 +14,13 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	public DoublePropertyMap( final RefCollection< O > pool, final double noEntryValue )
 	{
 		map = RefCollections.createRefDoubleMap( pool, noEntryValue, pool.size() );
-		tryRegisterPropertyMaps( pool );
+		tryRegisterPropertyMap( pool );
 	}
 
 	public DoublePropertyMap( final RefPool< O > pool, final double noEntryValue )
 	{
 		map = new RefDoubleHashMap<>( pool, noEntryValue );
-		tryRegisterPropertyMaps( pool );
+		tryRegisterPropertyMap( pool );
 	}
 
 	public void set( final O key, final double value )
@@ -58,5 +58,11 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	public boolean isSet( final O key )
 	{
 		return map.containsKey( key );
+	}
+
+	public void release()
+	{
+		map.clear();
+		tryUnregisterPropertyMap();
 	}
 }
