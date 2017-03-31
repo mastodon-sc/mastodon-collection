@@ -25,6 +25,9 @@ import org.mastodon.collection.util.AbstractRefPoolCollectionWrapper;
  */
 public class PoolCollectionWrapper< O extends PoolObject< O, ? > > extends AbstractRefPoolCollectionWrapper< O, Pool< O, ? > >
 {
+	/**
+	 * Wrap the specified {@link Pool} as a {@link RefCollection}.
+	 */
 	PoolCollectionWrapper( final Pool< O, ? > pool )
 	{
 		super( pool );
