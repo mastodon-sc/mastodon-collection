@@ -23,7 +23,7 @@ import org.mastodon.collection.util.AbstractRefPoolCollectionWrapper;
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
-public class PoolCollectionWrapper< O extends PoolObject< O, ? > > extends AbstractRefPoolCollectionWrapper< O, Pool< O, ? > >
+public class PoolCollectionWrapper< O extends PoolObject< O, ?, ? > > extends AbstractRefPoolCollectionWrapper< O, Pool< O, ? > >
 {
 	/**
 	 * Wrap the specified {@link Pool} as a {@link RefCollection}.

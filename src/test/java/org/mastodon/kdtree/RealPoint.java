@@ -1,13 +1,14 @@
 package org.mastodon.kdtree;
 
-import static org.mastodon.pool.ByteUtils.*;
+import static org.mastodon.pool.ByteUtils.DOUBLE_SIZE;
+import static org.mastodon.pool.ByteUtils.INDEX_SIZE;
 
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.PoolObject;
 
 import net.imglib2.RealLocalizable;
 
-class RealPoint extends PoolObject< RealPoint, ByteMappedElement > implements RealLocalizable
+class RealPoint extends PoolObject< RealPoint, RealPointPool, ByteMappedElement > implements RealLocalizable
 {
 	protected static final int MAGIC_NUMBER_OFFSET = 0;
 

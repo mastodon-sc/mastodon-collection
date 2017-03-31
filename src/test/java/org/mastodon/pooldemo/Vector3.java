@@ -15,7 +15,7 @@ import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
 
-public class Vector3 extends PoolObject< Vector3, ByteMappedElement > implements RealLocalizable, RealPositionable
+public class Vector3 extends PoolObject< Vector3, Vector3Pool, ByteMappedElement > implements RealLocalizable, RealPositionable
 {
 	private static final int n = 3;
 

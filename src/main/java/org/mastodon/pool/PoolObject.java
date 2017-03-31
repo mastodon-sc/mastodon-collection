@@ -19,7 +19,7 @@ import org.mastodon.Ref;
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
-public abstract class PoolObject< O extends PoolObject< O, T >, T extends MappedElement > implements Ref< O >
+public abstract class PoolObject< O extends PoolObject< O, P, T >, P extends Pool< O, T >, T extends MappedElement > implements Ref< O >
 {
 	/**
 	 * Access to the data.
@@ -40,19 +40,16 @@ public abstract class PoolObject< O extends PoolObject< O, T >, T extends Mapped
 	 * The {@link Pool} that created this {@link PoolObject}.
 	 * This is used only to forward {@link #releaseRef()} to the creating {@link Pool}.
 	 */
-	final Pool< O, T > creatingPool;
+	protected final P pool;
 
 	/**
-	 * Create a {@link PoolObject} referring data in the given {@link MemPool}.
+	 * Create a {@link PoolObject} referring data in the given {@link Pool}.
 	 * The element that it references to can be set by
 	 * {@link #updateAccess(MemPool, int)}.
-	 *
-	 * @param pool
-	 *            the {@link MemPool} where derived classes store their data.
 	 */
-	protected PoolObject( final Pool< O, T > pool )
+	protected PoolObject( final P pool )
 	{
-		this.creatingPool = pool;
+		this.pool = pool;
 		this.memPool = pool.getMemPool();
 		this.access = memPool.createAccess();
 	}
@@ -76,14 +73,14 @@ public abstract class PoolObject< O extends PoolObject< O, T >, T extends Mapped
 	 * Make this proxy refer the element at the specified {@code index} in the
 	 * specified {@code pool}.
 	 *
-	 * @param pool
+	 * @param memPool
 	 * @param index
 	 */
-	void updateAccess( final MemPool< T > pool, final int index )
+	void updateAccess( final MemPool< T > memPool, final int index )
 	{
-		this.memPool = pool;
+		this.memPool = memPool;
 		this.index = index;
-		pool.updateAccess( access, index );
+		memPool.updateAccess( access, index );
 	}
 
 	/**
@@ -103,7 +100,10 @@ public abstract class PoolObject< O extends PoolObject< O, T >, T extends Mapped
 	@SuppressWarnings( "unchecked" )
 	public O refTo( final O obj )
 	{
-		updateAccess( ( ( PoolObject< ?, T > ) obj ).memPool, ( ( PoolObject< ?, T > ) obj ).index );
+		final PoolObject< ?, ?, T > other = obj;
+		if ( other.pool != pool )
+			throw new IllegalArgumentException( "Cannot point a proxy to an object from a different pool" );
+		updateAccess( other.memPool, other.index );
 		return ( O ) this;
 	}
 
@@ -113,7 +113,7 @@ public abstract class PoolObject< O extends PoolObject< O, T >, T extends Mapped
 	@SuppressWarnings( "unchecked" )
 	void releaseRef()
 	{
-		creatingPool.releaseRef( ( O ) this );
+		pool.releaseRef( ( O ) this );
 	}
 
 	/**
@@ -125,7 +125,7 @@ public abstract class PoolObject< O extends PoolObject< O, T >, T extends Mapped
 	 *            the MappedElement type of the {@link PoolObject}, for example
 	 *            {@link ByteMappedElement}.
 	 */
-	public static interface Factory< O extends PoolObject< O, T >, T extends MappedElement >
+	public static interface Factory< O extends PoolObject< O, ?, T >, T extends MappedElement >
 	{
 		public int getSizeInBytes();
 
@@ -140,8 +140,8 @@ public abstract class PoolObject< O extends PoolObject< O, T >, T extends Mapped
 	@Override
 	public boolean equals( final Object obj )
 	{
-		return obj instanceof PoolObject< ?, ? > &&
-				access.equals( ( ( PoolObject< ?, ? > ) obj ).access );
+		return obj instanceof PoolObject< ?, ?, ? > &&
+				access.equals( ( ( PoolObject< ?, ?, ? > ) obj ).access );
 	}
 
 	@Override

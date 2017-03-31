@@ -2,7 +2,7 @@ package org.mastodon.pool;
 
 import static org.mastodon.pool.ByteUtils.INT_SIZE;
 
-public class OtherTestObject extends PoolObject< OtherTestObject, ByteMappedElement >
+public class OtherTestObject extends PoolObject< OtherTestObject, OtherTestObjectPool, ByteMappedElement >
 {
 	protected static final int ID_OFFSET = 0;
 

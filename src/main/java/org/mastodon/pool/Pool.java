@@ -22,7 +22,7 @@ import org.mastodon.properties.PropertyMaps;
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
-public class Pool< O extends PoolObject< O, T >, T extends MappedElement > implements RefPool< O >, Iterable< O >, HasPropertyMaps< O >
+public class Pool< O extends PoolObject< O, ?, T >, T extends MappedElement > implements RefPool< O >, Iterable< O >, HasPropertyMaps< O >
 {
 	private final PoolObject.Factory< O, T > objFactory;
 
@@ -87,13 +87,16 @@ public class Pool< O extends PoolObject< O, T >, T extends MappedElement > imple
 	@Override
 	public void releaseRef( final O obj )
 	{
-		tmpObjRefs.add( obj );
+		if ( obj.pool == this )
+			tmpObjRefs.add( obj );
+		else
+			obj.releaseRef();
 	}
 
 	// TODO: find instances where releaseRefs( PoolObject<?> ... objs ) can be used instead of separately releasing refs (Then probably don't use it because it creates an Object array).
-	public static void releaseRefs( final PoolObject< ?, ? >... objs )
+	public static void releaseRefs( final PoolObject< ?, ?, ? >... objs )
 	{
-		for ( final PoolObject< ?, ? > obj : objs )
+		for ( final PoolObject< ?, ?, ? > obj : objs )
 			obj.releaseRef();
 	}
 

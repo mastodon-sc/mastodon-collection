@@ -13,7 +13,7 @@ import org.mastodon.pool.PoolObject;
 import net.imglib2.RealLocalizable;
 
 /**
- * 
+ *
  * @author Tobias Pietzsch
  *
  * @param <O>
@@ -24,7 +24,7 @@ import net.imglib2.RealLocalizable;
 public class KDTreeNode<
 			O extends RealLocalizable,
 			T extends MappedElement >
-		extends PoolObject< KDTreeNode< O, T >, T >
+		extends PoolObject< KDTreeNode< O, T >, KDTree< O, T >, T >
 		implements RealLocalizable
 {
 	private final int n;
@@ -132,7 +132,7 @@ public class KDTreeNode<
 
 	/**
 	 * Compute the squared distance from p to this node.
-	 * 
+	 *
 	 * @param p
 	 *            coordinates to compute squared distance to. Must have at least
 	 *            <code>numDimensions</code> elements. Only the first
@@ -152,7 +152,7 @@ public class KDTreeNode<
 
 	/**
 	 * Compute the squared distance from p to this node.
-	 * 
+	 *
 	 * @param p
 	 *            coordinates to compute squared distance to. Must have at least
 	 *            <code>numDimensions</code> elements. Only the first
@@ -172,7 +172,7 @@ public class KDTreeNode<
 
 	/**
 	 * Compute the squared distance from p to this node.
-	 * 
+	 *
 	 * @param p
 	 *            coordinates to compute squared distance to. Must be at least
 	 *            <code>numDimensions</code>-dimensional.
