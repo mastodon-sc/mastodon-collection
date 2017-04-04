@@ -45,7 +45,7 @@ public interface RefIntMap< K > extends TObjectIntMap< K >
 	 * Executes <tt>procedure</tt> for each key in the map.
 	 *
 	 * @param procedure
-	 *            a {@code TIntProcedure} value.
+	 *            a {@code TObjectProcedure} value.
 	 * @param ref
 	 *            an object reference that can be used for retrieval. Depending
 	 *            on concrete implementation, this object can be cleared,
