@@ -13,13 +13,25 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 
 	public DoublePropertyMap( final RefCollection< O > pool, final double noEntryValue )
 	{
-		map = RefCollections.createRefDoubleMap( pool, noEntryValue, pool.size() );
+		map = RefCollections.createRefDoubleMap( pool, noEntryValue );
+		tryRegisterPropertyMap( pool );
+	}
+
+	public DoublePropertyMap( final RefCollection< O > pool, final double noEntryValue, final int initialCapacity )
+	{
+		map = RefCollections.createRefDoubleMap( pool, noEntryValue, initialCapacity );
 		tryRegisterPropertyMap( pool );
 	}
 
 	public DoublePropertyMap( final RefPool< O > pool, final double noEntryValue )
 	{
 		map = new RefDoubleHashMap<>( pool, noEntryValue );
+		tryRegisterPropertyMap( pool );
+	}
+
+	public DoublePropertyMap( final RefPool< O > pool, final double noEntryValue, final int initialCapacity )
+	{
+		map = new RefDoubleHashMap<>( pool, noEntryValue, initialCapacity );
 		tryRegisterPropertyMap( pool );
 	}
 

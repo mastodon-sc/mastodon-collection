@@ -16,9 +16,21 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 		tryRegisterPropertyMap( pool );
 	}
 
+	public ObjPropertyMap( final RefCollection< O > pool, final int initialCapacity )
+	{
+		map = RefCollections.createRefObjectMap( pool, initialCapacity );
+		tryRegisterPropertyMap( pool );
+	}
+
 	public ObjPropertyMap( final RefPool< O > pool )
 	{
 		map = new RefObjectHashMap<>( pool );
+		tryRegisterPropertyMap( pool );
+	}
+
+	public ObjPropertyMap( final RefPool< O > pool, final int initialCapacity )
+	{
+		map = new RefObjectHashMap<>( pool, initialCapacity );
 		tryRegisterPropertyMap( pool );
 	}
 
