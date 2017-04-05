@@ -35,10 +35,10 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	}
 
 	@Override
-	public void set( final O key, final T value )
+	public T set( final O key, final T value )
 	{
 		notifyBeforePropertyChange( key );
-		map.put( key, value );
+		return map.put( key, value );
 	}
 
 	@Override

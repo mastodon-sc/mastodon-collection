@@ -21,8 +21,10 @@ public interface PropertyMap< O, T >
 	 *
 	 * @param key
 	 * @param value
+	 * @return the previous value associated with {@code key} (or {@code null}
+	 *         if the property was not set before).
 	 */
-	public void set( O key, T value );
+	public T set( O key, T value );
 
 	/**
 	 * Remove the mapping for the specified {@code key} (if it exists).

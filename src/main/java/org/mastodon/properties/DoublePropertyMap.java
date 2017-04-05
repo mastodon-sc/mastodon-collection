@@ -11,41 +11,48 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 {
 	private final TObjectDoubleMap< O > map;
 
+	private final double noEntryValue;
+
 	public DoublePropertyMap( final RefCollection< O > pool, final double noEntryValue )
 	{
 		map = RefCollections.createRefDoubleMap( pool, noEntryValue );
+		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
 	public DoublePropertyMap( final RefCollection< O > pool, final double noEntryValue, final int initialCapacity )
 	{
 		map = RefCollections.createRefDoubleMap( pool, noEntryValue, initialCapacity );
+		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
 	public DoublePropertyMap( final RefPool< O > pool, final double noEntryValue )
 	{
 		map = new RefDoubleHashMap<>( pool, noEntryValue );
+		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
 	public DoublePropertyMap( final RefPool< O > pool, final double noEntryValue, final int initialCapacity )
 	{
 		map = new RefDoubleHashMap<>( pool, noEntryValue, initialCapacity );
+		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
-	public void set( final O key, final double value )
+	public double set( final O key, final double value )
 	{
 		notifyBeforePropertyChange( key );
-		map.put( key, value );
+		return map.put( key, value );
 	}
 
 	@Override
-	public void set( final O key, final Double value )
+	public Double set( final O key, final Double value )
 	{
 		notifyBeforePropertyChange( key );
-		map.put( key, value );
+		final double old = map.put( key, value );
+		return ( old == noEntryValue ) ? null : Double.valueOf( old );
 	}
 
 	@Override
@@ -76,5 +83,10 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	{
 		map.clear();
 		tryUnregisterPropertyMap();
+	}
+
+	public double getNoEntryValue()
+	{
+		return noEntryValue;
 	}
 }

@@ -11,41 +11,48 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 {
 	private final TObjectIntMap< O > map;
 
+	private final int noEntryValue;
+
 	public IntPropertyMap( final RefCollection< O > pool, final int noEntryValue )
 	{
 		map = RefCollections.createRefIntMap( pool, noEntryValue );
+		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
 	public IntPropertyMap( final RefCollection< O > pool, final int noEntryValue, final int initialCapacity )
 	{
 		map = RefCollections.createRefIntMap( pool, noEntryValue, initialCapacity );
+		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
 	public IntPropertyMap( final RefPool< O > pool, final int noEntryValue )
 	{
 		map = new RefIntHashMap<>( pool, noEntryValue );
+		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
 	public IntPropertyMap( final RefPool< O > pool, final int noEntryValue, final int initialCapacity )
 	{
 		map = new RefIntHashMap<>( pool, noEntryValue, initialCapacity );
+		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
-	public void set( final O key, final int value )
+	public int set( final O key, final int value )
 	{
 		notifyBeforePropertyChange( key );
-		map.put( key, value );
+		return map.put( key, value );
 	}
 
 	@Override
-	public void set( final O key, final Integer value )
+	public Integer set( final O key, final Integer value )
 	{
 		notifyBeforePropertyChange( key );
-		map.put( key, value );
+		final int old = map.put( key, value );
+		return ( old == noEntryValue ) ? null : Integer.valueOf( old );
 	}
 
 	@Override
@@ -55,7 +62,7 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 		map.remove( key );
 	}
 
-	public int getInteger( final O key )
+	public int getInt( final O key )
 	{
 		return map.get( key );
 	}
@@ -76,5 +83,10 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	{
 		map.clear();
 		tryUnregisterPropertyMap();
+	}
+
+	public int getNoEntryValue()
+	{
+		return noEntryValue;
 	}
 }
