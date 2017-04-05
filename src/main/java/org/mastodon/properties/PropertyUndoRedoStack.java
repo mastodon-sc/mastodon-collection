@@ -29,21 +29,24 @@ public interface PropertyUndoRedoStack< O >
 	public void record( final O obj );
 
 	/**
-	 * Decrement {@code top} and replace and the element there with the property value
-	 * of {@code obj}. Set the previously stored element as the property value
-	 * of {@code obj}.
+	 * Decrement {@code top}. Then replace the element there with the property
+	 * value of {@code obj}. Set the previously stored element as the property
+	 * value of {@code obj}.
 	 *
 	 * @param obj
-	 *            object whose property value to swap with the element at {@code top-1}.
+	 *            object whose property value to swap with the element at
+	 *            {@code top-1}.
 	 */
 	public void undo( final O obj );
 
 	/**
-	 * Increment {@code top} and replace and the element there with the property value of {@code obj}.
+	 * Replace the element at {@code top} with the property value of {@code obj}.
 	 * Set the previously stored element as the property value of {@code obj}.
+	 * Then increment {@code top}.
 	 *
 	 * @param obj
-	 *            object whose property value to swap with the element at {@code top}.
+	 *            object whose property value to swap with the element at
+	 *            {@code top}.
 	 */
 	public void redo( final O obj );
 }

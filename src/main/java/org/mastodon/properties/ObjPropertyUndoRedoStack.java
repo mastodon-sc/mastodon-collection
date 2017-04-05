@@ -18,11 +18,14 @@ public class ObjPropertyUndoRedoStack< O, T > implements PropertyUndoRedoStack< 
 
 	private int top;
 
+	private int end;
+
 	public ObjPropertyUndoRedoStack( final ObjPropertyMap< O, T > property )
 	{
 		this.property = property;
 		stack = new ArrayList<>();
 		top = 0;
+		end = 0;
 	}
 
 	/**
@@ -35,23 +38,26 @@ public class ObjPropertyUndoRedoStack< O, T > implements PropertyUndoRedoStack< 
 	@Override
 	public void record( final O obj )
 	{
-		if ( top >= stack.size() )
+		if ( top < stack.size() )
+			stack.set( top, property.get( obj ) );
+		else
 			stack.add( property.get( obj ) );
-		++top;
+		end = ++top;
 	}
 
 	/**
-	 * Decrement {@code top} and replace and the element there with the property value
-	 * of {@code obj}. Set the previously stored element as the property value
-	 * of {@code obj}.
+	 * Decrement {@code top}. Then replace the element there with the property
+	 * value of {@code obj}. Set the previously stored element as the property
+	 * value of {@code obj}.
 	 *
 	 * @param obj
-	 *            object whose property value to swap with the element at {@code top-1}.
+	 *            object whose property value to swap with the element at
+	 *            {@code top-1}.
 	 */
 	@Override
 	public void undo( final O obj )
 	{
-		if (  top > 0 )
+		if ( top > 0 )
 		{
 			--top;
 			stack.set( top, property.set( obj, stack.get( top ) ) );
@@ -59,19 +65,31 @@ public class ObjPropertyUndoRedoStack< O, T > implements PropertyUndoRedoStack< 
 	}
 
 	/**
-	 * Increment {@code top} and replace and the element there with the property value of {@code obj}.
+	 * Replace the element at {@code top} with the property value of {@code obj}.
 	 * Set the previously stored element as the property value of {@code obj}.
+	 * Then increment {@code top}.
 	 *
 	 * @param obj
-	 *            object whose property value to swap with the element at {@code top}.
+	 *            object whose property value to swap with the element at
+	 *            {@code top}.
 	 */
 	@Override
 	public void redo( final O obj )
 	{
-		if ( top < stack.size() - 1 )
+		if ( top < end )
 		{
-			++top;
 			stack.set( top, property.set( obj, stack.get( top ) ) );
+			++top;
 		}
+	}
+
+	/**
+	 * Truncate entries starting from {@code end}.
+	 */
+	public void trim()
+	{
+		while ( stack.size() > end )
+			stack.remove( end );
+		stack.trimToSize();
 	}
 }
