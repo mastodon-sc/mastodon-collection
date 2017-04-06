@@ -1,5 +1,7 @@
 package org.mastodon.pool;
 
+import java.util.Arrays;
+
 /**
  * A {@link MappedElementArray} that stores {@link ByteMappedElement
  * ByteMappedElements} in a {@code byte[]} array.
@@ -94,12 +96,8 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 		if ( numBytes > Integer.MAX_VALUE )
 			throw new IllegalArgumentException(
 					"trying to resize a " + getClass().getName() + " to more than " + maxSize() + " elements of " + bytesPerElement + " bytes.");
-
-		final byte[] datacopy = new byte[ ( int ) numBytes ];
-			final int copyLength = Math.min( data.length, datacopy.length );
-			System.arraycopy( data, 0, datacopy, 0, copyLength );
-		this.data = datacopy;
-		this.size = numElements;
+		data = Arrays.copyOf( data, ( int ) numBytes );
+		size = numElements;
 	}
 
 	/**

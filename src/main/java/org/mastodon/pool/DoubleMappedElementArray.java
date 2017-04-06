@@ -1,5 +1,7 @@
 package org.mastodon.pool;
 
+import java.util.Arrays;
+
 /**
  * A {@link MappedElementArray} that stores {@link DoubleMappedElement
  * DoubleMappedElements} in a {@code double[]} array.
@@ -99,17 +101,13 @@ public class DoubleMappedElementArray implements MappedElementArray< DoubleMappe
 		if ( numDoubles > Integer.MAX_VALUE )
 			throw new IllegalArgumentException(
 					"trying to resize a " + getClass().getName() + " to more than " + maxSize() + " elements of " + bytesPerElement + " bytes.");
-
-		final double[] datacopy = new double[ ( int ) numDoubles ];
-			final int copyLength = Math.min( data.length, datacopy.length );
-			System.arraycopy( data, 0, datacopy, 0, copyLength );
-		this.data = datacopy;
-		this.size = numElements;
+		data = Arrays.copyOf( data, ( int ) numDoubles );
+		size = numElements;
 	}
 
 	/**
 	 * <b>For internal use only!</b>
-	 * 
+	 *
 	 * @return the data array used in this class.
 	 */
 	public double[] getCurrentDataArray()
