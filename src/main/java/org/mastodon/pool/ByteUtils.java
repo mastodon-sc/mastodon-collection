@@ -21,6 +21,8 @@ public class ByteUtils
 
 	public static final int INT_SIZE = 4;
 
+	public static final int SHORT_SIZE = 2;
+
 	public static final int LONG_SIZE = 8;
 
 	public static final int FLOAT_SIZE = 4;
@@ -57,6 +59,16 @@ public class ByteUtils
 	public static int getInt( final byte[] array, final int offset )
 	{
 		return UNSAFE.getInt( array, BYTE_ARRAY_OFFSET + offset );
+	}
+
+	public static void putShort( final short value, final byte[] array, final int offset )
+	{
+		UNSAFE.putShort( array, BYTE_ARRAY_OFFSET + offset, value );
+	}
+
+	public static short getShort( final byte[] array, final int offset )
+	{
+		return UNSAFE.getShort( array, BYTE_ARRAY_OFFSET + offset );
 	}
 
 	public static void putLong( final long value, final byte[] array, final int offset )

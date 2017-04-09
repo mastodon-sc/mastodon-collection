@@ -89,6 +89,18 @@ public class ByteMappedElement implements MappedElement
 	}
 
 	@Override
+	public void putShort( final short value, final int offset )
+	{
+		ByteUtils.putShort( value, dataArray.data, baseOffset + offset );
+	}
+
+	@Override
+	public short getShort( final int offset )
+	{
+		return ByteUtils.getShort( dataArray.data, baseOffset + offset );
+	}
+
+	@Override
 	public void putInt( final int value, final int offset )
 	{
 		ByteUtils.putInt( value, dataArray.data, baseOffset + offset );

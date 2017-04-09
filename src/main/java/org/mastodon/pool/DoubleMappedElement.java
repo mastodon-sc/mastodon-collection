@@ -89,6 +89,18 @@ public class DoubleMappedElement implements MappedElement
 	}
 
 	@Override
+	public void putShort( final short value, final int offset )
+	{
+		DoubleUtils.putShort( value, dataArray.data, baseOffset + offset );
+	}
+
+	@Override
+	public short getShort( final int offset )
+	{
+		return DoubleUtils.getShort( dataArray.data, baseOffset + offset );
+	}
+
+	@Override
 	public void putInt( final int value, final int offset )
 	{
 		DoubleUtils.putInt( value, dataArray.data, baseOffset + offset );

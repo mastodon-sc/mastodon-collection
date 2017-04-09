@@ -35,6 +35,16 @@ public class DoubleUtils
 		return getByte( array, offset ) == ( byte ) 0 ? false : true;
 	}
 
+	public static void putShort( final short value, final double[] array, final int offset )
+	{
+		UNSAFE.putShort( array, DOUBLE_ARRAY_OFFSET + offset, value );
+	}
+
+	public static short getShort( final double[] array, final int offset )
+	{
+		return UNSAFE.getShort( array, DOUBLE_ARRAY_OFFSET + offset );
+	}
+
 	public static void putInt( final int value, final double[] array, final int offset )
 	{
 		UNSAFE.putInt( array, DOUBLE_ARRAY_OFFSET + offset, value );

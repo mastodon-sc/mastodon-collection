@@ -35,6 +35,10 @@ public interface MappedElement
 
 	public boolean getBoolean( final int offset );
 
+	public void putShort( final short value, final int offset );
+
+	public short getShort( final int offset );
+
 	public void putInt( final int value, final int offset );
 
 	public int getInt( final int offset );
