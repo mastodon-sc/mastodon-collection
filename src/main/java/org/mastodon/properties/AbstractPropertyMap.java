@@ -1,26 +1,24 @@
 package org.mastodon.properties;
 
+import java.util.ArrayList;
+
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.ref.RefPoolBackedRefCollection;
 
 public abstract class AbstractPropertyMap< O, T > implements PropertyMap< O, T >
 {
-	@Override
-	public void setPropertyChangeListener( final PropertyChangeListener< O > listener )
-	{
-		this.propertyChangeListener = listener;
-	}
-
-	private PropertyChangeListener< O > propertyChangeListener;
-
-	protected void notifyBeforePropertyChange( final O obj )
-	{
-		if ( propertyChangeListener != null )
-			propertyChangeListener.beforePropertyChange( this, obj );
-	}
-
 	private PropertyMaps< O > propertyMaps;
+
+	private final ArrayList< PropertyChangeListener< O > > propertyChangeListeners;
+
+	private boolean emitEvents;
+
+	protected AbstractPropertyMap()
+	{
+		propertyChangeListeners = new ArrayList<>();
+		emitEvents = true;
+	}
 
 	@SuppressWarnings( "unchecked" )
 	protected void tryRegisterPropertyMap( final RefPool< O > pool )
@@ -46,5 +44,41 @@ public abstract class AbstractPropertyMap< O, T > implements PropertyMap< O, T >
 	{
 		if ( propertyMaps != null )
 			propertyMaps.removePropertyMap( this );
+	}
+
+	@Override
+	public boolean addPropertyChangeListener( final PropertyChangeListener< O > listener )
+	{
+		if ( ! propertyChangeListeners.contains( listener ) )
+		{
+			propertyChangeListeners.add( listener );
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean removePropertyChangeListener( final PropertyChangeListener< O > listener )
+	{
+		return propertyChangeListeners.remove( listener );
+	}
+
+	@Override
+	public void pauseListeners()
+	{
+		emitEvents = false;
+	}
+
+	@Override
+	public void resumeListeners()
+	{
+		emitEvents = true;
+	}
+
+	protected void notifyBeforePropertyChange( final O object )
+	{
+		if ( emitEvents )
+			for ( final PropertyChangeListener< O > l : propertyChangeListeners )
+				l.beforePropertyChange( this, object );
 	}
 }
