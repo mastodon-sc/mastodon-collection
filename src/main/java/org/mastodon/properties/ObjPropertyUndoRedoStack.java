@@ -60,7 +60,7 @@ public class ObjPropertyUndoRedoStack< O, T > implements PropertyUndoRedoStack< 
 		if ( top > 0 )
 		{
 			--top;
-			stack.set( top, property.set( obj, stack.get( top ) ) );
+			swap( obj );
 		}
 	}
 
@@ -78,9 +78,25 @@ public class ObjPropertyUndoRedoStack< O, T > implements PropertyUndoRedoStack< 
 	{
 		if ( top < end )
 		{
-			stack.set( top, property.set( obj, stack.get( top ) ) );
+			swap( obj );
 			++top;
 		}
+	}
+
+	/**
+	 * Replace the element at {@code top} with the property value of {@code obj}.
+	 *
+	 * @param obj
+	 */
+	private void swap( final O obj )
+	{
+		final T stackValue = stack.get( top );
+		T value = null;
+		if ( stackValue != null )
+			value = property.set( obj, stackValue );
+		else
+			property.remove( obj );
+		stack.set( top, value );
 	}
 
 	/**

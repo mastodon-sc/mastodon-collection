@@ -14,6 +14,8 @@ public class IntPropertyUndoRedoStack< O > implements PropertyUndoRedoStack< O >
 {
 	private final IntPropertyMap< O > property;
 
+	private final int noEntryValue;
+
 	private final TIntArrayList stack;
 
 	private int top;
@@ -23,6 +25,7 @@ public class IntPropertyUndoRedoStack< O > implements PropertyUndoRedoStack< O >
 	public IntPropertyUndoRedoStack( final IntPropertyMap< O > property )
 	{
 		this.property = property;
+		noEntryValue = property.getNoEntryValue();
 		stack = new TIntArrayList();
 		top = 0;
 		end = 0;
@@ -60,7 +63,7 @@ public class IntPropertyUndoRedoStack< O > implements PropertyUndoRedoStack< O >
 		if ( top > 0 )
 		{
 			--top;
-			stack.setQuick( top, property.set( obj, stack.getQuick( top ) ) );
+			swap( obj );
 		}
 	}
 
@@ -78,9 +81,25 @@ public class IntPropertyUndoRedoStack< O > implements PropertyUndoRedoStack< O >
 	{
 		if ( top < end )
 		{
-			stack.setQuick( top, property.set( obj, stack.getQuick( top ) ) );
+			swap( obj );
 			++top;
 		}
+	}
+
+	/**
+	 * Replace the element at {@code top} with the property value of {@code obj}.
+	 *
+	 * @param obj
+	 */
+	private void swap( final O obj )
+	{
+		final int stackValue = stack.getQuick( top );
+		int value = noEntryValue;
+		if ( stackValue != noEntryValue )
+			value = property.set( obj, stackValue );
+		else
+			property.remove( obj );
+		stack.setQuick( top, value );
 	}
 
 	/**
