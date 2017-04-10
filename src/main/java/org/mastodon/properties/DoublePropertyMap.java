@@ -44,7 +44,9 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	public double set( final O key, final double value )
 	{
 		notifyBeforePropertyChange( key );
-		return map.put( key, value );
+		final double old = map.put( key, value );
+		notifyPropertyChanged( key );
+		return old;
 	}
 
 	@Override
@@ -52,6 +54,7 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	{
 		notifyBeforePropertyChange( key );
 		final double old = map.put( key, value );
+		notifyPropertyChanged( key );
 		return ( old == noEntryValue ) ? null : Double.valueOf( old );
 	}
 
@@ -60,6 +63,7 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	{
 		notifyBeforePropertyChange( key );
 		map.remove( key );
+		notifyPropertyChanged( key );
 	}
 
 	public double getDouble( final O key )

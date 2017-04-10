@@ -38,7 +38,9 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	public T set( final O key, final T value )
 	{
 		notifyBeforePropertyChange( key );
-		return map.put( key, value );
+		final T old = map.put( key, value );
+		notifyPropertyChanged( key );
+		return old;
 	}
 
 	@Override
@@ -46,6 +48,7 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	{
 		notifyBeforePropertyChange( key );
 		map.remove( key );
+		notifyPropertyChanged( key );
 	}
 
 	@Override

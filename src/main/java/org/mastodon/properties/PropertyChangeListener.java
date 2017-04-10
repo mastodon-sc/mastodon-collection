@@ -1,11 +1,11 @@
 package org.mastodon.properties;
 
 /**
- * A listener that is notified before a property changes (This happens when
+ * A listener that is notified when a property was changed. (This happens when
  * {@link PropertyMap#set(Object, Object)} or {@link PropertyMap#remove(Object)}
  * is called.)
  */
 public interface PropertyChangeListener< O >
 {
-	public void beforePropertyChange( PropertyMap< O, ? > property, O object );
+	public void propertyChanged( PropertyMap< O, ? > property, O object );
 }

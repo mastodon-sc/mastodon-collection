@@ -57,6 +57,9 @@ public class PropertyMaps< O >
 	 */
 	public void remove( final O key )
 	{
+		if ( maps.isEmpty() )
+			return;
+
 		boolean cleanUp = false;
 		for ( final WeakReference< PropertyMap< O, ? > > ref : maps )
 		{

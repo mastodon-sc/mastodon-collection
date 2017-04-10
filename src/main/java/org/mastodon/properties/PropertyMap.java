@@ -55,10 +55,38 @@ public interface PropertyMap< O, T >
 	public boolean isSet( O key );
 
 	/**
-	 * Register a {@link PropertyChangeListener} that will be notified when the
+	 * Register a {@link BeforePropertyChangeListener} that will be notified before the
 	 * value of this property is changed. Specifically,
-	 * {@link PropertyChangeListener#beforePropertyChange(PropertyMap, Object)
+	 * {@link BeforePropertyChangeListener#beforePropertyChange(PropertyMap, Object)
 	 * beforePropertyChange} is triggered as the first step of
+	 * {@link #set(Object, Object)} and {@link #remove(Object)}.
+	 * <p>
+	 * TODO: How about create() on properties that set an initial value?
+	 * </p>
+	 *
+	 * @param listener
+	 *            the listener to register.
+	 * @return {@code true} if the listener was successfully registered.
+	 *         {@code false} if it was already registered.
+	 */
+	public boolean addBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener );
+
+	/**
+	 * Removes the specified {@link BeforePropertyChangeListener} from the set of
+	 * listeners.
+	 *
+	 * @param listener
+	 *            the listener to remove.
+	 * @return {@code true} if the listener was present in the listeners of this
+	 *         model and was successfully removed.
+	 */
+	public boolean removeBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener );
+
+	/**
+	 * Register a {@link PropertyChangeListener} that will be notified when the
+	 * value of this property was changed. Specifically,
+	 * {@link PropertyChangeListener#propertyChanged(PropertyMap, Object)
+	 * propertyChanged} is triggered as the last step of
 	 * {@link #set(Object, Object)} and {@link #remove(Object)}.
 	 * <p>
 	 * TODO: How about create() on properties that set an initial value?
@@ -82,13 +110,16 @@ public interface PropertyMap< O, T >
 	 */
 	public boolean removePropertyChangeListener( final PropertyChangeListener< O > listener );
 
+
 	/**
-	 * Pause sending events to {@link PropertyChangeListener}s.
+	 * Pause sending events to {@link BeforePropertyChangeListener}s and
+	 * {@link PropertyChangeListener}s.
 	 */
 	public void pauseListeners();
 
 	/**
-	 * Resume sending events to {@link PropertyChangeListener}s.
+	 * Resume sending events to {@link BeforePropertyChangeListener}s and
+	 * {@link PropertyChangeListener}s.
 	 */
 	public void resumeListeners();
 }

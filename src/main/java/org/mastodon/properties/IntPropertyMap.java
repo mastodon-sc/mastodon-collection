@@ -44,7 +44,9 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	public int set( final O key, final int value )
 	{
 		notifyBeforePropertyChange( key );
-		return map.put( key, value );
+		final int old = map.put( key, value );
+		notifyPropertyChanged( key );
+		return old;
 	}
 
 	@Override
@@ -52,6 +54,7 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	{
 		notifyBeforePropertyChange( key );
 		final int old = map.put( key, value );
+		notifyPropertyChanged( key );
 		return ( old == noEntryValue ) ? null : Integer.valueOf( old );
 	}
 
@@ -60,6 +63,7 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	{
 		notifyBeforePropertyChange( key );
 		map.remove( key );
+		notifyPropertyChanged( key );
 	}
 
 	public int getInt( final O key )
