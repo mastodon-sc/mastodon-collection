@@ -93,4 +93,10 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	{
 		return noEntryValue;
 	}
+
+	@Override
+	public void beforeDeleteObject( final O key )
+	{
+		map.remove( key );
+	}
 }

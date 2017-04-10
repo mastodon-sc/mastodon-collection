@@ -68,4 +68,10 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 		map.clear();
 		tryUnregisterPropertyMap();
 	}
+
+	@Override
+	public void beforeDeleteObject( final O key )
+	{
+		map.remove( key );
+	}
 }

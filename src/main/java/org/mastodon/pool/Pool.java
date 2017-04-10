@@ -169,13 +169,13 @@ public class Pool< O extends PoolObject< O, ?, T >, T extends MappedElement > im
 		final int index = memPool.create();
 		obj.updateAccess( memPool, index );
 		obj.setToUninitializedState();
-		propertyMaps.create( obj );
+		propertyMaps.objectCreated( obj );
 		return obj;
 	}
 
 	protected void delete( final O obj )
 	{
-		propertyMaps.remove( obj );
+		propertyMaps.beforeDeleteObject( obj );
 		memPool.free( obj.getInternalPoolIndex() );
 	}
 

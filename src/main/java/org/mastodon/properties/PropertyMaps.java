@@ -9,7 +9,7 @@ import org.mastodon.RefPool;
 /**
  * Maintains a list of {@link PropertyMap}s, typically for a {@link RefPool}.
  * The purpose is to broadcast {@link #create(Object)} and
- * {@link #remove(Object)} events to all {@link PropertyMap}s such that they can
+ * {@link #beforeDeleteObject(Object)} events to all {@link PropertyMap}s such that they can
  * update accordingly.
  * <p>
  * The list only maintains {@link WeakReference}s to {@link PropertyMap}s. This
@@ -50,22 +50,20 @@ public class PropertyMaps< O >
 	}
 
 	/**
-	 * Forward to {@link PropertyMap#remove(Object)} of all registered property
-	 * maps. Also cleans up maps that have been garbage collected.
+	 * Forward to {@link PropertyMap#beforeDeleteObject(Object)} of all
+	 * registered property maps. Also cleans up maps that have been garbage
+	 * collected.
 	 *
 	 * @param key
 	 */
-	public void remove( final O key )
+	public void beforeDeleteObject( final O key )
 	{
-		if ( maps.isEmpty() )
-			return;
-
 		boolean cleanUp = false;
 		for ( final WeakReference< PropertyMap< O, ? > > ref : maps )
 		{
 			final PropertyMap< O, ? > map = ref.get();
 			if ( map != null )
-				map.remove( key );
+				map.beforeDeleteObject( key );
 			else
 				cleanUp = true;
 		}
@@ -74,19 +72,19 @@ public class PropertyMaps< O >
 	}
 
 	/**
-	 * Forward to {@link PropertyMap#create(Object)} of all registered property
-	 * maps. Also cleans up maps that have been garbage collected.
+	 * Forward to {@link PropertyMap#objectCreated(Object)} of all registered
+	 * property maps. Also cleans up maps that have been garbage collected.
 	 *
 	 * @param key
 	 */
-	public void create( final O key )
+	public void objectCreated( final O key )
 	{
 		boolean cleanUp = false;
 		for ( final WeakReference< PropertyMap< O, ? > > ref : maps )
 		{
 			final PropertyMap< O, ? > map = ref.get();
 			if ( map != null )
-				map.create( key );
+				map.objectCreated( key );
 			else
 				cleanUp = true;
 		}

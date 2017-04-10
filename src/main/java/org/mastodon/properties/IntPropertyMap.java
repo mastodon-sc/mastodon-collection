@@ -93,4 +93,10 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	{
 		return noEntryValue;
 	}
+
+	@Override
+	public void beforeDeleteObject( final O key )
+	{
+		map.remove( key );
+	}
 }

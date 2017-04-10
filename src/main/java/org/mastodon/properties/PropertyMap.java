@@ -6,6 +6,11 @@ package org.mastodon.properties;
  * Using this interface, the feature value (for a particular object) can be
  * read, set, and removed. Additionally, it can be checked whether the value is
  * set.
+ * </p>
+ * <p>
+ * TODO: Consider whether we need more lightweight {@link PropertyMap} without
+ * listeners.
+ * </p>
  *
  * @param <O>
  *            type of object which the property should be attached to.
@@ -33,8 +38,35 @@ public interface PropertyMap< O, T >
 	 */
 	public void remove( O key );
 
-	public default void create( final O key )
+	/**
+	 * For internal use.
+	 * <p>
+	 * This is called by {@link PropertyMaps#objectCreated(Object)} when a new
+	 * object was added. Potentially, we might use this to initialize properties
+	 * in the future, but at the moment it does nothing.
+	 * </p>
+	 *
+	 * @param key
+	 */
+	public default void objectCreated( final O key )
 	{}
+
+	/**
+	 * For internal use.
+	 * <p>
+	 * This is called by {@link PropertyMaps#beforeDeleteObject(Object)} when a
+	 * object is about to be deleted. This will remove the mapping for
+	 * {@code key} if it exists. In contrast to {@link #remove(Object)} this
+	 * does not emit any
+	 * {@link BeforePropertyChangeListener#beforePropertyChange(PropertyMap, Object)
+	 * beforePropertyChange} or
+	 * {@link PropertyChangeListener#propertyChanged(PropertyMap, Object)
+	 * propertyChanged} events.
+	 * </p>
+	 *
+	 * @param key
+	 */
+	public void beforeDeleteObject( final O key );
 
 	/**
 	 * Returns the value of this property for the specified ({@code key}).
@@ -60,9 +92,6 @@ public interface PropertyMap< O, T >
 	 * {@link BeforePropertyChangeListener#beforePropertyChange(PropertyMap, Object)
 	 * beforePropertyChange} is triggered as the first step of
 	 * {@link #set(Object, Object)} and {@link #remove(Object)}.
-	 * <p>
-	 * TODO: How about create() on properties that set an initial value?
-	 * </p>
 	 *
 	 * @param listener
 	 *            the listener to register.
@@ -88,9 +117,6 @@ public interface PropertyMap< O, T >
 	 * {@link PropertyChangeListener#propertyChanged(PropertyMap, Object)
 	 * propertyChanged} is triggered as the last step of
 	 * {@link #set(Object, Object)} and {@link #remove(Object)}.
-	 * <p>
-	 * TODO: How about create() on properties that set an initial value?
-	 * </p>
 	 *
 	 * @param listener
 	 *            the listener to register.
