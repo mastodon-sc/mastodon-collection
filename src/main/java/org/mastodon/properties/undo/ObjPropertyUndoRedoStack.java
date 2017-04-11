@@ -1,9 +1,11 @@
 /**
  *
  */
-package org.mastodon.properties;
+package org.mastodon.properties.undo;
 
 import java.util.ArrayList;
+
+import org.mastodon.properties.ObjPropertyMap;
 
 /**
  * A {@link PropertyUndoRedoStack} to record {@link ObjPropertyMap} changes.

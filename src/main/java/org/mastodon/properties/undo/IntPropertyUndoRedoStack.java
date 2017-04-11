@@ -1,7 +1,9 @@
 /**
  *
  */
-package org.mastodon.properties;
+package org.mastodon.properties.undo;
+
+import org.mastodon.properties.IntPropertyMap;
 
 import gnu.trove.list.array.TIntArrayList;
 

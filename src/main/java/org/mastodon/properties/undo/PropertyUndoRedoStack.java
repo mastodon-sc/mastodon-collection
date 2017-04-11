@@ -1,4 +1,6 @@
-package org.mastodon.properties;
+package org.mastodon.properties.undo;
+
+import org.mastodon.properties.PropertyMap;
 
 /**
  * A Undo/Redo stack that can be used to record changes to {@link PropertyMap}s.
