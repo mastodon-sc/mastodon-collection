@@ -4,6 +4,8 @@ import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefCollections;
 import org.mastodon.collection.ref.RefIntHashMap;
+import org.mastodon.properties.undo.IntPropertyUndoRedoStack;
+import org.mastodon.properties.undo.PropertyUndoRedoStack;
 
 import gnu.trove.map.TObjectIntMap;
 
@@ -98,5 +100,11 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	public void beforeDeleteObject( final O key )
 	{
 		map.remove( key );
+	}
+
+	@Override
+	public PropertyUndoRedoStack< O > createUndoRedoStack()
+	{
+		return new IntPropertyUndoRedoStack<>( this );
 	}
 }

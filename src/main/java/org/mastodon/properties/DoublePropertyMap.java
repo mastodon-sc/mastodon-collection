@@ -4,6 +4,7 @@ import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefCollections;
 import org.mastodon.collection.ref.RefDoubleHashMap;
+import org.mastodon.properties.undo.PropertyUndoRedoStack;
 
 import gnu.trove.map.TObjectDoubleMap;
 
@@ -98,5 +99,11 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	public void beforeDeleteObject( final O key )
 	{
 		map.remove( key );
+	}
+
+	@Override
+	public PropertyUndoRedoStack< O > createUndoRedoStack()
+	{
+		throw new UnsupportedOperationException( "TODO" );
 	}
 }

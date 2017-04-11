@@ -5,6 +5,8 @@ import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefCollections;
 import org.mastodon.collection.RefObjectMap;
 import org.mastodon.collection.ref.RefObjectHashMap;
+import org.mastodon.properties.undo.ObjPropertyUndoRedoStack;
+import org.mastodon.properties.undo.PropertyUndoRedoStack;
 
 public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 {
@@ -73,5 +75,11 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	public void beforeDeleteObject( final O key )
 	{
 		map.remove( key );
+	}
+
+	@Override
+	public PropertyUndoRedoStack< O > createUndoRedoStack()
+	{
+		return new ObjPropertyUndoRedoStack<>( this );
 	}
 }

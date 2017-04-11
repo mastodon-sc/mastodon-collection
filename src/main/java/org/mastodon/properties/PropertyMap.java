@@ -1,5 +1,7 @@
 package org.mastodon.properties;
 
+import org.mastodon.properties.undo.PropertyUndoRedoStack;
+
 /**
  * A map from objects {@code O} to properties {@code T}.
  * <p>
@@ -148,4 +150,12 @@ public interface PropertyMap< O, T >
 	 * {@link PropertyChangeListener}s.
 	 */
 	public void resumeListeners();
+
+	/**
+	 * Optional.
+	 */
+	public default PropertyUndoRedoStack< O > createUndoRedoStack()
+	{
+		throw new UnsupportedOperationException();
+	}
 }
