@@ -4,6 +4,7 @@
 package org.mastodon.properties.undo;
 
 import org.mastodon.properties.IntPropertyMap;
+import org.mastodon.properties.PropertyMap;
 
 import gnu.trove.list.array.TIntArrayList;
 
@@ -111,5 +112,11 @@ public class IntPropertyUndoRedoStack< O > implements PropertyUndoRedoStack< O >
 	{
 		stack.remove( end, stack.size() - end );
 		stack.trimToSize();
+	}
+
+	@Override
+	public PropertyMap< O, ? > getPropertyMap()
+	{
+		return property;
 	}
 }
