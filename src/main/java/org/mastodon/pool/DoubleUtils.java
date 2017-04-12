@@ -25,6 +25,16 @@ public class DoubleUtils
 		return UNSAFE.getByte( array, DOUBLE_ARRAY_OFFSET + offset );
 	}
 
+	public static void copyBytes( final byte[] src, final int srcPos, final double[] dest, final int destPos, final int numBytes )
+	{
+		UNSAFE.copyMemory( src, BYTE_ARRAY_OFFSET + srcPos, dest, DOUBLE_ARRAY_OFFSET + destPos, numBytes );
+	}
+
+	public static void copyBytes( final double[] src, final int srcPos, final byte[] dest, final int destPos, final int numBytes )
+	{
+		UNSAFE.copyMemory( src, DOUBLE_ARRAY_OFFSET + srcPos, dest, BYTE_ARRAY_OFFSET + destPos, numBytes );
+	}
+
 	public static void putBoolean( final boolean value, final double[] array, final int offset )
 	{
 		putByte( value ? ( byte ) 1 : ( byte ) 0, array, offset );
@@ -127,4 +137,5 @@ public class DoubleUtils
 	}
 
 	private static final long DOUBLE_ARRAY_OFFSET = UNSAFE.arrayBaseOffset( double[].class );
+	private static final long BYTE_ARRAY_OFFSET = UNSAFE.arrayBaseOffset( byte[].class );
 }

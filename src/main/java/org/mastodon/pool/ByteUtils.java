@@ -41,6 +41,11 @@ public class ByteUtils
 		return array[ offset ];
 	}
 
+	public static void copyBytes( final byte[] src, final int srcPos, final byte[] dest, final int destPos, final int length )
+	{
+		System.arraycopy( src, srcPos, dest, destPos, length );
+	}
+
 	public static void putBoolean( final boolean value, final byte[] array, final int offset )
 	{
 		array[ offset ] = value ? ( byte ) 1 : ( byte ) 0;

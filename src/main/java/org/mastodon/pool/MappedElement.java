@@ -31,6 +31,10 @@ public interface MappedElement
 
 	public byte getByte( final int offset );
 
+	public void putBytes( final byte[] bytes, final int bytesoffset, final int byteslength, final int offset );
+
+	public void getBytes( final byte[] bytes, final int bytesoffset, final int byteslength, final int offset );
+
 	public void putBoolean( final boolean value, final int offset );
 
 	public boolean getBoolean( final int offset );
@@ -58,4 +62,14 @@ public interface MappedElement
 	public void putDouble( final double value, final int offset );
 
 	public double getDouble( final int offset );
+
+	public default void putBytes( final byte[] bytes, final int offset )
+	{
+		putBytes( bytes, 0, bytes.length, offset );
+	}
+
+	public default void getBytes( final byte[] bytes, final int offset )
+	{
+		getBytes( bytes, 0, bytes.length, offset );
+	}
 }
