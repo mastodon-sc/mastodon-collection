@@ -84,6 +84,12 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 		return map.containsKey( key );
 	}
 
+	@Override
+	public int size()
+	{
+		return map.size();
+	}
+
 	public void release()
 	{
 		map.clear();

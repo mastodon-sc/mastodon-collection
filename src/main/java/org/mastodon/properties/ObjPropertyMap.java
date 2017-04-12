@@ -65,6 +65,17 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 		return map.containsKey( key );
 	}
 
+	@Override
+	public int size()
+	{
+		return map.size();
+	}
+
+	public RefObjectMap< O, T > getMap()
+	{
+		return map;
+	}
+
 	public void release()
 	{
 		map.clear();

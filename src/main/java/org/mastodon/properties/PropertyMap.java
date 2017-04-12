@@ -89,6 +89,13 @@ public interface PropertyMap< O, T >
 	public boolean isSet( O key );
 
 	/**
+	 * Returns the number of mappings in this {@link PropertyMap}.
+	 *
+	 * @return the number of mappings.
+	 */
+	public int size();
+
+	/**
 	 * Register a {@link BeforePropertyChangeListener} that will be notified before the
 	 * value of this property is changed. Specifically,
 	 * {@link BeforePropertyChangeListener#beforePropertyChange(PropertyMap, Object)
