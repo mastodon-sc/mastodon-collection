@@ -3,15 +3,14 @@ package org.mastodon.properties;
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefCollections;
+import org.mastodon.collection.RefIntMap;
 import org.mastodon.collection.ref.RefIntHashMap;
 import org.mastodon.properties.undo.IntPropertyUndoRedoStack;
 import org.mastodon.properties.undo.PropertyUndoRedoStack;
 
-import gnu.trove.map.TObjectIntMap;
-
 public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 {
-	private final TObjectIntMap< O > map;
+	private final RefIntMap< O > map;
 
 	private final int noEntryValue;
 
@@ -98,6 +97,11 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	public int size()
 	{
 		return map.size();
+	}
+
+	public RefIntMap< O > getMap()
+	{
+		return map;
 	}
 
 	public void release()

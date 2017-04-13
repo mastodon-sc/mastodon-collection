@@ -3,15 +3,14 @@ package org.mastodon.properties;
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefCollections;
+import org.mastodon.collection.RefDoubleMap;
 import org.mastodon.collection.ref.RefDoubleHashMap;
 import org.mastodon.properties.undo.DoublePropertyUndoRedoStack;
 import org.mastodon.properties.undo.PropertyUndoRedoStack;
 
-import gnu.trove.map.TObjectDoubleMap;
-
 public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 {
-	private final TObjectDoubleMap< O > map;
+	private final RefDoubleMap< O > map;
 
 	private final double noEntryValue;
 
@@ -98,6 +97,11 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	public int size()
 	{
 		return map.size();
+	}
+
+	public RefDoubleMap< O > getMap()
+	{
+		return map;
 	}
 
 	public void release()
