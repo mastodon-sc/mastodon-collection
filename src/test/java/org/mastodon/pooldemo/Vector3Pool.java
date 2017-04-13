@@ -1,6 +1,5 @@
 package org.mastodon.pooldemo;
 
-import org.mastodon.features.Features;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.ByteMappedElementArray;
 import org.mastodon.pool.MemPool;
@@ -36,14 +35,11 @@ public class Vector3Pool extends Pool< Vector3, ByteMappedElement >
 	{
 		super( initialCapacity, f );
 		f.pool = this;
-		f.features = new Features<>( this.asRefCollection() );
 	}
 
 	private static class Vector3Factory implements PoolObject.Factory< Vector3, ByteMappedElement >
 	{
 		private Vector3Pool pool;
-
-		private Features< Vector3 > features;
 
 		@Override
 		public int getSizeInBytes()
@@ -54,8 +50,7 @@ public class Vector3Pool extends Pool< Vector3, ByteMappedElement >
 		@Override
 		public Vector3 createEmptyRef()
 		{
-//			return new Vector3( pool );
-			return new Vector3( pool, features );
+			return new Vector3( pool );
 		}
 
 		@Override

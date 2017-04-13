@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mastodon.collection.ref.RefArrayList;
-import org.mastodon.features.DoubleFeature;
-import org.mastodon.features.ObjFeature;
 import org.mastodon.properties.DoublePropertyMap;
 import org.mastodon.properties.ObjPropertyMap;
 
@@ -59,33 +57,6 @@ public class Vector3Example
 			pool.releaseRef( ref );
 		}
 
-		// adding Features to PoolObjects
-		{
-			final Vector3 ref = pool.createRef();
-
-			final ObjFeature< Vector3, String > COLOR = new ObjFeature<>( "v3 color" );
-			final DoubleFeature< Vector3 > RADIUS = new DoubleFeature<>( "v3 radius", Double.NEGATIVE_INFINITY );
-
-			final List< Vector3 > vecs = new RefArrayList< >( pool );
-			for ( int i = 0; i < 10; ++i )
-			{
-				final Vector3 v = pool.create( ref ).init( i, i, i );
-				if ( i % 2 == 0 )
-					v.feature( COLOR ).set( "blue" );
-				vecs.add( v );
-			}
-
-			vecs.stream()
-				.filter( v -> v.feature( COLOR ).get() == "blue" )
-				.forEach( v -> System.out.println( "LOOK!!! a blue vector! " + v ) );
-
-			final Vector3 v = vecs.get( 5 );
-			v.feature( COLOR ).get();
-			v.feature( RADIUS ).getDouble();
-
-			pool.releaseRef( ref );
-		}
-
 		// PropertyMaps
 		{
 			final ObjPropertyMap< Vector3, String > color = new ObjPropertyMap<>( pool );
@@ -98,8 +69,6 @@ public class Vector3Example
 				final Vector3 v = pool.create( ref ).init( i, i, i );
 				if ( i % 2 == 0 )
 					color.set( v, "blue" );
-				else
-					radius.set( v, 10.0 - i );
 				vecs.add( v );
 			}
 
@@ -110,16 +79,6 @@ public class Vector3Example
 			final Vector3 v = vecs.get( 5 );
 			color.get( v );
 			radius.getDouble( v );
-
-			int i = 0;
-			for ( final Vector3 v2 : vecs )
-			{
-				System.out.println();
-				System.out.println( i + ": " + v2 );
-				System.out.println( "   color = " + ( color.isSet( v2 ) ? color.get( v2 ) : "--" ) );
-				System.out.println( "   radius = " + ( radius.isSet( v2 ) ? radius.get( v2 ) : "--" ) );
-				++i;
-			}
 
 			pool.releaseRef( ref );
 		}

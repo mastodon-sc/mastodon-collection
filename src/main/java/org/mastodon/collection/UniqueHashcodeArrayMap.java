@@ -7,9 +7,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.mastodon.features.Feature;
-import org.mastodon.features.Features;
-
 import gnu.trove.map.TIntObjectArrayMap;
 
 /**
@@ -23,9 +20,6 @@ import gnu.trove.map.TIntObjectArrayMap;
  * <li>the hashcodes need to be small positive integers (such that the backing
  * array does not get large).
  * </ul>
- *
- * This is used for the look up of feature-maps for {@link Feature} in
- * {@link Features}.
  *
  * @param <K>
  *            key type.

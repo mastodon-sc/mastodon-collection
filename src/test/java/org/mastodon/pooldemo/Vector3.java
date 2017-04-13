@@ -2,12 +2,6 @@ package org.mastodon.pooldemo;
 
 import static org.mastodon.pool.ByteUtils.DOUBLE_SIZE;
 
-import java.util.Map;
-
-import org.mastodon.collection.UniqueHashcodeArrayMap;
-import org.mastodon.features.Feature;
-import org.mastodon.features.FeatureValue;
-import org.mastodon.features.Features;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.PoolObject;
 
@@ -22,11 +16,11 @@ public class Vector3 extends PoolObject< Vector3, Vector3Pool, ByteMappedElement
 	protected static final int X_OFFSET = 0;
 	protected static final int SIZE_IN_BYTES = X_OFFSET + 3 * DOUBLE_SIZE;
 
-//	Vector3( final Vector3Pool pool )
-//	{
-//		super( pool );
-//	}
-//
+	Vector3( final Vector3Pool pool )
+	{
+		super( pool );
+	}
+
 	@Override
 	public double getDoublePosition( final int d )
 	{
@@ -234,33 +228,4 @@ public class Vector3 extends PoolObject< Vector3, Vector3Pool, ByteMappedElement
 		sb.append( ")" );
 		return sb.toString();
 	}
-
-
-
-
-
-	Vector3( final Vector3Pool pool, final Features< Vector3 > features )
-	{
-		super( pool );
-		this.features = features;
-		featureValues = new UniqueHashcodeArrayMap<>();
-	}
-
-	private final Features< Vector3 > features;
-
-	private final Map< Feature< ?, Vector3, ? >, FeatureValue< ? > > featureValues;
-
-	@SuppressWarnings( "unchecked" )
-	public < F extends FeatureValue< ? >, M > F feature( final Feature< M, Vector3, F > feature )
-	{
-		F fv = ( F ) featureValues.get( feature );
-		if ( fv == null )
-		{
-			fv = feature.createFeatureValue( this, features );
-			featureValues.put( feature, fv );
-		}
-		return fv;
-	}
-
-
 }
