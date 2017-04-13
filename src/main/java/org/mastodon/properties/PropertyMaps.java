@@ -91,4 +91,23 @@ public class PropertyMaps< O >
 		if ( cleanUp )
 			maps.removeIf( r -> null == r.get() );
 	}
+
+	/**
+	 * Forward to {@link PropertyMap#beforeClearPool()} of all registered property maps.
+	 * Also cleans up maps that have been garbage collected.
+	 */
+	public void beforeClearPool()
+	{
+		boolean cleanUp = false;
+		for ( final WeakReference< PropertyMap< O, ? > > ref : maps )
+		{
+			final PropertyMap< O, ? > map = ref.get();
+			if ( map != null )
+				map.beforeClearPool();
+			else
+				cleanUp = true;
+		}
+		if ( cleanUp )
+			maps.removeIf( r -> null == r.get() );
+	}
 }

@@ -94,4 +94,16 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	{
 		return new ObjPropertyUndoRedoStack<>( this );
 	}
+
+	@Override
+	public void beforeClearPool()
+	{
+		map.clear();
+	}
+
+	@Override
+	public void clear()
+	{
+		throw new UnsupportedOperationException( "TODO" );
+	}
 }

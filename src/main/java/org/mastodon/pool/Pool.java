@@ -53,6 +53,7 @@ public class Pool< O extends PoolObject< O, ?, T >, T extends MappedElement > im
 	 */
 	public void clear()
 	{
+		propertyMaps.beforeClearPool();
 		memPool.clear();
 	}
 

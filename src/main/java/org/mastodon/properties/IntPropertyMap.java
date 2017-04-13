@@ -122,4 +122,16 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	{
 		return new IntPropertyUndoRedoStack<>( this );
 	}
+
+	@Override
+	public void beforeClearPool()
+	{
+		map.clear();
+	}
+
+	@Override
+	public void clear()
+	{
+		throw new UnsupportedOperationException( "TODO" );
+	}
 }

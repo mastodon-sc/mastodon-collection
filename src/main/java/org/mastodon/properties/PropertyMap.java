@@ -73,6 +73,27 @@ public interface PropertyMap< O, T >
 	public void beforeDeleteObject( final O key );
 
 	/**
+	 * For internal use.
+	 * <p>
+	 * This is called by {@link PropertyMaps#clear()} when a pool is about to be cleared.
+	 * This will remove all mappings. In contrast to {@link #clear()} this
+	 * does not emit any
+	 * {@link BeforePropertyChangeListener#beforePropertyChange(PropertyMap, Object)
+	 * beforePropertyChange} or
+	 * {@link PropertyChangeListener#propertyChanged(PropertyMap, Object)
+	 * propertyChanged} events.
+	 * </p>
+	 *
+	 * @param key
+	 */
+	public void beforeClearPool();
+
+	/**
+	 * Remove all mappings.
+	 */
+	public void clear();
+
+	/**
 	 * Returns the value of this property for the specified ({@code key}).
 	 *
 	 * @param key
