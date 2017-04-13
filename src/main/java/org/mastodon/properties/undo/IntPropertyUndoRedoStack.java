@@ -97,11 +97,9 @@ public class IntPropertyUndoRedoStack< O > implements PropertyUndoRedoStack< O >
 	private void swap( final O obj )
 	{
 		final int stackValue = stack.getQuick( top );
-		int value = noEntryValue;
-		if ( stackValue != noEntryValue )
-			value = property.set( obj, stackValue );
-		else
-			property.remove( obj );
+		final int value = ( stackValue != noEntryValue )
+			? property.set( obj, stackValue )
+			: property.removeInt( obj );
 		stack.setQuick( top, value );
 	}
 
