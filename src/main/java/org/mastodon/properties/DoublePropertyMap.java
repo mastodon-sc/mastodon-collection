@@ -60,11 +60,20 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	}
 
 	@Override
-	public void remove( final O key )
+	public Double remove( final O key )
 	{
 		notifyBeforePropertyChange( key );
-		map.remove( key );
+		final double old = map.remove( key );
 		notifyPropertyChanged( key );
+		return ( old == noEntryValue ) ? null : Double.valueOf( old );
+	}
+
+	public double removeDouble( final O key )
+	{
+		notifyBeforePropertyChange( key );
+		final double old = map.remove( key );
+		notifyPropertyChanged( key );
+		return old;
 	}
 
 	public double getDouble( final O key )

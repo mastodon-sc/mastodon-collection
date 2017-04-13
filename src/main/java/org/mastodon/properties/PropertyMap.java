@@ -37,8 +37,10 @@ public interface PropertyMap< O, T >
 	 * Remove the mapping for the specified {@code key} (if it exists).
 	 *
 	 * @param key
+	 * @return the previous value associated with {@code key} (or {@code null}
+	 *         if the property was not set before).
 	 */
-	public void remove( O key );
+	public T remove( O key );
 
 	/**
 	 * For internal use.

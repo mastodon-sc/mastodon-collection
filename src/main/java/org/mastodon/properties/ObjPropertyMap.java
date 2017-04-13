@@ -46,11 +46,12 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	}
 
 	@Override
-	public void remove( final O key )
+	public T remove( final O key )
 	{
 		notifyBeforePropertyChange( key );
-		map.remove( key );
+		final T old = map.remove( key );
 		notifyPropertyChanged( key );
+		return old;
 	}
 
 	@Override

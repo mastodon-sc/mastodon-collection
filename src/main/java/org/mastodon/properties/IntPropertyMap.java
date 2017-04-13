@@ -61,11 +61,20 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	}
 
 	@Override
-	public void remove( final O key )
+	public Integer remove( final O key )
 	{
 		notifyBeforePropertyChange( key );
-		map.remove( key );
+		final int old = map.remove( key );
 		notifyPropertyChanged( key );
+		return ( old == noEntryValue ) ? null : Integer.valueOf( old );
+	}
+
+	public int removeInt( final O key )
+	{
+		notifyBeforePropertyChange( key );
+		final int old = map.remove( key );
+		notifyPropertyChanged( key );
+		return old;
 	}
 
 	public int getInt( final O key )
