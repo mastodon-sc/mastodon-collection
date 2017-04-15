@@ -99,13 +99,13 @@ public abstract class AbstractPropertyMap< O, T > implements PropertyMap< O, T >
 	{
 		if ( emitEvents )
 			for ( final BeforePropertyChangeListener< O > l : beforeChangeListeners )
-				l.beforePropertyChange( this, object );
+				l.beforePropertyChange( object );
 	}
 
 	protected void notifyPropertyChanged( final O object )
 	{
 		if ( emitEvents )
 			for ( final PropertyChangeListener< O > l : changeListeners )
-				l.propertyChanged( this, object );
+				l.propertyChanged( object );
 	}
 }

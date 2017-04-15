@@ -132,7 +132,7 @@ public class Attribute< O >
 	{
 		if ( emitEvents )
 			for ( final BeforeAttributeChangeListener< O > l : beforeChangeListeners )
-				l.beforeAttributeChange( this, object );
+				l.beforeAttributeChange( object );
 	}
 
 	/**
@@ -146,6 +146,6 @@ public class Attribute< O >
 	{
 		if ( emitEvents )
 			for ( final AttributeChangeListener< O > l : changeListeners )
-				l.attributeChanged( this, object );
+				l.attributeChanged( object );
 	}
 }
