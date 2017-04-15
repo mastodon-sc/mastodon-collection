@@ -3,6 +3,7 @@ package org.mastodon.properties;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 import org.mastodon.RefPool;
 
@@ -58,17 +59,7 @@ public class PropertyMaps< O >
 	 */
 	public void beforeDeleteObject( final O key )
 	{
-		boolean cleanUp = false;
-		for ( final WeakReference< PropertyMap< O, ? > > ref : maps )
-		{
-			final PropertyMap< O, ? > map = ref.get();
-			if ( map != null )
-				map.beforeDeleteObject( key );
-			else
-				cleanUp = true;
-		}
-		if ( cleanUp )
-			maps.removeIf( r -> null == r.get() );
+		forEachPropertyMap( m -> m.beforeDeleteObject( key ) );
 	}
 
 	/**
@@ -79,31 +70,44 @@ public class PropertyMaps< O >
 	 */
 	public void objectCreated( final O key )
 	{
-		boolean cleanUp = false;
-		for ( final WeakReference< PropertyMap< O, ? > > ref : maps )
-		{
-			final PropertyMap< O, ? > map = ref.get();
-			if ( map != null )
-				map.objectCreated( key );
-			else
-				cleanUp = true;
-		}
-		if ( cleanUp )
-			maps.removeIf( r -> null == r.get() );
+		forEachPropertyMap( m -> m.objectCreated( key ) );
 	}
 
 	/**
-	 * Forward to {@link PropertyMap#beforeClearPool()} of all registered property maps.
-	 * Also cleans up maps that have been garbage collected.
+	 * Forward to {@link PropertyMap#beforeClearPool()} of all registered
+	 * property maps. Also cleans up maps that have been garbage collected.
 	 */
 	public void beforeClearPool()
+	{
+		forEachPropertyMap( m -> m.beforeClearPool() );
+	}
+
+	/**
+	 * Forward to {@link PropertyMap#pauseListeners()} of all registered
+	 * property maps. Also cleans up maps that have been garbage collected.
+	 */
+	public void pauseListeners()
+	{
+		forEachPropertyMap( m -> m.pauseListeners() );
+	}
+
+	/**
+	 * Forward to {@link PropertyMap#resumeListeners()} of all registered
+	 * property maps. Also cleans up maps that have been garbage collected.
+	 */
+	public void resumeListeners()
+	{
+		forEachPropertyMap( m -> m.resumeListeners() );
+	}
+
+	private void forEachPropertyMap( final Consumer< PropertyMap< O, ? > > consumer )
 	{
 		boolean cleanUp = false;
 		for ( final WeakReference< PropertyMap< O, ? > > ref : maps )
 		{
 			final PropertyMap< O, ? > map = ref.get();
 			if ( map != null )
-				map.beforeClearPool();
+				consumer.accept( map );
 			else
 				cleanUp = true;
 		}
