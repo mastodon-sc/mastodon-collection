@@ -1,5 +1,6 @@
 package org.mastodon.kdtree;
 
+import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -10,9 +11,8 @@ import org.mastodon.pool.DoubleMappedElement;
 import org.mastodon.pool.DoubleMappedElementArray;
 import org.mastodon.pool.MappedElement;
 import org.mastodon.pool.MemPool;
-import org.mastodon.pool.MemPool.Factory;
 import org.mastodon.pool.Pool;
-import org.mastodon.pool.PoolObject;
+import org.mastodon.pool.PoolObjectLayout;
 import org.mastodon.pool.SingleArrayMemPool;
 
 import net.imglib2.RealInterval;
@@ -73,7 +73,10 @@ public class KDTree<
 	public static < O extends RealLocalizable, T extends MappedElement >
 			KDTree< O, T > kdtree( final Collection< O > objects, final RefPool< O > objectPool, final MemPool.Factory< T > poolFactory )
 	{
-		final KDTree< O, T > kdtree = new NodeFactory<>( objects, objectPool, poolFactory ).kdtree;
+		final int capacity = objects.size();
+		final int numDimensions = getNumDimensions( objects, objectPool );
+		final KDTreeNodeLayout layout = new KDTreeNodeLayout( numDimensions );
+		final KDTree< O, T > kdtree = new KDTree<>( capacity, layout, poolFactory, objectPool );
 		kdtree.build( objects );
 		return kdtree;
 	}
@@ -107,60 +110,61 @@ public class KDTree<
 		return map;
 	}
 
-	private static final class NodeFactory<
-				O extends RealLocalizable,
-				T extends MappedElement >
-			implements PoolObject.Factory< KDTreeNode< O, T >, T >
+	static class KDTreeNodeLayout extends PoolObjectLayout
 	{
-		private final KDTree< O, T > kdtree;
+		final DoubleArrayField position;
+		final IndexField leftIndex;
+		final IndexField rightIndex;
+		final IndexField dataIndex;
+		final IntField flags;
 
-		private final int sizeInBytes;
-
-		private final int numDimensions;
-
-		private final MemPool.Factory< T > poolFactory;
-
-		public NodeFactory( final Collection< O > objects, final RefPool< O > objectPool, final MemPool.Factory< T > poolFactory )
+		KDTreeNodeLayout( final int n )
 		{
-			this.poolFactory = poolFactory;
-			if ( objects.isEmpty() )
+			position = doubleArrayField( n );
+			if ( java.nio.ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN )
 			{
-				final O ref = objectPool.createRef();
-				this.numDimensions = ref.numDimensions();
-				objectPool.releaseRef( ref );
+				rightIndex = indexField();
+				leftIndex = indexField();
 			}
 			else
-				this.numDimensions = objects.iterator().next().numDimensions();
-			this.sizeInBytes = KDTreeNode.sizeInBytes( numDimensions );
-			final int capacity = objects.size();
-			kdtree = new KDTree<>( capacity, this, numDimensions, objects, objectPool );
+			{
+				leftIndex = indexField();
+				rightIndex = indexField();
+			}
+			dataIndex = indexField();
+			flags = intField();
 		}
+	}
 
-		@Override
-		public int getSizeInBytes()
-		{
-			return sizeInBytes;
-		}
+	@SuppressWarnings( { "unchecked", "rawtypes" } )
+	private KDTree(
+			final int initialCapacity,
+			final KDTreeNodeLayout layout,
+			final MemPool.Factory< T > memPoolFactory,
+			final RefPool< O > objectPool )
+	{
+		super( initialCapacity, layout, ( Class ) KDTreeNode.class, memPoolFactory );
+		this.n = layout.position.numElements();
+		this.objectPool = objectPool;
+		min = new double[ n ];
+		max = new double[ n ];
+		Arrays.fill( min, Double.POSITIVE_INFINITY );
+		Arrays.fill( max, Double.NEGATIVE_INFINITY );
+	}
 
-		@Override
-		public KDTreeNode< O, T > createEmptyRef()
+	private static < O extends RealLocalizable > int getNumDimensions( final Collection< O > objects, final RefPool< O > objectPool )
+	{
+		final int n;
+		if ( objects.isEmpty() )
 		{
-			return new KDTreeNode<>( kdtree, numDimensions );
+			final O ref = objectPool.createRef();
+			n = ref.numDimensions();
+			objectPool.releaseRef( ref );
 		}
-
-		@Override
-		public Factory< T > getMemPoolFactory()
-		{
-			return poolFactory;
-		}
-
-		@SuppressWarnings( { "unchecked", "rawtypes" } )
-		@Override
-		public Class< KDTreeNode< O, T > > getRefClass()
-		{
-			return ( Class ) KDTreeNode.class;
-		}
-	};
+		else
+			n = objects.iterator().next().numDimensions();
+		return n;
+	}
 
 	private final RefPool< O > objectPool;
 
@@ -180,22 +184,6 @@ public class KDTree<
 	private final double[] max;
 
 	int rootIndex;
-
-	private KDTree(
-			final int initialCapacity,
-			final NodeFactory< O, T > nodeFactory,
-			final int numDimensions,
-			final Collection< O > objects,
-			final RefPool< O > objectPool )
-	{
-		super( initialCapacity, nodeFactory );
-		this.n = numDimensions;
-		this.objectPool = objectPool;
-		min = new double[ n ];
-		max = new double[ n ];
-		Arrays.fill( min, Double.POSITIVE_INFINITY );
-		Arrays.fill( max, Double.NEGATIVE_INFINITY );
-	}
 
 	private void build( final Collection< O > objects )
 	{
@@ -220,6 +208,12 @@ public class KDTree<
 		releaseRef( n2 );
 		releaseRef( n3 );
 		rootIndex = r;
+	}
+
+	@Override
+	protected KDTreeNode< O, T > createEmptyRef()
+	{
+		return new KDTreeNode<>( this, n );
 	}
 
 	double[] getDoubles()

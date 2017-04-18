@@ -2,20 +2,38 @@ package org.mastodon.kdtree;
 
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.ByteMappedElementArray;
-import org.mastodon.pool.MemPool;
 import org.mastodon.pool.Pool;
-import org.mastodon.pool.PoolObject;
+import org.mastodon.pool.PoolObjectLayout;
 import org.mastodon.pool.SingleArrayMemPool;
+import org.mastodon.pool.attributes.RealPointAttribute;
 
 import net.imglib2.EuclideanSpace;
 
 class RealPointPool extends Pool< RealPoint, ByteMappedElement > implements EuclideanSpace
 {
-	private final int n;
+	static class RealPointLayout extends PoolObjectLayout
+	{
+		final IntField magicNumberField;
+		final DoubleArrayField position;
+
+		RealPointLayout( final int numDimensions )
+		{
+			magicNumberField = intField();
+			position = doubleArrayField( numDimensions );
+		}
+	}
+
+	final RealPointAttribute< RealPoint > position;
 
 	public RealPointPool( final int numDimensions, final int initialCapacity )
 	{
-		this( numDimensions, initialCapacity, new RealPointFactory( numDimensions ) );
+		this( new RealPointLayout( numDimensions ), initialCapacity );
+	}
+
+	private RealPointPool( final RealPointLayout layout, final int initialCapacity )
+	{
+		super( initialCapacity, layout, RealPoint.class, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
+		position = new RealPointAttribute<>( layout.position );
 	}
 
 	@Override
@@ -38,49 +56,12 @@ class RealPointPool extends Pool< RealPoint, ByteMappedElement > implements Eucl
 	@Override
 	public int numDimensions()
 	{
-		return n;
+		return position.numDimensions();
 	};
 
-	private RealPointPool( final int numDimensions, final int initialCapacity, final RealPointFactory f )
+	@Override
+	protected RealPoint createEmptyRef()
 	{
-		super( initialCapacity, f );
-		n = numDimensions;
-		f.pool = this;
-	}
-
-	private static class RealPointFactory implements PoolObject.Factory< RealPoint, ByteMappedElement >
-	{
-		private RealPointPool pool;
-
-		private final int n;
-
-		private RealPointFactory( final int numDimensions )
-		{
-			this.n = numDimensions;
-		}
-
-		@Override
-		public int getSizeInBytes()
-		{
-			return RealPoint.SIZE_IN_BYTES( n );
-		}
-
-		@Override
-		public RealPoint createEmptyRef()
-		{
-			return new RealPoint( pool );
-		}
-
-		@Override
-		public MemPool.Factory< ByteMappedElement > getMemPoolFactory()
-		{
-			return SingleArrayMemPool.factory( ByteMappedElementArray.factory );
-		}
-
-		@Override
-		public Class< RealPoint > getRefClass()
-		{
-			return RealPoint.class;
-		}
+		return new RealPoint( this );
 	}
 }

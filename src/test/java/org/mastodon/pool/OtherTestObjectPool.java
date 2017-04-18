@@ -1,10 +1,22 @@
 package org.mastodon.pool;
 
+import org.mastodon.pool.attributes.IntAttribute;
+
 public class OtherTestObjectPool extends Pool< OtherTestObject, ByteMappedElement >
 {
+	static class OtherTestObjectLayout extends PoolObjectLayout
+	{
+		final IntField id = intField();
+	}
+
+	static OtherTestObjectLayout layout = new OtherTestObjectLayout();
+
+	final IntAttribute< OtherTestObject > id;
+
 	public OtherTestObjectPool( final int initialCapacity )
 	{
-		this( initialCapacity, new TestObjectFactory() );
+		super( initialCapacity, layout, OtherTestObject.class, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
+		id = new IntAttribute<>( layout.id );
 	}
 
 	@Override
@@ -24,38 +36,9 @@ public class OtherTestObjectPool extends Pool< OtherTestObject, ByteMappedElemen
 		super.delete( obj );
 	}
 
-	private OtherTestObjectPool( final int initialCapacity, final OtherTestObjectPool.TestObjectFactory f )
+	@Override
+	protected OtherTestObject createEmptyRef()
 	{
-		super( initialCapacity, f );
-		f.pool = this;
+		return new OtherTestObject( this );
 	}
-
-	private static class TestObjectFactory implements PoolObject.Factory< OtherTestObject, ByteMappedElement >
-	{
-		private OtherTestObjectPool pool;
-
-		@Override
-		public int getSizeInBytes()
-		{
-			return TestObject.SIZE_IN_BYTES;
-		}
-
-		@Override
-		public OtherTestObject createEmptyRef()
-		{
-			return new OtherTestObject( pool );
-		}
-
-		@Override
-		public MemPool.Factory< ByteMappedElement > getMemPoolFactory()
-		{
-			return SingleArrayMemPool.factory( ByteMappedElementArray.factory );
-		}
-
-		@Override
-		public Class< OtherTestObject > getRefClass()
-		{
-			return OtherTestObject.class;
-		}
-	};
 }

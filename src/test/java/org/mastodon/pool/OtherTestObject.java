@@ -1,13 +1,7 @@
 package org.mastodon.pool;
 
-import static org.mastodon.pool.ByteUtils.INT_SIZE;
-
 public class OtherTestObject extends PoolObject< OtherTestObject, OtherTestObjectPool, ByteMappedElement >
 {
-	protected static final int ID_OFFSET = 0;
-
-	protected static final int SIZE_IN_BYTES = ID_OFFSET + INT_SIZE;
-
 	OtherTestObject( final OtherTestObjectPool pool )
 	{
 		super( pool );
@@ -15,24 +9,24 @@ public class OtherTestObject extends PoolObject< OtherTestObject, OtherTestObjec
 
 	public OtherTestObject init( final int id )
 	{
-		setId( id );
+		pool.id.setQuiet( this, id );
 		return this;
 	}
 
 	@Override
 	protected void setToUninitializedState()
 	{
-		setId( -1 );
+		pool.id.setQuiet( this, -1 );
 	}
 
 	public int getId()
 	{
-		return access.getInt( ID_OFFSET );
+		return pool.id.get( this );
 	}
 
 	public void setId( final int id )
 	{
-		access.putInt( id, ID_OFFSET );
+		pool.id.set( this, id );
 	}
 
 	@Override

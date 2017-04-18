@@ -1,47 +1,39 @@
 package org.mastodon.kdtree;
 
-import static org.mastodon.pool.ByteUtils.DOUBLE_SIZE;
-import static org.mastodon.pool.ByteUtils.INDEX_SIZE;
-
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.PoolObject;
+import org.mastodon.pool.attributes.RealPointAttribute;
 
 import net.imglib2.RealLocalizable;
 
-class RealPoint extends PoolObject< RealPoint, RealPointPool, ByteMappedElement > implements RealLocalizable
+class RealPoint extends PoolObject< RealPoint, RealPointPool, ByteMappedElement >
+		implements RealPointAttribute.DelegateRealLocalizable, RealPointAttribute.DelegateRealPositionable
 {
-	protected static final int MAGIC_NUMBER_OFFSET = 0;
-
-	protected static final int X_OFFSET = MAGIC_NUMBER_OFFSET + INDEX_SIZE;
-
-	protected static final int SIZE_IN_BYTES( final int numDimensions )
-	{
-		return X_OFFSET + numDimensions * DOUBLE_SIZE;
-	}
-
-	private final int n;
+	private final RealPointAttribute< RealPoint >.AbstractRealPointAccess realPointAccess;
 
 	RealPoint( final RealPointPool pool )
 	{
 		super( pool );
-		n = pool.numDimensions();
+//		realPointAccess = pool.position.new QuietRealPointAccess( this );
+		realPointAccess = pool.position.new RealPointAccess( this );
 	}
 
 	public RealPoint init( final double... position )
 	{
-		setPosition( position );
+		pool.position.setPositionQuiet( this, position );
 		return this;
 	}
 
 	public RealPoint init( final RealLocalizable position )
 	{
-		setPosition( position );
+		pool.position.setPositionQuiet( this, position );
 		return this;
 	}
 
 	@Override
 	public String toString()
 	{
+		final int n = numDimensions();
 		final StringBuilder sb = new StringBuilder();
 		sb.append( "( " );
 		for ( int d = 0; d < n; d++ )
@@ -58,57 +50,9 @@ class RealPoint extends PoolObject< RealPoint, RealPointPool, ByteMappedElement 
 	protected void setToUninitializedState()
 	{}
 
-	// === subset of RealPositionable ===
-
-	public void setPosition( final double[] position )
-	{
-		for ( int d = 0; d < n; ++d )
-			access.putDouble( position[ d ], X_OFFSET + d * DOUBLE_SIZE );
-	}
-
-	public void setPosition( final RealLocalizable position )
-	{
-		for ( int d = 0; d < n; ++d )
-			access.putDouble( position.getDoublePosition( d ), X_OFFSET + d * DOUBLE_SIZE );
-	}
-
-	public void setPosition( final double position, final int d )
-	{
-		access.putDouble( position, X_OFFSET + d * DOUBLE_SIZE );
-	}
-
-	// === RealLocalizable ===
-
 	@Override
-	public int numDimensions()
+	public RealPointAttribute< RealPoint >.AbstractRealPointAccess delegate()
 	{
-		return n;
+		return realPointAccess;
 	}
-
-	@Override
-	public void localize( final float[] position )
-	{
-		for ( int d = 0; d < n; ++d )
-			position[ d ] = ( float ) access.getDouble( X_OFFSET + d * DOUBLE_SIZE );
-	}
-
-	@Override
-	public void localize( final double[] position )
-	{
-		for ( int d = 0; d < n; ++d )
-			position[ d ] = access.getDouble( X_OFFSET + d * DOUBLE_SIZE );
-	}
-
-	@Override
-	public float getFloatPosition( final int d )
-	{
-		return ( float ) getDoublePosition( d );
-	}
-
-	@Override
-	public double getDoublePosition( final int d )
-	{
-		return access.getDouble( X_OFFSET + d * DOUBLE_SIZE );
-	}
-
 }
