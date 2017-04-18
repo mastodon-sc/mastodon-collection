@@ -25,7 +25,7 @@ public abstract class PoolObjectLayout
 	 * @return the size in bytes of a {@link PoolObject} specified by this
 	 *         layout.
 	 */
-	int getSizeInBytes()
+	public int getSizeInBytes()
 	{
 		return currentSizeInBytes.size;
 	}
