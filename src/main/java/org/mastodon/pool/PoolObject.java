@@ -116,27 +116,6 @@ public abstract class PoolObject< O extends PoolObject< O, P, T >, P extends Poo
 		pool.releaseRef( ( O ) this );
 	}
 
-	/**
-	 * A factory for {@link PoolObject}s of type {@code O}.
-	 *
-	 * @param <O>
-	 *            a {@link PoolObject} type.
-	 * @param <T>
-	 *            the MappedElement type of the {@link PoolObject}, for example
-	 *            {@link ByteMappedElement}.
-	 */
-	public static interface Factory< O extends PoolObject< O, ?, T >, T extends MappedElement >
-	{
-		public int getSizeInBytes();
-
-		// TODO: rename to createRef()?
-		public O createEmptyRef();
-
-		public MemPool.Factory< T > getMemPoolFactory();
-
-		public Class< O > getRefClass();
-	}
-
 	@Override
 	public boolean equals( final Object obj )
 	{

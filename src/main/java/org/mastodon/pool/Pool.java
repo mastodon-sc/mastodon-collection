@@ -22,9 +22,9 @@ import org.mastodon.properties.PropertyMaps;
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
-public class Pool< O extends PoolObject< O, ?, T >, T extends MappedElement > implements RefPool< O >, Iterable< O >, HasPropertyMaps< O >
+public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedElement > implements RefPool< O >, Iterable< O >, HasPropertyMaps< O >
 {
-	private final PoolObject.Factory< O, T > objFactory;
+	private final Class< O > poolObjectClass;
 
 	private final MemPool< T > memPool;
 
@@ -36,10 +36,12 @@ public class Pool< O extends PoolObject< O, ?, T >, T extends MappedElement > im
 
 	public Pool(
 			final int initialCapacity,
-			final PoolObject.Factory< O, T > objFactory )
+			final PoolObjectLayout poolObjectLayout,
+			final Class< O > poolObjectClass,
+			final MemPool.Factory< T > memPoolFactory )
 	{
-		this.objFactory = objFactory;
-		this.memPool = objFactory.getMemPoolFactory().createPool( initialCapacity, objFactory.getSizeInBytes() );
+		this.poolObjectClass = poolObjectClass;
+		this.memPool = memPoolFactory.createPool( initialCapacity, poolObjectLayout.getSizeInBytes() );
 		this.tmpObjRefs = new ConcurrentLinkedQueue<>();
 		this.asRefCollection = new PoolCollectionWrapper<>( this );
 		this.propertyMaps = new PropertyMaps<>();
@@ -79,11 +81,13 @@ public class Pool< O extends PoolObject< O, ?, T >, T extends MappedElement > im
 		if ( recycle )
 		{
 			final O obj = tmpObjRefs.poll();
-			return obj == null ? objFactory.createEmptyRef() : obj;
+			return obj == null ? createEmptyRef() : obj;
 		}
 		else
-			return objFactory.createEmptyRef();
+			return createEmptyRef();
 	}
+
+	protected abstract O createEmptyRef();
 
 	@Override
 	public void releaseRef( final O obj )
@@ -117,7 +121,7 @@ public class Pool< O extends PoolObject< O, ?, T >, T extends MappedElement > im
 	@Override
 	public Class< O > getRefClass()
 	{
-		return objFactory.getRefClass();
+		return poolObjectClass;
 	}
 
 	@Override
