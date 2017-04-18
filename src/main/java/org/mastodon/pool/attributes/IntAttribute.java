@@ -30,4 +30,40 @@ public class IntAttribute< O extends PoolObject< O, ?, ? > >
 	{
 		return access( key ).getInt( offset );
 	}
+
+	public IntAttributeValue createAttributeValue( final O key )
+	{
+		return new IntAttributeValue()
+		{
+			@Override
+			public int get()
+			{
+				return IntAttribute.this.get( key );
+			}
+
+			@Override
+			public void set( final int value )
+			{
+				IntAttribute.this.set( key, value );
+			}
+		};
+	}
+
+	public IntAttributeValue createQuietAttributeValue( final O key )
+	{
+		return new IntAttributeValue()
+		{
+			@Override
+			public int get()
+			{
+				return IntAttribute.this.get( key );
+			}
+
+			@Override
+			public void set( final int value )
+			{
+				IntAttribute.this.setQuiet( key, value );
+			}
+		};
+	}
 }

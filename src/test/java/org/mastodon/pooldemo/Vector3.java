@@ -1,13 +1,15 @@
 package org.mastodon.pooldemo;
 
+import org.mastodon.collection.util.DelegateRealLocalizable;
+import org.mastodon.collection.util.DelegateRealPositionable;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.PoolObject;
-import org.mastodon.pool.attributes.RealPointAttribute;
+import org.mastodon.pool.attributes.RealPointAttributeValue;
 
 public class Vector3 extends PoolObject< Vector3, Vector3Pool, ByteMappedElement >
-	implements RealPointAttribute.DelegateRealLocalizable, RealPointAttribute.DelegateRealPositionable
+	implements DelegateRealLocalizable, DelegateRealPositionable
 {
-	private final RealPointAttribute< Vector3 >.AbstractRealPointAccess realPointAccess;
+	private final RealPointAttributeValue position;
 
 	Vector3( final Vector3Pool pool )
 	{
@@ -16,12 +18,12 @@ public class Vector3 extends PoolObject< Vector3, Vector3Pool, ByteMappedElement
 		/*
 		 * doesn't send property change events
 		 */
-//		realPointAccess = pool.position.new QuietRealPointAccess( this );
+//		position = pool.position.createQuietAttributeValue( this );
 
 		/*
 		 * sends property change events
 		 */
-		realPointAccess = pool.position.new RealPointAccess( this );
+		position = pool.position.createAttributeValue( this );
 	}
 
 	public Vector3 init( final double... pos )
@@ -50,8 +52,8 @@ public class Vector3 extends PoolObject< Vector3, Vector3Pool, ByteMappedElement
 	}
 
 	@Override
-	public RealPointAttribute< Vector3 >.AbstractRealPointAccess delegate()
+	public RealPointAttributeValue delegate()
 	{
-		return realPointAccess;
+		return position;
 	}
 }

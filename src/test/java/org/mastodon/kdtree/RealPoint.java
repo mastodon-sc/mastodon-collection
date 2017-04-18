@@ -1,21 +1,23 @@
 package org.mastodon.kdtree;
 
+import org.mastodon.collection.util.DelegateRealLocalizable;
+import org.mastodon.collection.util.DelegateRealPositionable;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.PoolObject;
-import org.mastodon.pool.attributes.RealPointAttribute;
+import org.mastodon.pool.attributes.RealPointAttributeValue;
 
 import net.imglib2.RealLocalizable;
 
 class RealPoint extends PoolObject< RealPoint, RealPointPool, ByteMappedElement >
-		implements RealPointAttribute.DelegateRealLocalizable, RealPointAttribute.DelegateRealPositionable
+		implements DelegateRealLocalizable, DelegateRealPositionable
 {
-	private final RealPointAttribute< RealPoint >.AbstractRealPointAccess realPointAccess;
+	private final RealPointAttributeValue position;
 
 	RealPoint( final RealPointPool pool )
 	{
 		super( pool );
-//		realPointAccess = pool.position.new QuietRealPointAccess( this );
-		realPointAccess = pool.position.new RealPointAccess( this );
+		position = pool.position.createQuietAttributeValue( this );
+//		position = pool.position.createAttributeValue( this );
 	}
 
 	public RealPoint init( final double... position )
@@ -51,8 +53,8 @@ class RealPoint extends PoolObject< RealPoint, RealPointPool, ByteMappedElement 
 	{}
 
 	@Override
-	public RealPointAttribute< RealPoint >.AbstractRealPointAccess delegate()
+	public RealPointAttributeValue delegate()
 	{
-		return realPointAccess;
+		return position;
 	}
 }

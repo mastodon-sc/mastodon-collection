@@ -9,7 +9,6 @@ import org.mastodon.pool.PoolObjectLayout.DoubleArrayField;
 
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
-import net.imglib2.RealPositionable;
 
 public class RealPointAttribute< O extends PoolObject< O, ?, ? > >
 		extends AbstractAttribute< O >
@@ -24,11 +23,21 @@ public class RealPointAttribute< O extends PoolObject< O, ?, ? > >
 		this.n = layoutField.numElements();
 	}
 
-	public abstract class AbstractRealPointAccess implements RealLocalizable, RealPositionable
+	public RealPointAttributeValue createAttributeValue( final O key )
+	{
+		return new Value( key );
+	}
+
+	public RealPointAttributeValue createQuietAttributeValue( final O key )
+	{
+		return new QuietValue( key );
+	}
+
+	abstract class AbstractValue implements RealPointAttributeValue
 	{
 		final O obj;
 
-		public AbstractRealPointAccess( final O obj )
+		public AbstractValue( final O obj )
 		{
 			this.obj = obj;
 		}
@@ -64,9 +73,9 @@ public class RealPointAttribute< O extends PoolObject< O, ?, ? > >
 		}
 	}
 
-	public class RealPointAccess extends AbstractRealPointAccess
+	class Value extends AbstractValue
 	{
-		public RealPointAccess( final O obj )
+		public Value( final O obj )
 		{
 			super( obj );
 		}
@@ -204,9 +213,9 @@ public class RealPointAttribute< O extends PoolObject< O, ?, ? > >
 		}
 	}
 
-	public class QuietRealPointAccess extends AbstractRealPointAccess
+	class QuietValue extends AbstractValue
 	{
-		public QuietRealPointAccess( final O obj )
+		public QuietValue( final O obj )
 		{
 			super( obj );
 		}
@@ -577,189 +586,5 @@ public class RealPointAttribute< O extends PoolObject< O, ?, ? > >
 		final MappedElement a = access( key );
 		for ( int d = 0; d < n; ++d )
 			addInPlace( a, offset + d * DOUBLE_SIZE, localizable.getDoublePosition( d ) );
-	}
-
-	/**
-	 * A {@link RealLocalizable} backed by another {@link RealLocalizable}.
-	 *
-	 * @author Curtis Rueden
-	 * @author Tobias Pietzsch
-	 */
-	public interface DelegateRealLocalizable extends RealLocalizable
-	{
-		RealLocalizable delegate();
-
-		@Override
-		default int numDimensions()
-		{
-			return delegate().numDimensions();
-		}
-
-		@Override
-		default void localize( final float[] position )
-		{
-			delegate().localize( position );
-		}
-
-		@Override
-		default void localize( final double[] position )
-		{
-			delegate().localize( position );
-		}
-
-		@Override
-		default float getFloatPosition( final int d )
-		{
-			return delegate().getFloatPosition( d );
-		}
-
-		@Override
-		default double getDoublePosition( final int d )
-		{
-			return delegate().getDoublePosition( d );
-		}
-	}
-
-	/**
-	 * A {@link RealPositionable} backed by another {@link RealPositionable}.
-	 *
-	 * @author Curtis Rueden
-	 * @author Tobias Pietzsch
-	 */
-	public interface DelegateRealPositionable extends RealPositionable
-	{
-		RealPositionable delegate();
-
-		@Override
-		default void fwd( final int d )
-		{
-			delegate().fwd( d );
-		}
-
-		@Override
-		default void bck( final int d )
-		{
-			delegate().bck( d );
-		}
-
-		@Override
-		default void move( final int distance, final int d )
-		{
-			delegate().move( distance, d );
-		}
-
-		@Override
-		default void move( final long distance, final int d )
-		{
-			delegate().move( distance, d );
-		}
-
-		@Override
-		default void move( final Localizable localizable )
-		{
-			delegate().move( localizable );
-		}
-
-		@Override
-		default void move( final int[] distance )
-		{
-			delegate().move( distance );
-		}
-
-		@Override
-		default void move( final long[] distance )
-		{
-			delegate().move( distance );
-		}
-
-		@Override
-		default void setPosition( final Localizable localizable )
-		{
-			delegate().setPosition( localizable );
-		}
-
-		@Override
-		default void setPosition( final int[] position )
-		{
-			delegate().setPosition( position );
-		}
-
-		@Override
-		default void setPosition( final long[] position )
-		{
-			delegate().setPosition( position );
-		}
-
-		@Override
-		default void setPosition( final int position, final int d )
-		{
-			delegate().setPosition( position, d );
-		}
-
-		@Override
-		default void setPosition( final long position, final int d )
-		{
-			delegate().setPosition( position, d );
-		}
-
-		@Override
-		default void move( final float distance, final int d )
-		{
-			delegate().move( distance, d );
-		}
-
-		@Override
-		default void move( final double distance, final int d )
-		{
-			delegate().move( distance, d );
-		}
-
-		@Override
-		default void move( final RealLocalizable localizable )
-		{
-			delegate().move( localizable );
-		}
-
-		@Override
-		default void move( final float[] distance )
-		{
-			delegate().move( distance );
-		}
-
-		@Override
-		default void move( final double[] distance )
-		{
-			delegate().move( distance );
-		}
-
-		@Override
-		default void setPosition( final RealLocalizable localizable )
-		{
-			delegate().setPosition( localizable );
-		}
-
-		@Override
-		default void setPosition( final float position[] )
-		{
-			delegate().setPosition( position );
-		}
-
-		@Override
-		default void setPosition( final double position[] )
-		{
-			delegate().setPosition( position );
-		}
-
-		@Override
-		default void setPosition( final float position, final int d )
-		{
-			delegate().setPosition( position, d );
-		}
-
-		@Override
-		default void setPosition( final double position, final int d )
-		{
-			delegate().setPosition( position, d );
-		}
 	}
 }

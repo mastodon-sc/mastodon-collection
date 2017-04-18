@@ -30,4 +30,40 @@ public class IndexAttribute< O extends PoolObject< O, ?, ? > >
 	{
 		return access( key ).getIndex( offset );
 	}
+
+	public IndexAttributeValue createAttributeValue( final O key )
+	{
+		return new IndexAttributeValue()
+		{
+			@Override
+			public int get()
+			{
+				return IndexAttribute.this.get( key );
+			}
+
+			@Override
+			public void set( final int value )
+			{
+				IndexAttribute.this.set( key, value );
+			}
+		};
+	}
+
+	public IndexAttributeValue createQuietAttributeValue( final O key )
+	{
+		return new IndexAttributeValue()
+		{
+			@Override
+			public int get()
+			{
+				return IndexAttribute.this.get( key );
+			}
+
+			@Override
+			public void set( final int value )
+			{
+				IndexAttribute.this.setQuiet( key, value );
+			}
+		};
+	}
 }

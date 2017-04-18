@@ -1,9 +1,11 @@
 package org.mastodon.kdtree;
 
 import org.mastodon.RefPool;
+import org.mastodon.collection.util.DelegateRealLocalizable;
 import org.mastodon.pool.MappedElement;
 import org.mastodon.pool.PoolObject;
-import org.mastodon.pool.attributes.RealPointAttribute;
+import org.mastodon.pool.attributes.IntAttributeValue;
+import org.mastodon.pool.attributes.RealPointAttributeValue;
 
 import net.imglib2.RealLocalizable;
 
@@ -20,21 +22,24 @@ public class KDTreeNode<
 			O extends RealLocalizable,
 			T extends MappedElement >
 		extends PoolObject< KDTreeNode< O, T >, KDTree< O, T >, T >
-		implements RealPointAttribute.DelegateRealLocalizable
+		implements DelegateRealLocalizable
 {
 	private final int n;
 
 	private final RefPool< O > objPool;
 
-	private final RealPointAttribute< KDTreeNode< O, T > >.AbstractRealPointAccess position;
+	private final RealPointAttributeValue position;
+
+	private final IntAttributeValue flags;
 
 	public KDTreeNode( final KDTree< O, T > kdtree )
 	{
 		super( kdtree );
 		this.objPool = kdtree.getObjectPool();
-		position = pool.position.new QuietRealPointAccess( this );
+		position = pool.position.createQuietAttributeValue( this );
+		flags = pool.flags.createQuietAttributeValue( this );
 		n = position.numDimensions();
-}
+	}
 
 	@Override
 	public RealLocalizable delegate()
