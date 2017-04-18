@@ -2,16 +2,30 @@ package org.mastodon.pooldemo;
 
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.ByteMappedElementArray;
-import org.mastodon.pool.MemPool;
 import org.mastodon.pool.Pool;
-import org.mastodon.pool.PoolObject;
+import org.mastodon.pool.PoolObjectLayout;
 import org.mastodon.pool.SingleArrayMemPool;
+import org.mastodon.pool.attributes.RealPointAttribute;
 
 public class Vector3Pool extends Pool< Vector3, ByteMappedElement >
 {
+	static class Vector3Layout extends PoolObjectLayout
+	{
+		final DoubleArrayField position = doubleArrayField( 3 );
+	}
+
+	static final Vector3Layout layout = new Vector3Layout();
+
+	final RealPointAttribute< Vector3 > position;
+
 	public Vector3Pool( final int initialCapacity )
 	{
-		this( initialCapacity, new Vector3Factory() );
+		super(
+				initialCapacity,
+				layout,
+				Vector3.class,
+				SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
+		position = new RealPointAttribute<>( layout.position );
 	}
 
 	@Override
@@ -31,38 +45,9 @@ public class Vector3Pool extends Pool< Vector3, ByteMappedElement >
 		super.delete( obj );
 	}
 
-	private Vector3Pool( final int initialCapacity, final Vector3Pool.Vector3Factory f )
+	@Override
+	protected Vector3 createEmptyRef()
 	{
-		super( initialCapacity, f );
-		f.pool = this;
-	}
-
-	private static class Vector3Factory implements PoolObject.Factory< Vector3, ByteMappedElement >
-	{
-		private Vector3Pool pool;
-
-		@Override
-		public int getSizeInBytes()
-		{
-			return Vector3.SIZE_IN_BYTES;
-		}
-
-		@Override
-		public Vector3 createEmptyRef()
-		{
-			return new Vector3( pool );
-		}
-
-		@Override
-		public MemPool.Factory< ByteMappedElement > getMemPoolFactory()
-		{
-			return SingleArrayMemPool.factory( ByteMappedElementArray.factory );
-		}
-
-		@Override
-		public Class< Vector3 > getRefClass()
-		{
-			return Vector3.class;
-		}
+		return new Vector3( this );
 	};
 }
