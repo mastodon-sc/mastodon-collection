@@ -1,5 +1,7 @@
 package org.mastodon.kdtree;
 
+import static org.mastodon.pool.ByteUtils.DOUBLE_SIZE;
+
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,6 +16,9 @@ import org.mastodon.pool.MemPool;
 import org.mastodon.pool.Pool;
 import org.mastodon.pool.PoolObjectLayout;
 import org.mastodon.pool.SingleArrayMemPool;
+import org.mastodon.pool.attributes.IndexAttribute;
+import org.mastodon.pool.attributes.IntAttribute;
+import org.mastodon.pool.attributes.RealPointAttribute;
 
 import net.imglib2.RealInterval;
 import net.imglib2.RealLocalizable;
@@ -136,6 +141,16 @@ public class KDTree<
 		}
 	}
 
+	final RealPointAttribute< KDTreeNode< O, T > > position;
+
+	final IndexAttribute< KDTreeNode< O, T > > leftIndex;
+
+	final IndexAttribute< KDTreeNode< O, T > > rightIndex;
+
+	final IndexAttribute< KDTreeNode< O, T > > dataIndex;
+
+	final IntAttribute< KDTreeNode< O, T > > flags;
+
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	private KDTree(
 			final int initialCapacity,
@@ -144,6 +159,12 @@ public class KDTree<
 			final RefPool< O > objectPool )
 	{
 		super( initialCapacity, layout, ( Class ) KDTreeNode.class, memPoolFactory );
+		sizeInDoubles = ( layout.getSizeInBytes() + DOUBLE_SIZE - 1 ) / DOUBLE_SIZE;
+		position = new RealPointAttribute<>( layout.position );
+		leftIndex = new IndexAttribute<>( layout.leftIndex );
+		rightIndex = new IndexAttribute<>( layout.rightIndex );
+		dataIndex = new IndexAttribute<>( layout.dataIndex );
+		flags = new IntAttribute<>( layout.flags );
 		this.n = layout.position.numElements();
 		this.objectPool = objectPool;
 		min = new double[ n ];
@@ -183,6 +204,11 @@ public class KDTree<
 	 */
 	private final double[] max;
 
+	/**
+	 * Size of a KDTreeNode in doubles
+	 */
+	int sizeInDoubles;
+
 	int rootIndex;
 
 	private void build( final Collection< O > objects )
@@ -213,7 +239,7 @@ public class KDTree<
 	@Override
 	protected KDTreeNode< O, T > createEmptyRef()
 	{
-		return new KDTreeNode<>( this, n );
+		return new KDTreeNode<>( this );
 	}
 
 	double[] getDoubles()
