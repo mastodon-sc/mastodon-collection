@@ -34,15 +34,23 @@ public abstract class PoolObjectLayout
 	{
 		private final int offset;
 
+		private final int sizeInBytes;
+
 		PrimitiveField( final CurrentSizeInBytes sib, final int elementSizeInBytes )
 		{
 			offset = sib.size;
+			sizeInBytes = elementSizeInBytes;
 			sib.size += elementSizeInBytes;
 		}
 
 		public int getOffset()
 		{
 			return offset;
+		}
+
+		public int getSizeInBytes()
+		{
+			return sizeInBytes;
 		}
 	}
 
@@ -52,11 +60,14 @@ public abstract class PoolObjectLayout
 
 		private final int numElements;
 
+		private final int sizeInBytes;
+
 		PrimitiveArrayField( final CurrentSizeInBytes sib, final int numElements, final int elementSizeInBytes )
 		{
 			offset = sib.size;
-			sib.size += numElements * elementSizeInBytes;
+			sizeInBytes = numElements * elementSizeInBytes;
 			this.numElements = numElements;
+			sib.size += sizeInBytes;
 		}
 
 		public int getOffset()
@@ -67,6 +78,11 @@ public abstract class PoolObjectLayout
 		public int numElements()
 		{
 			return numElements;
+		}
+
+		public int getSizeInBytes()
+		{
+			return sizeInBytes;
 		}
 	}
 
