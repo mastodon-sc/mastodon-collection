@@ -11,6 +11,7 @@ public class ByteAttribute< O extends PoolObject< O, ?, ? > >
 
 	public ByteAttribute( final ByteField layoutField )
 	{
+		super( layoutField );
 		this.offset = layoutField.getOffset();
 	}
 

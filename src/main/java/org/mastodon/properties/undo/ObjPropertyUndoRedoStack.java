@@ -6,7 +6,6 @@ package org.mastodon.properties.undo;
 import java.util.ArrayList;
 
 import org.mastodon.properties.ObjPropertyMap;
-import org.mastodon.properties.PropertyMap;
 
 /**
  * A {@link PropertyUndoRedoStack} to record {@link ObjPropertyMap} changes.
@@ -108,11 +107,5 @@ public class ObjPropertyUndoRedoStack< O, T > implements PropertyUndoRedoStack< 
 		while ( stack.size() > end )
 			stack.remove( end );
 		stack.trimToSize();
-	}
-
-	@Override
-	public PropertyMap< O, ? > getPropertyMap()
-	{
-		return property;
 	}
 }

@@ -54,35 +54,19 @@ public abstract class PoolObjectLayout
 		}
 	}
 
-	public static class PrimitiveArrayField
+	public static class PrimitiveArrayField extends PrimitiveField
 	{
-		private final int offset;
-
 		private final int numElements;
-
-		private final int sizeInBytes;
 
 		PrimitiveArrayField( final CurrentSizeInBytes sib, final int numElements, final int elementSizeInBytes )
 		{
-			offset = sib.size;
-			sizeInBytes = numElements * elementSizeInBytes;
+			super( sib, numElements * elementSizeInBytes );
 			this.numElements = numElements;
-			sib.size += sizeInBytes;
-		}
-
-		public int getOffset()
-		{
-			return offset;
 		}
 
 		public int numElements()
 		{
 			return numElements;
-		}
-
-		public int getSizeInBytes()
-		{
-			return sizeInBytes;
 		}
 	}
 

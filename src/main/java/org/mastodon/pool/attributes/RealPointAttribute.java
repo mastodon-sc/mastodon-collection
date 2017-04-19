@@ -19,6 +19,7 @@ public class RealPointAttribute< O extends PoolObject< O, ?, ? > >
 
 	public RealPointAttribute( final DoubleArrayField layoutField )
 	{
+		super( layoutField );
 		this.offset = layoutField.getOffset();
 		this.n = layoutField.numElements();
 	}

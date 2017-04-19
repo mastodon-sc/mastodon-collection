@@ -11,6 +11,7 @@ public class BooleanAttribute< O extends PoolObject< O, ?, ? > >
 
 	public BooleanAttribute( final BooleanField layoutField )
 	{
+		super( layoutField );
 		this.offset = layoutField.getOffset();
 	}
 

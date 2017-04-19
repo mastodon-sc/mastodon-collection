@@ -20,8 +20,6 @@ import org.mastodon.properties.PropertyMap;
  */
 public interface PropertyUndoRedoStack< O >
 {
-	public PropertyMap< O, ? > getPropertyMap();
-
 	/**
 	 * Put the property value of {@code obj} at the top of the stack, expanding
 	 * the stack if necessary. Increment top. Clear any elements at top and

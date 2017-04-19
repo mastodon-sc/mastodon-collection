@@ -11,6 +11,7 @@ public class IntAttribute< O extends PoolObject< O, ?, ? > >
 
 	public IntAttribute( final IntField layoutField )
 	{
+		super( layoutField );
 		this.offset = layoutField.getOffset();
 	}
 

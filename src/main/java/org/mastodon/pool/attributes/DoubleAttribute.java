@@ -11,6 +11,7 @@ public class DoubleAttribute< O extends PoolObject< O, ?, ? > >
 
 	public DoubleAttribute( final DoubleField layoutField )
 	{
+		super( layoutField );
 		this.offset = layoutField.getOffset();
 	}
 

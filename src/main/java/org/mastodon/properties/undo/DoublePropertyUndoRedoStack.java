@@ -5,7 +5,6 @@ package org.mastodon.properties.undo;
 
 import org.mastodon.properties.DoublePropertyMap;
 import org.mastodon.properties.IntPropertyMap;
-import org.mastodon.properties.PropertyMap;
 
 import gnu.trove.list.array.TDoubleArrayList;
 
@@ -111,11 +110,5 @@ public class DoublePropertyUndoRedoStack< O > implements PropertyUndoRedoStack< 
 	{
 		stack.remove( end, stack.size() - end );
 		stack.trimToSize();
-	}
-
-	@Override
-	public PropertyMap< O, ? > getPropertyMap()
-	{
-		return property;
 	}
 }

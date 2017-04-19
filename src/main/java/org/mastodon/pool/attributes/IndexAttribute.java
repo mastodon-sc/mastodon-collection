@@ -11,6 +11,7 @@ public class IndexAttribute< O extends PoolObject< O, ?, ? > >
 
 	public IndexAttribute( final IndexField layoutField )
 	{
+		super( layoutField );
 		this.offset = layoutField.getOffset();
 	}
 

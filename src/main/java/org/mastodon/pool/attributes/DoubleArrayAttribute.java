@@ -17,6 +17,7 @@ public class DoubleArrayAttribute< O extends PoolObject< O, ?, ? > >
 
 	public DoubleArrayAttribute( final DoubleArrayField layoutField )
 	{
+		super( layoutField );
 		this.offset = layoutField.getOffset();
 		this.length = layoutField.numElements();
 	}
