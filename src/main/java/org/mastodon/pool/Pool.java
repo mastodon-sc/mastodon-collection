@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.mastodon.RefPool;
 import org.mastodon.pool.MemPool.PoolIterator;
 import org.mastodon.properties.HasPropertyMaps;
+import org.mastodon.properties.PropertyMap;
 import org.mastodon.properties.PropertyMaps;
 
 /**
@@ -34,6 +35,8 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 
 	private final PropertyMaps< O > propertyMaps;
 
+	protected final Properties< O > properties;
+
 	public Pool(
 			final int initialCapacity,
 			final PoolObjectLayout poolObjectLayout,
@@ -45,6 +48,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 		this.tmpObjRefs = new ConcurrentLinkedQueue<>();
 		this.asRefCollection = new PoolCollectionWrapper<>( this );
 		this.propertyMaps = new PropertyMaps<>();
+		this.properties = new Properties<>();
 	}
 
 	/**
@@ -162,6 +166,23 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	public PropertyMaps< O > getPropertyMaps()
 	{
 		return propertyMaps;
+	}
+
+	/**
+	 * Attributes and "permanent" {@link PropertyMap}s of this pool.
+	 */
+	protected Properties< O > getProperties()
+	{
+		return properties;
+	}
+
+	/**
+	 * Add a {@link PropertyMap} to list of {@link Properties}. (See
+	 * {@link #getProperties()}).
+	 */
+	protected void registerPropertyMap( final PropertyMap< O, ? > propertyMap )
+	{
+		properties.add( propertyMap );
 	}
 
 	protected MemPool< T > getMemPool()

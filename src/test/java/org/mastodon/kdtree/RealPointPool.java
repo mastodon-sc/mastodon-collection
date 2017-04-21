@@ -33,7 +33,7 @@ class RealPointPool extends Pool< RealPoint, ByteMappedElement > implements Eucl
 	private RealPointPool( final RealPointLayout layout, final int initialCapacity )
 	{
 		super( initialCapacity, layout, RealPoint.class, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
-		position = new RealPointAttribute<>( layout.position );
+		position = new RealPointAttribute<>( layout.position, this );
 	}
 
 	@Override

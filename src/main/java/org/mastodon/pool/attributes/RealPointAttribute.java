@@ -4,6 +4,7 @@ import static org.mastodon.pool.ByteUtils.DOUBLE_SIZE;
 
 import org.mastodon.pool.AbstractAttribute;
 import org.mastodon.pool.MappedElement;
+import org.mastodon.pool.Pool;
 import org.mastodon.pool.PoolObject;
 import org.mastodon.pool.PoolObjectLayout.DoubleArrayField;
 
@@ -17,9 +18,9 @@ public class RealPointAttribute< O extends PoolObject< O, ?, ? > >
 
 	private final int n;
 
-	public RealPointAttribute( final DoubleArrayField layoutField )
+	public RealPointAttribute( final DoubleArrayField layoutField, final Pool< O, ? > pool )
 	{
-		super( layoutField );
+		super( layoutField, pool );
 		this.offset = layoutField.getOffset();
 		this.n = layoutField.numElements();
 	}

@@ -3,6 +3,7 @@ package org.mastodon.pool.attributes;
 import static org.mastodon.pool.ByteUtils.DOUBLE_SIZE;
 
 import org.mastodon.pool.AbstractAttribute;
+import org.mastodon.pool.Pool;
 import org.mastodon.pool.PoolObject;
 import org.mastodon.pool.PoolObjectLayout.DoubleArrayField;
 import org.mastodon.properties.BeforePropertyChangeListener;
@@ -15,9 +16,9 @@ public class DoubleArrayAttribute< O extends PoolObject< O, ?, ? > >
 
 	private final int length;
 
-	public DoubleArrayAttribute( final DoubleArrayField layoutField )
+	public DoubleArrayAttribute( final DoubleArrayField layoutField, final Pool< O, ? > pool )
 	{
-		super( layoutField );
+		super( layoutField, pool );
 		this.offset = layoutField.getOffset();
 		this.length = layoutField.numElements();
 	}

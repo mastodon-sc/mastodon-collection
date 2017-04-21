@@ -1,6 +1,7 @@
 package org.mastodon.pool.attributes;
 
 import org.mastodon.pool.AbstractAttribute;
+import org.mastodon.pool.Pool;
 import org.mastodon.pool.PoolObject;
 import org.mastodon.pool.PoolObjectLayout.BooleanField;
 
@@ -9,9 +10,9 @@ public class BooleanAttribute< O extends PoolObject< O, ?, ? > >
 {
 	private final int offset;
 
-	public BooleanAttribute( final BooleanField layoutField )
+	public BooleanAttribute( final BooleanField layoutField, final Pool< O, ? > pool )
 	{
-		super( layoutField );
+		super( layoutField, pool );
 		this.offset = layoutField.getOffset();
 	}
 

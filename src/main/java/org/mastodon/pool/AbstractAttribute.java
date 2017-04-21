@@ -19,9 +19,10 @@ public class AbstractAttribute< O extends PoolObject< O, ?, ? > >
 		return obj.access;
 	}
 
-	protected AbstractAttribute( final PrimitiveField field )
+	protected AbstractAttribute( final PrimitiveField field, final Pool< O, ? > pool )
 	{
 		this.field = field;
+		pool.getProperties().add( this );
 	}
 
 	@Override

@@ -1,7 +1,19 @@
 package org.mastodon.pool;
 
-import org.mastodon.undo.attributes.AttributeSerializer;
+import org.mastodon.io.AttributeSerializer;
 
+/**
+ * Provides serialization of (parts of) a {@link PoolObject} of type {@code O}
+ * to a byte array.
+ * <p>
+ * This can be used for undo/redo and raw i/o.
+ * </p>
+ *
+ * @param <O>
+ *            type of object.
+ *
+ * @author Tobias Pietzsch
+ */
 public class PoolObjectAttributeSerializer< O extends PoolObject< O, ?, ? > > implements AttributeSerializer< O >
 {
 	private final int offset;

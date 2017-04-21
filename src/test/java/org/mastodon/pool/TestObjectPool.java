@@ -16,7 +16,7 @@ public class TestObjectPool extends Pool< TestObject, ByteMappedElement >
 	public TestObjectPool( final int initialCapacity )
 	{
 		super( initialCapacity, layout, TestObject.class, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
-		id = new IntAttribute<>( layout.id );
+		id = new IntAttribute<>( layout.id, this );
 	}
 
 	@Override

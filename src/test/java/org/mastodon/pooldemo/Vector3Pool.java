@@ -25,7 +25,7 @@ public class Vector3Pool extends Pool< Vector3, ByteMappedElement >
 				layout,
 				Vector3.class,
 				SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
-		position = new RealPointAttribute<>( layout.position );
+		position = new RealPointAttribute<>( layout.position, this );
 	}
 
 	@Override

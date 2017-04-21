@@ -1,4 +1,4 @@
-package org.mastodon.undo.attributes;
+package org.mastodon.io;
 
 /**
  * Provides serialization of (parts of) an object of type {@code O} to a byte
