@@ -24,21 +24,12 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 
 	private final KDTreeNode< O, T > node;
 
-	private int bestPointNodeIndex;
-
-	private double bestSquDistance;
-
-	private final O obj;
-
 	public IncrementalNearestNeighborSearchOnKDTree( final KDTree< O, T > tree )
 	{
 		n = tree.numDimensions();
 		pos = new double[ n ];
-		bestPointNodeIndex = -1;
-		bestSquDistance = Double.MAX_VALUE;
 		this.tree = tree;
 		this.node = tree.createRef();
-		this.obj = tree.getObjectPool().createRef();
 	}
 
 	public int numDimensions()
@@ -54,9 +45,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			return;
 
 		queue.clear();
-
 		p.localize( pos );
-		bestSquDistance = Double.MAX_VALUE;
 
 		// create root
 		final HeapElement rootElement = new HeapElement();
@@ -66,9 +55,32 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		rootElement.distance = distanceToBox( pos, rootElement.xmin, rootElement.xmax );
 		rootElement.nodeIndex = tree.rootIndex;
 		rootElement.splitDim = 0;
-		queue.add( rootElement );
 
-		System.out.println( rootElement );
+		rootElement.ddistdistance = 0;
+		for ( int d = 0; d < n; ++d )
+		{
+			double ddiff = rootElement.xmin[ d ] - pos[ d ];
+			if ( ddiff > 0 ) // pos < xmin
+			{
+				rootElement.dorient[ d ] = -1;
+				rootElement.ddist[ d ] = ddiff * ddiff;
+				rootElement.ddistdistance += rootElement.ddist[ d ];
+			}
+			else
+			{
+				ddiff = pos[ d ] - rootElement.xmax[ d ];
+				if ( ddiff >= 0 ) // xmax <= pos
+				{
+					rootElement.dorient[ d ] = 1;
+					rootElement.ddist[ d ] = ddiff * ddiff;
+					rootElement.ddistdistance += rootElement.ddist[ d ];
+				}
+			}
+		}
+		if ( Math.abs( rootElement.distance - rootElement.ddistdistance ) > 0.0000000001 )
+			System.out.println( "oh noooooo! (root)" );
+
+		queue.add( rootElement );
 
 		int i = 0;
 		while ( true )
@@ -91,7 +103,8 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 
 			final HeapElement point = new HeapElement();
 			point.isPoint = true;
-			point.distance = node.squDistanceTo( pos );
+			point.ddistdistance = node.squDistanceTo( pos );
+			point.distance = point.ddistdistance;
 			point.nodeIndex = current.nodeIndex;
 			queue.offer( point );
 
@@ -100,7 +113,10 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			final int leftIndex = node.getLeftIndex();
 			final int rightIndex = node.getRightIndex();
 
-			// add the near branch
+
+			final double nodeposd = node.getPosition( d );
+
+			// add the left branch
 			if ( leftIndex != -1 )
 			{
 				final HeapElement left = new HeapElement();
@@ -109,12 +125,42 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 				left.splitDim = dChild;
 				System.arraycopy( current.xmax, 0, left.xmax, 0, n );
 				System.arraycopy( current.xmin, 0, left.xmin, 0, n );
-				left.xmax[ d ] = node.getPosition( d );
+				left.xmax[ d ] = nodeposd;
 				left.distance = distanceToBox( pos, left.xmin, left.xmax );
+
+
+
+				System.arraycopy( current.dorient, 0, left.dorient, 0, n );
+				System.arraycopy( current.ddist, 0, left.ddist, 0, n );
+				left.ddistdistance = current.ddistdistance;
+				if ( left.dorient[ d ] < 0 )
+				{
+					// do nothing
+				}
+				else if ( left.dorient[ d ] > 0 )
+				{
+					final double ddiff = nodeposd - pos[ d ];
+					left.ddist[ d ] = ddiff * ddiff;
+					left.ddistdistance += - current.ddist[ d ] + left.ddist[ d ];
+				}
+				else
+				{
+					final double ddiff = nodeposd - pos[ d ];
+					if ( ddiff <= 0 ) // xmax <= pos
+					{
+						left.dorient[ d ] = 1;
+						left.ddist[ d ] = ddiff * ddiff;
+						left.ddistdistance += - current.ddist[ d ] + left.ddist[ d ];
+					}
+				}
+				if ( Math.abs( left.distance - left.ddistdistance ) > 0.0000000001 )
+					System.out.println( "oh noooooo! (left) " + Math.abs( left.distance - left.ddistdistance ) );
+
+
 				queue.add( left );
 			}
 
-			// add the away branch
+			// add the right branch
 			if ( rightIndex != -1 )
 			{
 				final HeapElement right = new HeapElement();
@@ -123,8 +169,39 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 				right.splitDim = dChild;
 				System.arraycopy( current.xmax, 0, right.xmax, 0, n );
 				System.arraycopy( current.xmin, 0, right.xmin, 0, n );
-				right.xmin[ d ] = node.getPosition( d );
+				right.xmin[ d ] = nodeposd;
 				right.distance = distanceToBox( pos, right.xmin, right.xmax );
+
+
+
+				System.arraycopy( current.dorient, 0, right.dorient, 0, n );
+				System.arraycopy( current.ddist, 0, right.ddist, 0, n );
+				right.ddistdistance = current.ddistdistance;
+				if ( right.dorient[ d ] < 0 )
+				{
+					final double ddiff = nodeposd - pos[ d ];
+					right.ddist[ d ] = ddiff * ddiff;
+					right.ddistdistance += - current.ddist[ d ] + right.ddist[ d ];
+				}
+				else if ( right.dorient[ d ] > 0 )
+				{
+					// do nothing
+				}
+				else
+				{
+					final double ddiff = nodeposd - pos[ d ];
+					if ( ddiff > 0 ) // pos < xmin
+					{
+						right.dorient[ d ] = -1;
+						right.ddist[ d ] = ddiff * ddiff;
+						right.ddistdistance += - current.ddist[ d ] + right.ddist[ d ];
+					}
+				}
+				if ( Math.abs( right.distance - right.ddistdistance ) > 0.0000000001 )
+					System.out.println( "oh noooooo! (right) " + Math.abs( right.distance - right.ddistdistance ) );
+
+
+
 				queue.add( right );
 			}
 		}
@@ -170,10 +247,15 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 
 		final double[] xmax = new double[ n ];
 
+		// shortcuts?
+		final int[] dorient = new int[ n ];
+		final double[] ddist = new double[ n ];
+		double ddistdistance;
+
 		@Override
 		public int compareTo( final HeapElement o )
 		{
-			return Double.compare( distance, o.distance );
+			return Double.compare( ddistdistance, o.ddistdistance );
 		}
 
 		@Override
@@ -212,58 +294,5 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 
 			return builder.toString();
 		}
-	}
-
-	private final void searchNode( final int currentNodeIndex, final int d )
-	{
-		// consider the current node
-		tree.getObject( currentNodeIndex, node );
-		final double distance = node.squDistanceTo( pos );
-		if ( distance < bestSquDistance )
-		{
-			bestSquDistance = distance;
-			bestPointNodeIndex = currentNodeIndex;
-		}
-
-		final double axisDiff = pos[ d ] - node.getPosition( d );
-		final boolean leftIsNearBranch = axisDiff < 0;
-
-		// search the near branch
-		final int nearChildNodeIndex = leftIsNearBranch ? node.getLeftIndex() : node.getRightIndex();
-		final int awayChildNodeIndex = leftIsNearBranch ? node.getRightIndex() : node.getLeftIndex();
-		if ( nearChildNodeIndex != -1 )
-			searchNode( nearChildNodeIndex, d + 1 == n ? 0 : d + 1 );
-
-		// search the away branch - maybe
-		if ( ( awayChildNodeIndex != -1 ) && ( axisDiff * axisDiff <= bestSquDistance ) )
-			searchNode( awayChildNodeIndex, d + 1 == n ? 0 : d + 1 );
-	}
-
-	public RealLocalizable getPosition()
-	{
-		if ( bestPointNodeIndex == -1 )
-			return null;
-
-		tree.getObject( bestPointNodeIndex, node );
-		return node;
-	}
-
-	public double getSquareDistance()
-	{
-		return bestSquDistance;
-	}
-
-	public double getDistance()
-	{
-		return Math.sqrt( bestSquDistance );
-	}
-
-	public O get()
-	{
-		if ( bestPointNodeIndex == -1 )
-			return null;
-
-		tree.getObject( bestPointNodeIndex, node );
-		return tree.getObjectPool().getObject( node.getDataIndex(), obj );
 	}
 }
