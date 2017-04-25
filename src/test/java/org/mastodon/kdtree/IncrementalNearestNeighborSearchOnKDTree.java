@@ -2,7 +2,19 @@ package org.mastodon.kdtree;
 
 import java.util.PriorityQueue;
 
+import org.mastodon.pool.ByteMappedElement;
+import org.mastodon.pool.ByteMappedElementArray;
 import org.mastodon.pool.MappedElement;
+import org.mastodon.pool.Pool;
+import org.mastodon.pool.PoolObject;
+import org.mastodon.pool.PoolObjectLayout;
+import org.mastodon.pool.SingleArrayMemPool;
+import org.mastodon.pool.attributes.BooleanAttribute;
+import org.mastodon.pool.attributes.ByteArrayAttribute;
+import org.mastodon.pool.attributes.DoubleArrayAttribute;
+import org.mastodon.pool.attributes.DoubleAttribute;
+import org.mastodon.pool.attributes.IndexAttribute;
+import org.mastodon.pool.attributes.IntAttribute;
 
 import net.imglib2.RealLocalizable;
 import net.imglib2.neighborsearch.NearestNeighborSearch;
@@ -48,10 +60,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		p.localize( pos );
 
 		// create root
-		final HeapElement rootElement = new HeapElement();
-		rootElement.isPoint = false;
-		rootElement.nodeIndex = tree.rootIndex;
-		rootElement.splitDim = 0;
+		final HeapElement rootElement = new HeapElement( tree.rootIndex, 0 );
 		rootElement.squDistance = 0;
 		for ( int d = 0; d < n; ++d )
 		{
@@ -94,12 +103,6 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			// get one new point and two new boxes
 			tree.getObject( current.nodeIndex, node );
 
-			final HeapElement point = new HeapElement();
-			point.isPoint = true;
-			point.squDistance = node.squDistanceTo( pos );
-			point.nodeIndex = current.nodeIndex;
-			queue.offer( point );
-
 			final int d = current.splitDim;
 			final int dChild = ( d + 1 == n ) ? 0 : d + 1;
 			final int leftIndex = node.getLeftIndex();
@@ -110,10 +113,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			// add the left branch
 			if ( leftIndex != -1 )
 			{
-				final HeapElement left = new HeapElement();
-				left.isPoint = false;
-				left.nodeIndex = leftIndex;
-				left.splitDim = dChild;
+				final HeapElement left = new HeapElement( leftIndex, dChild );
 
 				System.arraycopy( current.orient, 0, left.orient, 0, n );
 				System.arraycopy( current.axisSquareDistance, 0, left.axisSquareDistance, 0, n );
@@ -143,10 +143,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			// add the right branch
 			if ( rightIndex != -1 )
 			{
-				final HeapElement right = new HeapElement();
-				right.isPoint = false;
-				right.nodeIndex = rightIndex;
-				right.splitDim = dChild;
+				final HeapElement right = new HeapElement( rightIndex, dChild );
 
 				System.arraycopy( current.orient, 0, right.orient, 0, n );
 				System.arraycopy( current.axisSquareDistance, 0, right.axisSquareDistance, 0, n );
@@ -172,6 +169,11 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 
 				queue.add( right );
 			}
+
+			// add current node as a point
+			current.isPoint = true;
+			current.squDistance = node.squDistanceTo( pos );
+			queue.offer( current );
 		}
 		System.out.println( "visited " + i + " nodes" );
 	}
@@ -192,11 +194,98 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		return sum;
 	}
 
+
+	static class NodeDataLayout extends PoolObjectLayout
+	{
+		final IndexField nodeIndex;
+		final IntField splitDim;
+		final BooleanField isPoint;
+		final ByteArrayField orient;
+		final DoubleArrayField axisSquareDistance;
+		final DoubleField squDistance;
+
+		NodeDataLayout( final int numDimensions )
+		{
+			this.numDimensions = numDimensions;
+			nodeIndex = indexField();
+			splitDim = intField();
+			isPoint = booleanField();
+			orient = byteArrayField( numDimensions );
+			axisSquareDistance = doubleArrayField( numDimensions );
+			squDistance = doubleField();
+		}
+
+		final int numDimensions;
+	}
+
+	static class NodeDataPool extends Pool< NodeData, ByteMappedElement >
+	{
+		final NodeDataLayout layout;
+
+		final IndexAttribute nodeIndex;
+
+		final IntAttribute splitDim;
+
+		final BooleanAttribute isPoint;
+
+		final ByteArrayAttribute orient;
+
+		final DoubleArrayAttribute axisSquareDistance;
+
+		final DoubleAttribute squDistance;
+
+		NodeDataPool( final int numDimensions )
+		{
+			this( new NodeDataLayout( numDimensions ) );
+		}
+
+		private NodeDataPool( final NodeDataLayout layout )
+		{
+			super( 50, layout, NodeData.class, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
+			this.layout = layout;
+
+			nodeIndex = new IndexAttribute<>( layout.nodeIndex, this );
+			splitDim = new IntAttribute<>( layout.splitDim, this );
+			isPoint = new BooleanAttribute<>( layout.isPoint, this );
+			orient = new ByteArrayAttribute<>( layout.orient, this );
+			axisSquareDistance = new DoubleArrayAttribute<>( layout.axisSquareDistance, this );
+			squDistance = new DoubleAttribute<>( layout.squDistance, this );
+		}
+
+		@Override
+		protected NodeData createEmptyRef()
+		{
+			return new NodeData( this );
+		}
+	}
+
+	static class NodeData extends PoolObject< NodeData, NodeDataPool, ByteMappedElement >
+	{
+		protected NodeData( final NodeDataPool pool )
+		{
+			super( pool );
+		}
+
+		@Override
+		protected void setToUninitializedState()
+		{}
+
+//		public NodeData init( boolean isPoint, int nodeIndex, int splitDim ){};
+	}
+
 	class HeapElement implements Comparable< HeapElement >
 	{
-		int nodeIndex;
 
-		int splitDim;
+		public HeapElement( final int nodeIndex, final int splitDim )
+		{
+			this.nodeIndex = nodeIndex;
+			this.splitDim = splitDim;
+			this.isPoint = false;
+		}
+
+		final int nodeIndex;
+
+		final int splitDim;
 
 		/**
 		 * true == point. false == box.
