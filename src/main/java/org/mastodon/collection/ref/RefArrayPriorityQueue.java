@@ -9,6 +9,7 @@ import org.mastodon.RefPool;
 
 import gnu.trove.impl.Constants;
 import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 
 /**
  * Min-heap priority queue for {@link Comparable} Ref objects
@@ -49,6 +50,19 @@ public class RefArrayPriorityQueue< O extends Comparable< O > > implements IntBa
 	public void clear()
 	{
 		heap.clear();
+	}
+
+	/**
+	 * Sets the size of the queue to 0, but does not change its capacity. This
+	 * method can be used as an alternative to the {@link #clear()} method if
+	 * you want to recycle a queue without allocating new backing arrays.
+	 *
+	 * @see TIntArrayList#reset()
+	 * @see TIntArrayList#resetQuick()
+	 */
+	public void reset()
+	{
+		heap.resetQuick();
 	}
 
 	@Override

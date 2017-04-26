@@ -21,7 +21,7 @@ import net.imglib2.RealCursor;
 import net.imglib2.RealLocalizable;
 
 /**
- * Implementation of incremental search for kd-trees.
+ * Implementation of incremental nearest neighbor search for kd-trees.
  *
  * @author Tobias Pietzsch
  */
@@ -176,7 +176,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 	@Override
 	public void reset()
 	{
-		queue.clear();
+		queue.reset();
 		pool.clear();
 		if ( tree.size() <= 0 )
 		{
@@ -295,8 +295,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		final int numDimensions;
 	}
 
-	// TODO: static
-	class NodeDataPool extends Pool< NodeData, ByteMappedElement >
+	static class NodeDataPool extends Pool< NodeData, ByteMappedElement >
 	{
 		public NodeData create()
 		{
@@ -358,10 +357,9 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			this( new NodeDataLayout( numDimensions ) );
 		}
 
-		@SuppressWarnings( { "rawtypes", "unchecked" } )
 		private NodeDataPool( final NodeDataLayout layout )
 		{
-			super( 50, layout, ( Class ) NodeData.class, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
+			super( 50, layout, NodeData.class, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
 			this.layout = layout;
 
 			nodeIndex = new IndexAttribute<>( layout.nodeIndex, this );
@@ -379,8 +377,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		}
 	}
 
-	// TODO: static
-	class NodeData extends PoolObject< NodeData, NodeDataPool, ByteMappedElement > implements Comparable< NodeData >
+	static class NodeData extends PoolObject< NodeData, NodeDataPool, ByteMappedElement > implements Comparable< NodeData >
 	{
 		final int n;
 
@@ -490,36 +487,6 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			}
 			pool.squDistance.setQuiet( this, other.getSquDistance() );
 			return this;
-		}
-
-		@Override
-		public String toString()
-		{
-			final StringBuilder builder = new StringBuilder();
-
-			builder.append( "(" );
-			builder.append( getNodeIndex() );
-			builder.append( ") " );
-
-			if ( isPoint() )
-			{
-				builder.append( "point " );
-
-				final KDTreeNode< O, T > node = tree.createRef();
-				final O obj = tree.getObjectPool().createRef();
-				tree.getObject( getNodeIndex(), node );
-				builder.append( tree.getObjectPool().getObject( node.getDataIndex(), obj ).toString() );
-				tree.getObjectPool().releaseRef( obj );
-				tree.releaseRef( node );
-			}
-			else
-			{
-				builder.append( "box " );
-				builder.append( "split d=" );
-				builder.append( getSplitDim() );
-			}
-
-			return builder.toString();
 		}
 	}
 }

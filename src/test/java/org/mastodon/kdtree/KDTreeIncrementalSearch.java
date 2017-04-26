@@ -5,6 +5,7 @@ import java.util.Random;
 import org.mastodon.collection.ref.RefArrayList;
 import org.mastodon.pool.DoubleMappedElement;
 
+import net.imglib2.RealCursor;
 import net.imglib2.util.Util;
 
 public class KDTreeIncrementalSearch
@@ -83,8 +84,26 @@ public class KDTreeIncrementalSearch
 
 		final IncrementalNearestNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > ins = new IncrementalNearestNeighborSearchOnKDTree<>( kdtree );
 		ins.search( query );
-		while ( ins.hasNext() )
+		int i = 0;
+		while ( ins.hasNext() && i < 10 )
+		{
+			++i;
 			System.out.println( Util.distance( query, ins.next() ) );
+			System.out.println( "   " + Util.distance( query, ins ) );
+		}
+
+		final RealCursor< RealPoint > inscopy = ins.copy();
+		while ( ins.hasNext() )
+		{
+			System.out.println( Util.distance( query, ins.next() ) );
+			System.out.println( "   " + Util.distance( query, ins ) );
+		}
+		inscopy.reset();
+		while ( inscopy.hasNext() )
+		{
+			System.out.println( " === " + Util.distance( query, inscopy.next() ) );
+			System.out.println( " ===    " + Util.distance( query, inscopy ) );
+		}
 	}
 
 	void run()

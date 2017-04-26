@@ -93,6 +93,17 @@ public class KDTreeBenchmark
 			}
 	}
 
+	public void incrementalNearestNeighborSearch( final int numRuns )
+	{
+		final IncrementalNearestNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > kd = new IncrementalNearestNeighborSearchOnKDTree<>( kdtree );
+		for ( int i = 0; i < numRuns; ++i )
+			for ( final RealLocalizable t : testVertices )
+			{
+				kd.search( t );
+				kd.next();
+			}
+	}
+
 	public void nearestValidNeighborSearch( final int numRuns )
 	{
 		final NearestValidNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > kd = new NearestValidNeighborSearchOnKDTree<>( kdtree );
@@ -114,6 +125,17 @@ public class KDTreeBenchmark
 	public void nearestNeighborSearchImgLib2( final int numRuns )
 	{
 		final net.imglib2.neighborsearch.NearestNeighborSearchOnKDTree< RealPoint > kd = new net.imglib2.neighborsearch.NearestNeighborSearchOnKDTree<>( kdtreeImgLib2 );
+		for ( int i = 0; i < numRuns; ++i )
+			for ( final RealLocalizable t : testVertices )
+			{
+				kd.search( t );
+				kd.getSampler().get();
+			}
+	}
+
+	public void kNearestNeighborSearchImgLib2( final int numRuns )
+	{
+		final net.imglib2.neighborsearch.KNearestNeighborSearchOnKDTree< RealPoint > kd = new net.imglib2.neighborsearch.KNearestNeighborSearchOnKDTree<>( kdtreeImgLib2, 10 );
 		for ( int i = 0; i < numRuns; ++i )
 			for ( final RealLocalizable t : testVertices )
 			{
@@ -149,6 +171,16 @@ public class KDTreeBenchmark
 			}
 		} );
 
+		System.out.println( "incrementalNearestNeighborSearch() 10 neighbors" );
+		BenchmarkHelper.benchmarkAndPrint( 10, printIndividualTimes, new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				b.incrementalNearestNeighborSearch( 10 );
+			}
+		} );
+
 		System.out.println( "nearestValidNeighborSearch()" );
 		BenchmarkHelper.benchmarkAndPrint( 10, printIndividualTimes, new Runnable()
 		{
@@ -176,6 +208,16 @@ public class KDTreeBenchmark
 			public void run()
 			{
 				b.nearestNeighborSearchImgLib2( 10 );
+			}
+		} );
+
+		System.out.println( "kNearestNeighborSearchImgLib2() 10 neighbors" );
+		BenchmarkHelper.benchmarkAndPrint( 10, printIndividualTimes, new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				b.kNearestNeighborSearchImgLib2( 10 );
 			}
 		} );
 	}
