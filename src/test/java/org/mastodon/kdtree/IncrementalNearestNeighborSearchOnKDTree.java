@@ -1,8 +1,6 @@
 package org.mastodon.kdtree;
 
-import java.util.PriorityQueue;
-
-import org.mastodon.collection.ref.RefArrayHeap;
+import org.mastodon.collection.ref.RefArrayPriorityQueue;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.ByteMappedElementArray;
 import org.mastodon.pool.MappedElement;
@@ -18,11 +16,9 @@ import org.mastodon.pool.attributes.IndexAttribute;
 import org.mastodon.pool.attributes.IntAttribute;
 
 import net.imglib2.RealLocalizable;
-import net.imglib2.neighborsearch.NearestNeighborSearch;
 
 /**
- * Implementation of {@link NearestNeighborSearch} search for kd-trees.
- *
+ * Implementation of incremental search for kd-trees.
  *
  * @author Tobias Pietzsch
  */
@@ -43,7 +39,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 	{
 		n = tree.numDimensions();
 		pool = new NodeDataPool( n );
-		queue2 = new RefArrayHeap<>( pool );
+		queue2 = new RefArrayPriorityQueue<>( pool );
 		pos = new double[ n ];
 		this.tree = tree;
 		this.node = tree.createRef();
@@ -54,44 +50,16 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		return n;
 	}
 
-	PriorityQueue< HeapElement > queue = new PriorityQueue<>();
-
-	RefArrayHeap< NodeData > queue2;
+	RefArrayPriorityQueue< NodeData > queue2;
 
 	public void search( final RealLocalizable p )
 	{
 		if ( tree.size() <= 0 )
 			return;
 
-		queue.clear();
 		queue2.clear();
 		pool.clear();
 		p.localize( pos );
-
-		// create root
-		final HeapElement rootElement = new HeapElement( tree.rootIndex, 0 );
-		rootElement.squDistance = 0;
-		for ( int d = 0; d < n; ++d )
-		{
-			double diff = tree.realMin( d ) - pos[ d ];
-			if ( diff > 0 ) // pos < xmin
-			{
-				rootElement.orient[ d ] = -1;
-				rootElement.axisSquareDistance[ d ] = diff * diff;
-				rootElement.squDistance += rootElement.axisSquareDistance[ d ];
-			}
-			else
-			{
-				diff = pos[ d ] - tree.realMax( d );
-				if ( diff >= 0 ) // xmax <= pos
-				{
-					rootElement.orient[ d ] = 1;
-					rootElement.axisSquareDistance[ d ] = diff * diff;
-					rootElement.squDistance += rootElement.axisSquareDistance[ d ];
-				}
-			}
-		}
-		queue.offer( rootElement );
 
 		final NodeData rootElement2 = pool.create().init( tree.rootIndex, 0 );
 		double squDistance = 0;
@@ -121,32 +89,18 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		int i = 0;
 		while ( true )
 		{
-			System.out.println(  );
 			++i;
 			final NodeData current2 = queue2.poll();
-			System.out.println( "queue2.poll(): " + current2 );
 			if ( current2 == null )
-				break;
-
-			final HeapElement current = queue.poll();
-			System.out.println( "queue.poll(): " + current );
-			if ( current == null )
 				break;
 
 			if ( current2.isPoint() )
 			{
 //				System.out.println( "found " + current2 );
-				System.out.println( " ----> " + Math.sqrt( current2.getSquDistance() ) );
-//				System.out.println( "visited " + i + " nodes" );
-			}
-			if ( current.isPoint )
-			{
-//				System.out.println( "found " + current );
-				System.out.println( Math.sqrt( current.squDistance ) );
+				System.out.println( Math.sqrt( current2.getSquDistance() ) );
 //				System.out.println( "visited " + i + " nodes" );
 				continue;
 			}
-
 
 			// get one new point and two new boxes
 			tree.getObject( current2.getNodeIndex(), node );
@@ -196,106 +150,9 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			current2.setIsPoint( true );
 			current2.setSquDistance( node.squDistanceTo( pos ) );
 			queue2.offer( current2 );
-
-
-
-
-
-
-			// get one new point and two new boxes
-			tree.getObject( current.nodeIndex, node );
-
-			final int d = current.splitDim;
-			final int dChild = ( d + 1 == n ) ? 0 : d + 1;
-			final int leftIndex = node.getLeftIndex();
-			final int rightIndex = node.getRightIndex();
-
-			final double axisdiff = node.getPosition( d ) - pos[ d ];
-
-			// add the left branch
-			if ( leftIndex != -1 )
-			{
-				final HeapElement left = new HeapElement( leftIndex, dChild );
-
-				System.arraycopy( current.orient, 0, left.orient, 0, n );
-				System.arraycopy( current.axisSquareDistance, 0, left.axisSquareDistance, 0, n );
-				left.squDistance = current.squDistance;
-				if ( left.orient[ d ] < 0 )
-				{
-					// do nothing
-				}
-				else if ( left.orient[ d ] > 0 )
-				{
-					left.axisSquareDistance[ d ] = axisdiff * axisdiff;
-					left.squDistance += - current.axisSquareDistance[ d ] + left.axisSquareDistance[ d ];
-				}
-				else
-				{
-					if ( axisdiff <= 0 ) // xmax <= pos
-					{
-						left.orient[ d ] = 1;
-						left.axisSquareDistance[ d ] = axisdiff * axisdiff;
-						left.squDistance += - current.axisSquareDistance[ d ] + left.axisSquareDistance[ d ];
-					}
-				}
-
-				queue.add( left );
-			}
-
-			// add the right branch
-			if ( rightIndex != -1 )
-			{
-				final HeapElement right = new HeapElement( rightIndex, dChild );
-
-				System.arraycopy( current.orient, 0, right.orient, 0, n );
-				System.arraycopy( current.axisSquareDistance, 0, right.axisSquareDistance, 0, n );
-				right.squDistance = current.squDistance;
-				if ( right.orient[ d ] < 0 )
-				{
-					right.axisSquareDistance[ d ] = axisdiff * axisdiff;
-					right.squDistance += - current.axisSquareDistance[ d ] + right.axisSquareDistance[ d ];
-				}
-				else if ( right.orient[ d ] > 0 )
-				{
-					// do nothing
-				}
-				else
-				{
-					if ( axisdiff > 0 ) // pos < xmin
-					{
-						right.orient[ d ] = -1;
-						right.axisSquareDistance[ d ] = axisdiff * axisdiff;
-						right.squDistance += - current.axisSquareDistance[ d ] + right.axisSquareDistance[ d ];
-					}
-				}
-
-				queue.add( right );
-			}
-
-			// add current node as a point
-			current.isPoint = true;
-			current.squDistance = node.squDistanceTo( pos );
-			queue.offer( current );
 		}
 		System.out.println( "visited " + i + " nodes" );
 	}
-
-	double distanceToBox( final double[] point, final double[] xmin, final double[] xmax )
-	{
-		double sum = 0;
-		for ( int d = 0; d < n; ++d )
-		{
-			final double p = point[ d ];
-			final double l = xmin[ d ];
-			final double h = xmax[ d ];
-			if ( p < l )
-				sum += ( l - p ) * ( l - p );
-			else if ( p > h )
-				sum += ( p - h ) * ( p - h );
-		}
-		return sum;
-	}
-
 
 	static class NodeDataLayout extends PoolObjectLayout
 	{
@@ -320,6 +177,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		final int numDimensions;
 	}
 
+	// TODO: static
 	class NodeDataPool extends Pool< NodeData, ByteMappedElement >
 	{
 		public NodeData create()
@@ -403,6 +261,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		}
 	}
 
+	// TODO: static
 	class NodeData extends PoolObject< NodeData, NodeDataPool, ByteMappedElement > implements Comparable< NodeData >
 	{
 		final int n;
@@ -526,83 +385,6 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 				builder.append( "box " );
 				builder.append( "split d=" );
 				builder.append( getSplitDim() );
-			}
-
-			return builder.toString();
-		}
-	}
-
-	class HeapElement implements Comparable< HeapElement >
-	{
-
-		public HeapElement( final int nodeIndex, final int splitDim )
-		{
-			this.nodeIndex = nodeIndex;
-			this.splitDim = splitDim;
-			this.isPoint = false;
-		}
-
-		final int nodeIndex;
-
-		final int splitDim;
-
-		/**
-		 * true == point. false == box.
-		 */
-		boolean isPoint;
-
-		/**
-		 * for each dimension[d]:
-		 * -1 : query[d] < boxmin[d]
-		 *  0 : boxmin[d] <= query[d] < boxmax[d]
-		 *  1 : boxmax[d] <= query[d]
-		 */
-		final int[] orient = new int[ n ];
-
-		/**
-		 * contribution to squared distance foe each dimension
-		 */
-		final double[] axisSquareDistance = new double[ n ];
-
-		/**
-		 * For point: squared distance to query point. For box: minimum squared
-		 * distance from any point in box to query point.
-		 *
-		 * Sorts priority queue. Smaller means higher priority.
-		 */
-		double squDistance;
-
-		@Override
-		public int compareTo( final HeapElement o )
-		{
-			return Double.compare( squDistance, o.squDistance );
-		}
-
-		@Override
-		public String toString()
-		{
-			final StringBuilder builder = new StringBuilder();
-
-			builder.append( "(" );
-			builder.append( nodeIndex );
-			builder.append( ") " );
-
-			if ( isPoint )
-			{
-				builder.append( "point " );
-
-				final KDTreeNode< O, T > node = tree.createRef();
-				final O obj = tree.getObjectPool().createRef();
-				tree.getObject( nodeIndex, node );
-				builder.append( tree.getObjectPool().getObject( node.getDataIndex(), obj ).toString() );
-				tree.getObjectPool().releaseRef( obj );
-				tree.releaseRef( node );
-			}
-			else
-			{
-				builder.append( "box " );
-				builder.append( "split d=" );
-				builder.append( splitDim );
 			}
 
 			return builder.toString();

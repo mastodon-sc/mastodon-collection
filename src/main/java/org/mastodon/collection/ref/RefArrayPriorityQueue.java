@@ -1,25 +1,24 @@
 package org.mastodon.collection.ref;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import org.mastodon.RefPool;
 
 import gnu.trove.impl.Constants;
+import gnu.trove.list.TIntList;
 
 /**
  * Min-heap priority queue for {@link Comparable} Ref objects
  *
  * @author Tobias Pietzsch
  */
-public class RefArrayHeap< O extends Comparable< O > > //implements IntBackedRefCollection< O >, RefPoolBackedRefCollection< O >
+public class RefArrayPriorityQueue< O extends Comparable< O > > implements IntBackedRefCollection< O >, RefPoolBackedRefCollection< O >, Queue< O >
 {
-	final RefPool< O > pool;
-
 	final Class< O > elementType;
 
-	/**
-	 * min-heap
-	 */
 	private final RefArrayList< O > heap;
 
 	private final O ref1;
@@ -28,14 +27,13 @@ public class RefArrayHeap< O extends Comparable< O > > //implements IntBackedRef
 
 	private final O ref3;
 
-	public RefArrayHeap( final RefPool< O > pool )
+	public RefArrayPriorityQueue( final RefPool< O > pool )
 	{
 		this( pool, Constants.DEFAULT_CAPACITY );
 	}
 
-	public RefArrayHeap( final RefPool< O > pool, final int initialCapacity )
+	public RefArrayPriorityQueue( final RefPool< O > pool, final int initialCapacity )
 	{
-		this.pool = pool;
 		heap = new RefArrayList<>( pool, initialCapacity );
 		elementType = pool.getRefClass();
 		ref1 = heap.createRef();
@@ -47,11 +45,13 @@ public class RefArrayHeap< O extends Comparable< O > > //implements IntBackedRef
      * Removes all of the elements from this priority queue.
      * The queue will be empty after this call returns.
      */
+	@Override
 	public void clear()
 	{
 		heap.clear();
 	}
 
+	@Override
 	public O poll()
 	{
 		return poll( heap.createRef() );
@@ -82,6 +82,7 @@ public class RefArrayHeap< O extends Comparable< O > > //implements IntBackedRef
      *         according to the priority queue's ordering
      * @throws NullPointerException if the specified element is null
      */
+	@Override
 	public boolean offer( final O obj )
 	{
 		if ( obj == null )
@@ -121,5 +122,130 @@ public class RefArrayHeap< O extends Comparable< O > > //implements IntBackedRef
 			i = pi;
 		}
 		heap.set( i, child, ref3 );
+	}
+
+	@Override
+	public O peek()
+	{
+		return peek( heap.createRef() );
+	}
+
+	public O peek( final O obj )
+	{
+		return heap.isEmpty() ? null : heap.get( 0, obj );
+	}
+
+	@Override
+	public O remove()
+	{
+		if ( isEmpty() )
+			throw new NoSuchElementException();
+		else
+			return poll();
+	}
+
+	@Override
+	public O element()
+	{
+		if ( isEmpty() )
+			throw new NoSuchElementException();
+		else
+			return peek();
+	}
+
+	@Override
+	public O createRef()
+	{
+		return heap.createRef();
+	}
+
+	@Override
+	public void releaseRef( final O obj )
+	{
+		heap.releaseRef( obj );
+	}
+
+	@Override
+	public TIntList getIndexCollection()
+	{
+		return heap.getIndexCollection();
+	}
+
+	@Override
+	public RefPool< O > getRefPool()
+	{
+		return heap.getRefPool();
+	}
+
+	@Override
+	public int size()
+	{
+		return heap.size();
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return heap.isEmpty();
+	}
+
+	@Override
+	public boolean contains( final Object o )
+	{
+		return heap.contains( o );
+	}
+
+	@Override
+	public Iterator< O > iterator()
+	{
+		return heap.iterator();
+	}
+
+	@Override
+	public Object[] toArray()
+	{
+		return heap.toArray();
+	}
+
+	@Override
+	public < T > T[] toArray( final T[] a )
+	{
+		return heap.toArray( a );
+	}
+
+	@Override
+	public boolean add( final O e )
+	{
+		return offer( e );
+	}
+
+	@Override
+	public boolean containsAll( final Collection< ? > c )
+	{
+		return heap.containsAll( c );
+	}
+
+	@Override
+	public boolean addAll( final Collection< ? extends O > c )
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean remove( final Object o )
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean removeAll( final Collection< ? > c )
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean retainAll( final Collection< ? > c )
+	{
+		throw new UnsupportedOperationException();
 	}
 }
