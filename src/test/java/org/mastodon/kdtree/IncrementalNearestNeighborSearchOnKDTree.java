@@ -2,6 +2,7 @@ package org.mastodon.kdtree;
 
 import java.util.PriorityQueue;
 
+import org.mastodon.collection.ref.RefArrayHeap;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.ByteMappedElementArray;
 import org.mastodon.pool.MappedElement;
@@ -42,6 +43,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 	{
 		n = tree.numDimensions();
 		pool = new NodeDataPool( n );
+		queue2 = new RefArrayHeap<>( pool );
 		pos = new double[ n ];
 		this.tree = tree;
 		this.node = tree.createRef();
@@ -54,7 +56,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 
 	PriorityQueue< HeapElement > queue = new PriorityQueue<>();
 
-	PriorityQueue< NodeData > queue2 = new PriorityQueue<>();
+	RefArrayHeap< NodeData > queue2;
 
 	public void search( final RealLocalizable p )
 	{
@@ -119,6 +121,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		int i = 0;
 		while ( true )
 		{
+			System.out.println(  );
 			++i;
 			final NodeData current2 = queue2.poll();
 			System.out.println( "queue2.poll(): " + current2 );
@@ -517,16 +520,12 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 				builder.append( tree.getObjectPool().getObject( node.getDataIndex(), obj ).toString() );
 				tree.getObjectPool().releaseRef( obj );
 				tree.releaseRef( node );
-				builder.append( " squdist=" );
-				builder.append( getSquDistance() );
 			}
 			else
 			{
 				builder.append( "box " );
 				builder.append( "split d=" );
 				builder.append( getSplitDim() );
-				builder.append( " squdist=" );
-				builder.append( getSquDistance() );
 			}
 
 			return builder.toString();
@@ -598,16 +597,12 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 				builder.append( tree.getObjectPool().getObject( node.getDataIndex(), obj ).toString() );
 				tree.getObjectPool().releaseRef( obj );
 				tree.releaseRef( node );
-				builder.append( " squdist=" );
-				builder.append( squDistance );
 			}
 			else
 			{
 				builder.append( "box " );
 				builder.append( "split d=" );
 				builder.append( splitDim );
-				builder.append( " squdist=" );
-				builder.append( squDistance );
 			}
 
 			return builder.toString();
