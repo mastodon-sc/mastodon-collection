@@ -1,5 +1,6 @@
 package org.mastodon.kdtree;
 
+import org.mastodon.collection.ref.IntRefArrayMap;
 import org.mastodon.collection.ref.RefArrayPriorityQueue;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.ByteMappedElementArray;
@@ -15,6 +16,8 @@ import org.mastodon.pool.attributes.DoubleAttribute;
 import org.mastodon.pool.attributes.IndexAttribute;
 import org.mastodon.pool.attributes.IntAttribute;
 
+import gnu.trove.iterator.TIntIterator;
+import net.imglib2.RealCursor;
 import net.imglib2.RealLocalizable;
 
 /**
@@ -22,7 +25,7 @@ import net.imglib2.RealLocalizable;
  *
  * @author Tobias Pietzsch
  */
-public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement > // implements Cursor< O >
+public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement > implements RealCursor< O >
 {
 	private final KDTree< O, T > tree;
 
@@ -32,81 +35,156 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 
 	private final KDTreeNode< O, T > node;
 
+	private final O obj;
+
 	private final NodeDataPool pool;
 
-	RefArrayPriorityQueue< NodeData > queue;
+	private final RefArrayPriorityQueue< NodeData > queue;
+
+	private boolean hasNext;
+
+	private final NodeData ref1;
+
+	private final NodeData ref2;
+
+	private final KDTreeNode< O, T > currentNode;
+
+	private O currentObj;
 
 	public IncrementalNearestNeighborSearchOnKDTree( final KDTree< O, T > tree )
 	{
+		this.tree = tree;
 		n = tree.numDimensions();
+		pos = new double[ n ];
+		node = tree.createRef();
 		pool = new NodeDataPool( n );
 		queue = new RefArrayPriorityQueue<>( pool );
-		pos = new double[ n ];
-		this.tree = tree;
-		this.node = tree.createRef();
+		obj = tree.getObjectPool().createRef();
+		ref1 = pool.createRef();
+		ref2 = pool.createRef();
+		currentNode = tree.createRef();
 	}
 
+	private IncrementalNearestNeighborSearchOnKDTree( final IncrementalNearestNeighborSearchOnKDTree< O, T > that )
+	{
+		this.tree = that.tree;
+		this.n = that.n;
+		this.pos = that.pos.clone();
+		this.node = tree.createRef().refTo( that.node );
+		pool = new NodeDataPool( n );
+		queue = new RefArrayPriorityQueue<>( pool );
+		this.hasNext = that.hasNext;
+		obj = tree.getObjectPool().createRef();
+		currentObj = that.currentObj == null ? null : tree.getObjectPool().getObject( tree.getObjectPool().getId( that.currentObj ), obj );
+		ref1 = pool.createRef();
+		ref2 = pool.createRef();
+		currentNode = tree.createRef().refTo( that.currentNode );
+
+		final IntRefArrayMap< NodeData > map = new IntRefArrayMap<>( pool, 2 * that.pool.size() );
+		for ( final NodeData nd : that.pool )
+			map.put( nd.getInternalPoolIndex(), pool.create( ref1 ).init( nd ) );
+		final TIntIterator it = that.queue.getIndexCollection().iterator();
+		while( it.hasNext() )
+			queue.offer( map.get( it.next(), ref1 ) );
+	}
+
+	@Override
 	public int numDimensions()
 	{
 		return n;
 	}
 
+	public void search( final RealLocalizable query )
+	{
+		query.localize( pos );
+		reset();
+	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//	@Override
+	@Override
 	public O get()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return currentObj;
 	}
 
-//	@Override
+	@Override
 	public void fwd()
 	{
-		// TODO Auto-generated method stub
-
+		nextToFront();
+		if ( !queue.isEmpty() )
+		{
+			tree.getObject( queue.peek( ref1 ).getNodeIndex(), currentNode );
+			currentObj = tree.getObjectPool().getObject( currentNode.getDataIndex(), obj );
+		}
 	}
 
-//	@Override
+	@Override
 	public boolean hasNext()
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return hasNext;
 	}
 
-//	@Override
+	@Override
 	public O next()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		fwd();
+		return get();
 	}
 
+	@Override
+	public void localize( final float[] position )
+	{
+		currentNode.localize( position );
+	}
 
-	public void search( final RealLocalizable p )
+	@Override
+	public void localize( final double[] position )
+	{
+		currentNode.localize( position );
+	}
+
+	@Override
+	public float getFloatPosition( final int d )
+	{
+		return currentNode.getFloatPosition( d );
+	}
+
+	@Override
+	public double getDoublePosition( final int d )
+	{
+		return currentNode.getDoublePosition( d );
+	}
+
+	@Override
+	public IncrementalNearestNeighborSearchOnKDTree< O, T > copy()
+	{
+		return new IncrementalNearestNeighborSearchOnKDTree<>( this );
+	}
+
+	@Override
+	public IncrementalNearestNeighborSearchOnKDTree< O, T > copyCursor()
+	{
+		return copy();
+	}
+
+	@Override
+	public void jumpFwd( final long steps )
+	{
+		for ( int i = 0; i < steps; ++i )
+			fwd();
+	}
+
+	@Override
+	public void reset()
 	{
 		queue.clear();
 		pool.clear();
-		p.localize( pos );
-
 		if ( tree.size() <= 0 )
+		{
+			hasNext = false;
 			return;
+		}
 
-		final NodeData root = pool.create().init( tree.rootIndex, 0 );
+		final NodeData root = pool.create( ref1 ).init( tree.rootIndex, 0 );
 		double squDistance = 0;
 		for ( int d = 0; d < n; ++d )
 		{
@@ -130,35 +208,31 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		}
 		root.setSquDistance( squDistance );
 		queue.offer( root );
+		hasNext = true;
+	}
 
-		while ( true )
+	private void nextToFront()
+	{
+		if ( !queue.isEmpty() && queue.peek( ref1 ).isPoint() )
+			pool.delete( queue.poll( ref1 ) );
+
+		while ( !queue.isEmpty() && !queue.peek( ref1 ).isPoint() )
 		{
-			final NodeData current = queue.poll();
-			if ( current == null )
-				break;
+			final NodeData current = queue.poll( ref1 );
+			// we know that "current" is a box because of the loop condition
 
-			if ( current.isPoint() )
-			{
-//				System.out.println( "found " + current );
-				System.out.println( Math.sqrt( current.getSquDistance() ) );
-//				System.out.println( "visited " + i + " nodes" );
-				continue;
-			}
-
-			// get one new point and two new boxes
+			// create (at most) two new boxes for left and right child box
 			tree.getObject( current.getNodeIndex(), node );
-
 			final int d = current.getSplitDim();
 			final int dChild = ( d + 1 == n ) ? 0 : d + 1;
 			final int leftIndex = node.getLeftIndex();
 			final int rightIndex = node.getRightIndex();
-
 			final double axisdiff = node.getPosition( d ) - pos[ d ];
 
 			// add the left branch
 			if ( leftIndex != -1 )
 			{
-				final NodeData left = pool.create().init( leftIndex, dChild, current );
+				final NodeData left = pool.create( ref2 ).init( leftIndex, dChild, current );
 
 				final int o = left.getOrient( d );
 				if ( o > 0 || axisdiff <= 0 ) // xmax <= pos
@@ -175,7 +249,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			// add the right branch
 			if ( rightIndex != -1 )
 			{
-				final NodeData right = pool.create().init( rightIndex, dChild, current );
+				final NodeData right = pool.create( ref2 ).init( rightIndex, dChild, current );
 
 				final int o = right.getOrient( d );
 				if ( o < 0 || axisdiff > 0 ) // pos < xmin
@@ -189,11 +263,13 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 				queue.offer( right );
 			}
 
-			// add current node as a point
+			// make "current" box into a point and put it back on the queue
 			current.setIsPoint( true );
 			current.setSquDistance( node.squDistanceTo( pos ) );
 			queue.offer( current );
 		}
+
+		hasNext = queue.size() > 1;
 	}
 
 	static class NodeDataLayout extends PoolObjectLayout
@@ -399,6 +475,20 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 				pool.axisSquDistance.setQuiet( this, d, pool.axisSquDistance.get( parent, d ) );
 			}
 			pool.squDistance.setQuiet( this, pool.squDistance.get( parent ) );
+			return this;
+		}
+
+		public NodeData init( final NodeData other )
+		{
+			pool.isPoint.setQuiet( this, other.isPoint() );
+			pool.nodeIndex.setQuiet( this, other.getNodeIndex() );
+			pool.splitDim.setQuiet( this, other.getSplitDim() );
+			for ( int d = 0; d < n; ++d )
+			{
+				pool.orient.setQuiet( this, d, ( byte ) other.getOrient( d ) );
+				pool.axisSquDistance.setQuiet( this, d, other.getAxisSquDistance( d ) );
+			}
+			pool.squDistance.setQuiet( this, other.getSquDistance() );
 			return this;
 		}
 

@@ -80,8 +80,11 @@ public class KDTreeIncrementalSearch
 
 		System.out.println();
 		System.out.println();
+
 		final IncrementalNearestNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > ins = new IncrementalNearestNeighborSearchOnKDTree<>( kdtree );
 		ins.search( query );
+		while ( ins.hasNext() )
+			System.out.println( Util.distance( query, ins.next() ) );
 	}
 
 	void run()
