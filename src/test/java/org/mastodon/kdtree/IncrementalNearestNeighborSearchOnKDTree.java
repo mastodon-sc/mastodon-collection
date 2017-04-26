@@ -22,8 +22,7 @@ import net.imglib2.RealLocalizable;
  *
  * @author Tobias Pietzsch
  */
-public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement >
-//	implements Cursor< O >
+public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement > // implements Cursor< O >
 {
 	private final KDTree< O, T > tree;
 
@@ -35,11 +34,13 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 
 	private final NodeDataPool pool;
 
+	RefArrayPriorityQueue< NodeData > queue;
+
 	public IncrementalNearestNeighborSearchOnKDTree( final KDTree< O, T > tree )
 	{
 		n = tree.numDimensions();
 		pool = new NodeDataPool( n );
-		queue2 = new RefArrayPriorityQueue<>( pool );
+		queue = new RefArrayPriorityQueue<>( pool );
 		pos = new double[ n ];
 		this.tree = tree;
 		this.node = tree.createRef();
@@ -50,26 +51,70 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		return n;
 	}
 
-	RefArrayPriorityQueue< NodeData > queue2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	@Override
+	public O get()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+//	@Override
+	public void fwd()
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+//	@Override
+	public boolean hasNext()
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+//	@Override
+	public O next()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	public void search( final RealLocalizable p )
 	{
-		if ( tree.size() <= 0 )
-			return;
-
-		queue2.clear();
+		queue.clear();
 		pool.clear();
 		p.localize( pos );
 
-		final NodeData rootElement2 = pool.create().init( tree.rootIndex, 0 );
+		if ( tree.size() <= 0 )
+			return;
+
+		final NodeData root = pool.create().init( tree.rootIndex, 0 );
 		double squDistance = 0;
 		for ( int d = 0; d < n; ++d )
 		{
 			double diff = tree.realMin( d ) - pos[ d ];
 			if ( diff > 0 ) // pos < xmin
 			{
-				rootElement2.setOrient( d, -1 );
-				rootElement2.setAxisSquDistance( d, diff * diff );
+				root.setOrient( d, -1 );
+				root.setAxisSquDistance( d, diff * diff );
 				squDistance += diff * diff;
 			}
 			else
@@ -77,81 +122,78 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 				diff = pos[ d ] - tree.realMax( d );
 				if ( diff >= 0 ) // xmax <= pos
 				{
-					rootElement2.setOrient( d, 1 );
-					rootElement2.setAxisSquDistance( d, diff * diff );
+					root.setOrient( d, 1 );
+					root.setAxisSquDistance( d, diff * diff );
 					squDistance += diff * diff;
 				}
 			}
 		}
-		rootElement2.setSquDistance( squDistance );
-		queue2.offer( rootElement2 );
+		root.setSquDistance( squDistance );
+		queue.offer( root );
 
-		int i = 0;
 		while ( true )
 		{
-			++i;
-			final NodeData current2 = queue2.poll();
-			if ( current2 == null )
+			final NodeData current = queue.poll();
+			if ( current == null )
 				break;
 
-			if ( current2.isPoint() )
+			if ( current.isPoint() )
 			{
-//				System.out.println( "found " + current2 );
-				System.out.println( Math.sqrt( current2.getSquDistance() ) );
+//				System.out.println( "found " + current );
+				System.out.println( Math.sqrt( current.getSquDistance() ) );
 //				System.out.println( "visited " + i + " nodes" );
 				continue;
 			}
 
 			// get one new point and two new boxes
-			tree.getObject( current2.getNodeIndex(), node );
+			tree.getObject( current.getNodeIndex(), node );
 
-			final int d2 = current2.getSplitDim();
-			final int dChild2 = ( d2 + 1 == n ) ? 0 : d2 + 1;
-			final int leftIndex2 = node.getLeftIndex();
-			final int rightIndex2 = node.getRightIndex();
+			final int d = current.getSplitDim();
+			final int dChild = ( d + 1 == n ) ? 0 : d + 1;
+			final int leftIndex = node.getLeftIndex();
+			final int rightIndex = node.getRightIndex();
 
-			final double axisdiff2 = node.getPosition( d2 ) - pos[ d2 ];
+			final double axisdiff = node.getPosition( d ) - pos[ d ];
 
 			// add the left branch
-			if ( leftIndex2 != -1 )
+			if ( leftIndex != -1 )
 			{
-				final NodeData left = pool.create().init( leftIndex2, dChild2, current2 );
+				final NodeData left = pool.create().init( leftIndex, dChild, current );
 
-				final int o = left.getOrient( d2 );
-				if ( o > 0 || axisdiff2 <= 0 ) // xmax <= pos
+				final int o = left.getOrient( d );
+				if ( o > 0 || axisdiff <= 0 ) // xmax <= pos
 				{
 					if ( o == 0 )
-						left.setOrient( d2, 1 );
-					final double asd2 = axisdiff2 * axisdiff2;
-					left.setAxisSquDistance( d2, asd2 );
-					left.setSquDistance( left.getSquDistance() - current2.getAxisSquDistance( d2 ) + asd2 );
+						left.setOrient( d, 1 );
+					final double asd2 = axisdiff * axisdiff;
+					left.setAxisSquDistance( d, asd2 );
+					left.setSquDistance( left.getSquDistance() - current.getAxisSquDistance( d ) + asd2 );
 				}
-				queue2.offer( left );
+				queue.offer( left );
 			}
 
 			// add the right branch
-			if ( rightIndex2 != -1 )
+			if ( rightIndex != -1 )
 			{
-				final NodeData right = pool.create().init( rightIndex2, dChild2, current2 );
+				final NodeData right = pool.create().init( rightIndex, dChild, current );
 
-				final int o = right.getOrient( d2 );
-				if ( o < 0 || axisdiff2 > 0 ) // pos < xmin
+				final int o = right.getOrient( d );
+				if ( o < 0 || axisdiff > 0 ) // pos < xmin
 				{
 					if ( o == 0 )
-						right.setOrient( d2, -1 );
-					final double asd2 = axisdiff2 * axisdiff2;
-					right.setAxisSquDistance( d2, asd2 );
-					right.setSquDistance( right.getSquDistance() - current2.getAxisSquDistance( d2 ) + asd2 );
+						right.setOrient( d, -1 );
+					final double asd = axisdiff * axisdiff;
+					right.setAxisSquDistance( d, asd );
+					right.setSquDistance( right.getSquDistance() - current.getAxisSquDistance( d ) + asd );
 				}
-				queue2.offer( right );
+				queue.offer( right );
 			}
 
 			// add current node as a point
-			current2.setIsPoint( true );
-			current2.setSquDistance( node.squDistanceTo( pos ) );
-			queue2.offer( current2 );
+			current.setIsPoint( true );
+			current.setSquDistance( node.squDistanceTo( pos ) );
+			queue.offer( current );
 		}
-		System.out.println( "visited " + i + " nodes" );
 	}
 
 	static class NodeDataLayout extends PoolObjectLayout
