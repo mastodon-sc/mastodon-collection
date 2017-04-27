@@ -7,7 +7,6 @@ import org.mastodon.kdtree.IncrementalNearestNeighborSearchOnKDTree.NodeDataQueu
 import org.mastodon.pool.MappedElement;
 
 import gnu.trove.iterator.TIntIterator;
-import net.imglib2.RealCursor;
 import net.imglib2.RealLocalizable;
 
 /**
@@ -15,7 +14,8 @@ import net.imglib2.RealLocalizable;
  *
  * @author Tobias Pietzsch
  */
-public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement > implements RealCursor< O >
+public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement >
+		implements IncrementalNearestNeighborSearch< O >
 {
 	private final KDTree< O, T > tree;
 
@@ -84,6 +84,7 @@ public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends Real
 		return n;
 	}
 
+	@Override
 	public void search( final RealLocalizable query )
 	{
 		query.localize( pos );

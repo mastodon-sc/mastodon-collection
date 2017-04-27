@@ -19,7 +19,6 @@ import org.mastodon.pool.attributes.IntArrayAttribute;
 import org.mastodon.pool.attributes.IntAttribute;
 
 import gnu.trove.iterator.TIntIterator;
-import net.imglib2.RealCursor;
 import net.imglib2.RealLocalizable;
 
 /**
@@ -27,7 +26,8 @@ import net.imglib2.RealLocalizable;
  *
  * @author Tobias Pietzsch
  */
-public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement > implements RealCursor< O >
+public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement >
+		implements IncrementalNearestNeighborSearch< O >
 {
 	private final KDTree< O, T > tree;
 
@@ -109,6 +109,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		return n;
 	}
 
+	@Override
 	public void search( final RealLocalizable query )
 	{
 		query.localize( pos );
