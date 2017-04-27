@@ -104,6 +104,17 @@ public class KDTreeBenchmark
 			}
 	}
 
+	public void incrementalNearestValidNeighborSearch( final int numRuns )
+	{
+		final IncrementalNearestValidNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > kd = new IncrementalNearestValidNeighborSearchOnKDTree<>( kdtree );
+		for ( int i = 0; i < numRuns; ++i )
+			for ( final RealLocalizable t : testVertices )
+			{
+				kd.search( t );
+				kd.next();
+			}
+	}
+
 	public void nearestValidNeighborSearch( final int numRuns )
 	{
 		final NearestValidNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > kd = new NearestValidNeighborSearchOnKDTree<>( kdtree );
@@ -171,13 +182,23 @@ public class KDTreeBenchmark
 			}
 		} );
 
-		System.out.println( "incrementalNearestNeighborSearch() 10 neighbors" );
+		System.out.println( "incrementalNearestNeighborSearch()" );
 		BenchmarkHelper.benchmarkAndPrint( 10, printIndividualTimes, new Runnable()
 		{
 			@Override
 			public void run()
 			{
 				b.incrementalNearestNeighborSearch( 10 );
+			}
+		} );
+
+		System.out.println( "incrementalNearestValidNeighborSearch()" );
+		BenchmarkHelper.benchmarkAndPrint( 10, printIndividualTimes, new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				b.incrementalNearestValidNeighborSearch( 10 );
 			}
 		} );
 

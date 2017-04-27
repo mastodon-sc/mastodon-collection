@@ -2,10 +2,10 @@ package org.mastodon.kdtree;
 
 import java.util.Random;
 
+import org.mastodon.collection.RefRefMap;
 import org.mastodon.collection.ref.RefArrayList;
 import org.mastodon.pool.DoubleMappedElement;
 
-import net.imglib2.RealCursor;
 import net.imglib2.util.Util;
 
 public class KDTreeIncrementalSearch
@@ -25,6 +25,8 @@ public class KDTreeIncrementalSearch
 	RefArrayList< RealPoint > testVertices;
 
 	KDTree< RealPoint, DoubleMappedElement > kdtree;
+
+	RefRefMap< RealPoint, KDTreeNode< RealPoint, DoubleMappedElement > > vertexToNodeMap;
 
 	public void createDataVertices()
 	{
@@ -56,6 +58,20 @@ public class KDTreeIncrementalSearch
 		vertexPool.releaseRef( vertex );
 
 		kdtree = KDTree.kdtree( dataVertices, vertexPool );
+		vertexToNodeMap = KDTree.createRefToKDTreeNodeMap( kdtree );
+	}
+
+	public void markInvalid()
+	{
+		final int numInvalidDataVertices = numDataVertices / 2;
+		final Random rnd = new Random( 124 );
+		final KDTreeNode< RealPoint, DoubleMappedElement > node = kdtree.createRef();
+		for ( int i = 0; i < numInvalidDataVertices; ++i )
+		{
+			final int j = rnd.nextInt( kdtree.size() );
+			kdtree.getObject( j, node );
+			node.setValid( false );
+		}
 	}
 
 	void createOrderedNeighborList( final RealPoint query )
@@ -74,10 +90,10 @@ public class KDTreeIncrementalSearch
 
 		System.out.println( ns.getDistance() );
 
-		System.out.println();
-		System.out.println();
-		for ( final RealPoint p : sorted )
-			System.out.println( Util.distance( query, p ) );
+//		System.out.println();
+//		System.out.println();
+//		for ( final RealPoint p : sorted )
+//			System.out.println( Util.distance( query, p ) );
 
 		System.out.println();
 		System.out.println();
@@ -85,32 +101,71 @@ public class KDTreeIncrementalSearch
 		final IncrementalNearestNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > ins = new IncrementalNearestNeighborSearchOnKDTree<>( kdtree );
 		ins.search( query );
 		int i = 0;
-		while ( ins.hasNext() && i < 10 )
-		{
-			++i;
-			System.out.println( Util.distance( query, ins.next() ) );
-			System.out.println( "   " + Util.distance( query, ins ) );
-		}
-
-		final RealCursor< RealPoint > inscopy = ins.copy();
 		while ( ins.hasNext() )
 		{
 			System.out.println( Util.distance( query, ins.next() ) );
-			System.out.println( "   " + Util.distance( query, ins ) );
+			if ( ! sorted.get( i ).equals( ins.get() ) )
+				System.err.println( "mismatch" );
+			++i;
 		}
-		inscopy.reset();
-		while ( inscopy.hasNext() )
+
+//		int i = 0;
+//		while ( ins.hasNext() && i < 10 )
+//		{
+//			++i;
+//			System.out.println( Util.distance( query, ins.next() ) );
+//		}
+//		System.out.println();
+//
+//		final RealCursor< RealPoint > inscopy = ins.copy();
+//		while ( ins.hasNext() )
+//			System.out.println( Util.distance( query, ins.next() ) );
+//		inscopy.reset();
+//		while ( inscopy.hasNext() )
+//			System.out.println( " === " + Util.distance( query, inscopy.next() ) );
+	}
+
+	void createValidOrderedNeighborList( final RealPoint query )
+	{
+		final RefArrayList< RealPoint > sorted = new RefArrayList<>( vertexPool, numTestVertices );
+		final KDTreeNode< RealPoint, DoubleMappedElement > noderef = kdtree.createRef();
+		for ( final RealPoint v : dataVertices )
+			if ( vertexToNodeMap.get( v, noderef ).isValid() )
+				sorted.add( v );
+		kdtree.releaseRef( noderef );
+		sorted.sort( ( p1, p2 ) -> {
+			final double d = Util.distance( query, p1 ) - Util.distance( query, p2 );
+			return d < 0 ? -1 : ( d > 0 ? 1 : 0 );
+		} );
+
+//		System.out.println();
+//		System.out.println();
+//		for ( final RealPoint p : sorted )
+//			System.out.println( Util.distance( query, p ) );
+
+		System.out.println();
+		System.out.println();
+
+		final IncrementalNearestValidNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > ins = new IncrementalNearestValidNeighborSearchOnKDTree<>( kdtree );
+		ins.search( query );
+		int i = 0;
+		while ( ins.hasNext() )
 		{
-			System.out.println( " === " + Util.distance( query, inscopy.next() ) );
-			System.out.println( " ===    " + Util.distance( query, inscopy ) );
+			System.out.println( Util.distance( query, ins.next() ) );
+			if ( ! sorted.get( i ).equals( ins.get() ) )
+				System.err.println( "mismatch" );
+			++i;
 		}
+
 	}
 
 	void run()
 	{
 		createDataVertices();
-		createOrderedNeighborList( testVertices.get( 0 ) );
+//		createOrderedNeighborList( testVertices.get( 0 ) );
 
+		markInvalid();
+		createValidOrderedNeighborList( testVertices.get( 0 ) );
 
 	}
 
