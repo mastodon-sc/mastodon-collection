@@ -42,10 +42,10 @@ public class RefArrayPriorityQueue< O extends Comparable< O > > implements IntBa
 		ref3 = heap.createRef();
 	}
 
-    /**
-     * Removes all of the elements from this priority queue.
-     * The queue will be empty after this call returns.
-     */
+	/**
+	 * Removes all of the elements from this priority queue. The queue will be
+	 * empty after this call returns.
+	 */
 	@Override
 	public void clear()
 	{
@@ -87,15 +87,17 @@ public class RefArrayPriorityQueue< O extends Comparable< O > > implements IntBa
 		}
 	}
 
-    /**
-     * Inserts the specified element into this priority queue.
-     *
-     * @return {@code true} (as specified by {@link Queue#offer})
-     * @throws ClassCastException if the specified element cannot be
-     *         compared with elements currently in this priority queue
-     *         according to the priority queue's ordering
-     * @throws NullPointerException if the specified element is null
-     */
+	/**
+	 * Inserts the specified element into this priority queue.
+	 *
+	 * @return {@code true} (as specified by {@link Queue#offer})
+	 * @throws ClassCastException
+	 *             if the specified element cannot be compared with elements
+	 *             currently in this priority queue according to the priority
+	 *             queue's ordering
+	 * @throws NullPointerException
+	 *             if the specified element is null
+	 */
 	@Override
 	public boolean offer( final O obj )
 	{
@@ -106,24 +108,24 @@ public class RefArrayPriorityQueue< O extends Comparable< O > > implements IntBa
 		return true;
 	}
 
-    private void siftDown( int i )
-    {
-    	final O parent = heap.get( i, ref1 );
-    	final int size = heap.size();
-    	for ( int j = ( i << 1 ) + 1; j < size; i = j, j = ( i << 1 ) + 1 )
-    	{
-    		O child = heap.get( j, ref2 );
-    		if ( j + 1 < size && heap.get( j + 1, ref3 ).compareTo( child ) < 0 )
-    			child = heap.get( ++j, ref2 );
-    		if ( parent.compareTo( child ) > 0 )
-    			heap.set( i, child, ref3 );
-    		else
-    			break;
-    	}
-    	heap.set( i, parent, ref3 );
-    }
+	protected void siftDown( int i )
+	{
+		final O parent = heap.get( i, ref1 );
+		final int size = heap.size();
+		for ( int j = ( i << 1 ) + 1; j < size; i = j, j = ( i << 1 ) + 1 )
+		{
+			O child = heap.get( j, ref2 );
+			if ( j + 1 < size && heap.get( j + 1, ref3 ).compareTo( child ) < 0 )
+				child = heap.get( ++j, ref2 );
+			if ( parent.compareTo( child ) > 0 )
+				heap.set( i, child, ref3 );
+			else
+				break;
+		}
+		heap.set( i, parent, ref3 );
+	}
 
-	private void siftUp( int i )
+	protected void siftUp( int i )
 	{
 		final O child = heap.get( i, ref1 );
 		while ( i > 0 )
