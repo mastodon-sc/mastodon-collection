@@ -147,6 +147,18 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 	}
 
 	@Override
+	public double getSquareDistance()
+	{
+		return queue.peek( ref1 ).getSquDistance();
+	}
+
+	@Override
+	public double getDistance()
+	{
+		return Math.sqrt( queue.peek( ref1 ).getSquDistance() );
+	}
+
+	@Override
 	public void localize( final float[] position )
 	{
 		currentNode.localize( position );

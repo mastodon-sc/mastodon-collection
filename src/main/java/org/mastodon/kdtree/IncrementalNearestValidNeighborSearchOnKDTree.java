@@ -41,6 +41,10 @@ public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends Real
 
 	private int nextNodeIndex;
 
+	private double currentSquDistance;
+
+	private double nextSquDistance;
+
 	public IncrementalNearestValidNeighborSearchOnKDTree( final KDTree< O, T > tree )
 	{
 		this.tree = tree;
@@ -69,6 +73,8 @@ public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends Real
 		ref2 = pool.createRef();
 		currentNode = tree.createRef().refTo( that.currentNode );
 		this.nextNodeIndex = that.nextNodeIndex;
+		this.nextSquDistance = that.nextSquDistance;
+		this.currentSquDistance = that.currentSquDistance;
 
 		final IntRefArrayMap< NodeData > map = new IntRefArrayMap<>( pool, 2 * that.pool.size() );
 		for ( final NodeData nd : that.pool )
@@ -103,6 +109,7 @@ public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends Real
 		hasNext();
 		tree.getObject( nextNodeIndex, currentNode );
 		currentObj = tree.getObjectPool().getObject( currentNode.getDataIndex(), obj );
+		currentSquDistance = nextSquDistance;
 		nextNodeIndex = -1;
 	}
 
@@ -115,6 +122,7 @@ public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends Real
 			if ( queue.isEmpty() )
 				return false;
 			nextNodeIndex = queue.peek( ref1 ).getNodeIndex();
+			nextSquDistance = queue.peek( ref1 ).getSquDistance();
 		}
 		return true;
 	}
@@ -124,6 +132,18 @@ public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends Real
 	{
 		fwd();
 		return get();
+	}
+
+	@Override
+	public double getSquareDistance()
+	{
+		return currentSquDistance;
+	}
+
+	@Override
+	public double getDistance()
+	{
+		return Math.sqrt( currentSquDistance );
 	}
 
 	@Override
@@ -206,6 +226,7 @@ public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends Real
 		queue.offer( root );
 		nextToFront();
 		nextNodeIndex = queue.isEmpty() ? -1 : queue.peek( ref1 ).getNodeIndex();
+		nextSquDistance = queue.isEmpty() ? -1 : queue.peek( ref1 ).getSquDistance();
 	}
 
 	private void nextToFront()
