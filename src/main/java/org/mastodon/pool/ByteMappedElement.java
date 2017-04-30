@@ -172,6 +172,11 @@ public class ByteMappedElement implements MappedElement
 		return ByteUtils.getDouble( dataArray.data, baseOffset + offset );
 	}
 
+	public void copy( final ByteMappedElement src, final int offset, final int length )
+	{
+		System.arraycopy( src.dataArray.data, src.baseOffset + offset, dataArray.data, baseOffset + offset, length );
+	}
+
 	/**
 	 * Two {@link ByteMappedElement} are equal if they refer to the same index
 	 * in the same {@link ByteMappedElementArray}.
