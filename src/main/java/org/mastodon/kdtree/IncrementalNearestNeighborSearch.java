@@ -2,16 +2,16 @@ package org.mastodon.kdtree;
 
 import net.imglib2.RealCursor;
 import net.imglib2.RealLocalizable;
-import net.imglib2.neighborsearch.NearestNeighborSearch;
 
 /**
- * Nearest-neighbor search in an Euclidean space. The interface describes
+ * Incremental nearest-neighbor search in set of points. The interface describes
  * implementations that perform the search for a specified location and provide
- * access to the data, location and distance of the found nearest neighbor until
- * the next search is performed. In a multi-threaded application, each thread
- * will thus need its own {@link NearestNeighborSearch}.
+ * iteration of points in order of increasing distance to the query location.
+ * Iteration is implemented through the {@link RealCursor} interface, providing
+ * access to the data, location and distance to the current nearest neighbor
+ * until the iterator is forwarded or the next search is performed.
  *
- * @author Stephan Saalfeld
+ * @author Tobias Pietzsch
  */
 public interface IncrementalNearestNeighborSearch< T > extends RealCursor< T >
 {
