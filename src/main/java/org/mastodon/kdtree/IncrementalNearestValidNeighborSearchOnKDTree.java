@@ -254,7 +254,7 @@ public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends Real
 			// make "current" box into a point and put it back on the queue
 			current.setIsPoint( true );
 			current.setSquDistance( node.squDistanceTo( pos ) );
-			queue.siftDown();
+			queue.siftDown( 0 );
 
 			if ( leftIndex != -1 || rightIndex != -1 )
 			{

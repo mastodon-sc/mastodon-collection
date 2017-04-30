@@ -1,10 +1,10 @@
 package org.mastodon.kdtree;
 
 import java.util.Arrays;
+import java.util.Queue;
 
-import org.mastodon.RefPool;
 import org.mastodon.collection.ref.IntRefArrayMap;
-import org.mastodon.collection.ref.RefArrayPriorityQueue;
+import org.mastodon.collection.ref.RefArrayList;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.ByteMappedElementArray;
 import org.mastodon.pool.MappedElement;
@@ -18,7 +18,10 @@ import org.mastodon.pool.attributes.IndexAttribute;
 import org.mastodon.pool.attributes.IntArrayAttribute;
 import org.mastodon.pool.attributes.IntAttribute;
 
+import gnu.trove.impl.Constants;
 import gnu.trove.iterator.TIntIterator;
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
 import net.imglib2.RealLocalizable;
 
 /**
@@ -40,19 +43,6 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 	private final O obj;
 
 	private final NodeDataPool pool;
-
-	static class NodeDataQueue extends RefArrayPriorityQueue< NodeData >
-	{
-		public void siftDown()
-		{
-			super.siftDown( 0 );
-		}
-
-		public NodeDataQueue( final RefPool< NodeData > pool )
-		{
-			super( pool );
-		}
-	}
 
 	private final NodeDataQueue queue;
 
@@ -259,7 +249,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			// make "current" box into a point and put it back on the queue
 			current.setIsPoint( true );
 			current.setSquDistance( node.squDistanceTo( pos ) );
-			queue.siftDown();
+			queue.siftDown( 0 );
 
 			if ( leftIndex != -1 || rightIndex != -1 )
 			{
@@ -522,6 +512,123 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			access.copy( other.access, 0, copystart + copylength );
 			setSquDistance( other.getSquDistance() );
 			return this;
+		}
+	}
+
+	static class NodeDataQueue
+	{
+		private final NodeDataPool pool;
+
+		private final RefArrayList< NodeData > heap;
+
+		public NodeDataQueue( final NodeDataPool pool )
+		{
+			this( pool, Constants.DEFAULT_CAPACITY );
+		}
+
+		public NodeDataQueue( final NodeDataPool pool, final int initialCapacity )
+		{
+			this.pool = pool;
+			heap = new RefArrayList<>( pool, initialCapacity );
+		}
+
+		public TIntList getIndexCollection()
+		{
+			return heap.getIndexCollection();
+		}
+
+		public boolean isEmpty()
+		{
+			return heap.isEmpty();
+		}
+
+		public int size()
+		{
+			return heap.size();
+		}
+
+		/**
+		 * Inserts the specified element into this priority queue.
+		 *
+		 * @return {@code true} (as specified by {@link Queue#offer})
+		 * @throws ClassCastException
+		 *             if the specified element cannot be compared with elements
+		 *             currently in this priority queue according to the priority
+		 *             queue's ordering
+		 * @throws NullPointerException
+		 *             if the specified element is null
+		 */
+		public boolean offer( final NodeData obj )
+		{
+			if ( obj == null )
+				throw new NullPointerException();
+			heap.add( obj );
+			siftUp( heap.size() - 1 );
+			return true;
+		}
+
+		public NodeData peek( final NodeData obj )
+		{
+			return heap.isEmpty() ? null : heap.getQuick( 0, obj );
+		}
+
+		public NodeData poll( final NodeData obj )
+		{
+			switch ( heap.size() )
+			{
+			case 0:
+				return null;
+			case 1:
+				return heap.remove( 0, obj );
+			default:
+				heap.getQuick( 0, obj );
+				final TIntArrayList indices = heap.getIndexCollection();
+				indices.set( 0, indices.removeAt( heap.size() - 1 ) );
+				siftDown( 0 );
+				return obj;
+			}
+		}
+
+		public void reset()
+		{
+			heap.resetQuick();
+		}
+
+		void siftDown( int i )
+		{
+			final TIntArrayList indices = heap.getIndexCollection();
+
+			final int parentPoolIndex = indices.getQuick( i );
+			final double parentDistance = pool.distances[ parentPoolIndex ];
+			final int size = heap.size();
+			for ( int j = ( i << 1 ) + 1; j < size; i = j, j = ( i << 1 ) + 1 )
+			{
+				if ( j + 1 < size &&  pool.distances[ indices.getQuick( j + 1 ) ] < pool.distances[ indices.getQuick( j ) ] )
+					++j;
+				if ( parentDistance > pool.distances[ indices.getQuick( j ) ] )
+					indices.set( i, indices.getQuick( j ) );
+				else
+					break;
+			}
+			indices.set( i, parentPoolIndex );
+		}
+
+		void siftUp( int i )
+		{
+			final TIntArrayList indices = heap.getIndexCollection();
+
+			final int childPoolIndex = indices.getQuick( i );
+			final double childDistance = pool.distances[ childPoolIndex ];
+			while ( i > 0 )
+			{
+				final int pi = ( i - 1 ) >>> 1;
+				final int parentPoolIndex = heap.getIndexCollection().getQuick( pi);
+				if ( childDistance >= pool.distances[ parentPoolIndex ] )
+					break;
+				indices.set( i, parentPoolIndex );
+				i = pi;
+			}
+			indices.set( i, childPoolIndex );
 		}
 	}
 }

@@ -112,7 +112,7 @@ public class RefArrayPriorityQueueComparator< O > implements IntBackedRefCollect
 		return true;
 	}
 
-	protected void siftDown( int i )
+	private void siftDown( int i )
 	{
 		final O parent = heap.get( i, ref1 );
 		final int size = heap.size();
@@ -129,7 +129,7 @@ public class RefArrayPriorityQueueComparator< O > implements IntBackedRefCollect
 		heap.set( i, parent, ref3 );
 	}
 
-	protected void siftUp( int i )
+	private void siftUp( int i )
 	{
 		final O child = heap.get( i, ref1 );
 		while ( i > 0 )
