@@ -16,6 +16,7 @@ import org.mastodon.pool.DoubleMappedElement;
 import org.mastodon.pool.SingleArrayMemPool;
 
 import net.imglib2.RealLocalizable;
+import net.imglib2.util.Util;
 
 public class KDTreeTest
 {
@@ -81,6 +82,47 @@ public class KDTreeTest
 		final KDTree< RealPoint, DoubleMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool );
 		assertNotNull( kdtree );
 		assertEquals( kdtree.size(), dataVertices.size() );
+	}
+
+	/**
+	 * Create list of data vertices ordered by distance to the query point. For
+	 * verification of KDTree results
+	 *
+	 * @param sorted
+	 *            is returned and stores the ordered list of data vertices.
+	 * @param t
+	 *            query
+	 */
+	private RefArrayList< RealPoint > getOrderedNeighborList( final RefArrayList< RealPoint > sorted, final RealLocalizable query )
+	{
+		sorted.resetQuick();
+		sorted.addAll( dataVertices );
+		sorted.sort( ( p1, p2 ) -> {
+			final double d = Util.distance( query, p1 ) - Util.distance( query, p2 );
+			return d < 0 ? -1 : ( d > 0 ? 1 : 0 );
+		} );
+		return sorted;
+	}
+
+	/**
+	 * Create list of valid data vertices ordered by distance to the query point. For
+	 * verification of KDTree results
+	 *
+	 * @param sorted
+	 *            is returned and stores the ordered list of valid data vertices.
+	 * @param t
+	 *            query
+	 */
+	private RefArrayList< RealPoint > getOrderedValidNeighborList( final RefArrayList< RealPoint > sorted, final RealLocalizable query )
+	{
+		sorted.resetQuick();
+		sorted.addAll( dataVertices );
+		sorted.removeAll( invalidDataVertices );
+		sorted.sort( ( p1, p2 ) -> {
+			final double d = Util.distance( query, p1 ) - Util.distance( query, p2 );
+			return d < 0 ? -1 : ( d > 0 ? 1 : 0 );
+		} );
+		return sorted;
 	}
 
 	/**
@@ -220,5 +262,42 @@ public class KDTreeTest
 			assertEquals( nnKdtree, nnExhaustive );
 		}
 		vertexPool.releaseRef( nnExhaustive );
+	}
+
+	@Test
+	public void testIncrementalNearestNeighborSearch()
+	{
+		final KDTree< RealPoint, DoubleMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool );
+		final RefArrayList< RealPoint > sorted = new RefArrayList<>( vertexPool, numDataVertices );
+		final IncrementalNearestNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > ins = new IncrementalNearestNeighborSearchOnKDTree<>( kdtree );
+		for ( final RealLocalizable t : testVertices )
+		{
+			getOrderedNeighborList( sorted, t );
+			ins.search( t );
+			int i = 0;
+			while ( ins.hasNext() )
+				assertEquals( sorted.get( i++ ), ins.next() );
+			assertEquals( i, sorted.size() );
+		}
+	}
+
+	@Test
+	public void testIncrementalNearestValidNeighborSearch()
+	{
+		final KDTree< RealPoint, DoubleMappedElement > kdtree = KDTree.kdtree( dataVertices, vertexPool );
+		final RefRefMap< RealPoint, KDTreeNode< RealPoint, DoubleMappedElement > > map = KDTree.createRefToKDTreeNodeMap( kdtree );
+		for ( final RealPoint invalid : invalidDataVertices )
+			map.get( invalid ).setValid( false );
+		final RefArrayList< RealPoint > sorted = new RefArrayList<>( vertexPool, numDataVertices );
+		final IncrementalNearestValidNeighborSearchOnKDTree< RealPoint, DoubleMappedElement > ins = new IncrementalNearestValidNeighborSearchOnKDTree<>( kdtree );
+		for ( final RealLocalizable t : testVertices )
+		{
+			getOrderedValidNeighborList( sorted, t );
+			ins.search( t );
+			int i = 0;
+			while ( ins.hasNext() )
+				assertEquals( sorted.get( i++ ), ins.next() );
+			assertEquals( i, sorted.size() );
+		}
 	}
 }
