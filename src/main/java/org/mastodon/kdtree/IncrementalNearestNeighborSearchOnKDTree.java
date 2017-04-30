@@ -333,10 +333,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 		{
 			super.create( obj );
 			if ( distances.length <= obj.getInternalPoolIndex() )
-			{
 				distances = Arrays.copyOf( distances, distances.length * 2 );
-				System.out.println( "distance size = " + distances.length );
-			}
 			return obj;
 		}
 
