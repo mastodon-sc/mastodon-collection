@@ -38,7 +38,7 @@ public class UndoableEditUndoRedoStack
 	 * Put {@code edit} at the top of the stack, expanding the stack if
 	 * necessary. Increment top. Clear any elements at top and beyond.
 	 *
-	 * @param element
+	 * @param edit
 	 *            the element to push
 	 */
 	public void record( final UndoableEdit edit )

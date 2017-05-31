@@ -50,12 +50,6 @@ public class KthElement< O >
 	 *            index for k-th smallest value. i &lt;= k &lt;= j.
 	 * @param comparator
 	 *            element order
-	 * @param pivotRef
-	 *            temporary {@code O} reference.
-	 * @param tiRef
-	 *            temporary {@code O} reference.
-	 * @param tjRef
-	 *            temporary {@code O} reference.
 	 */
 	public void kthElement( int i, int j, final int k, final Comparator< O > comparator )
 	{
@@ -92,12 +86,6 @@ public class KthElement< O >
 	 *            index of last element of the sublist
 	 * @param comparator
 	 *            element order
-	 * @param pivotRef
-	 *            temporary {@code O} reference.
-	 * @param tiRef
-	 *            temporary {@code O} reference.
-	 * @param tjRef
-	 *            temporary {@code O} reference.
 	 * @return index of pivot element
 	 */
 	private int partitionSubList( int i, int j, final Comparator< O > comparator )

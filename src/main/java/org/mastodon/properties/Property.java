@@ -13,11 +13,12 @@ import org.mastodon.properties.undo.PropertyUndoRedoStack;
 public interface Property< O >
 {
 	/**
-	 * Register a {@link BeforePropertyChangeListener} that will be notified before the
-	 * value of this property is changed. Specifically,
-	 * {@link BeforePropertyChangeListener#beforePropertyChange(PropertyMap, Object)
+	 * Register a {@link BeforePropertyChangeListener} that will be notified
+	 * before the value of this property is changed. Specifically,
+	 * {@link BeforePropertyChangeListener#beforePropertyChange(Object)
 	 * beforePropertyChange} is triggered as the first step of
-	 * {@link #set(Object, Object)} and {@link #remove(Object)}.
+	 * {@link PropertyMap#set(Object, Object)} and
+	 * {@link PropertyMap#remove(Object)}.
 	 *
 	 * @param listener
 	 *            the listener to register.
@@ -40,9 +41,9 @@ public interface Property< O >
 	/**
 	 * Register a {@link PropertyChangeListener} that will be notified when the
 	 * value of this property was changed. Specifically,
-	 * {@link PropertyChangeListener#propertyChanged(PropertyMap, Object)
-	 * propertyChanged} is triggered as the last step of
-	 * {@link #set(Object, Object)} and {@link #remove(Object)}.
+	 * {@link PropertyChangeListener#propertyChanged(Object) propertyChanged} is
+	 * triggered as the last step of {@link PropertyMap#set(Object, Object)} and
+	 * {@link PropertyMap#remove(Object)}.
 	 *
 	 * @param listener
 	 *            the listener to register.

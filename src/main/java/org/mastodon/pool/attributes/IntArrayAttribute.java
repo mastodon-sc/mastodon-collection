@@ -50,8 +50,8 @@ public class IntArrayAttribute< O extends PoolObject< O, ?, ? > >
 	 * property is about to change.
 	 * <p>
 	 * This is exposed publicly to be able to change a few elements with
-	 * {@link #setQuiet(PoolObject, int, double)} without sending notification
-	 * for all of them.
+	 * {@link #setQuiet(PoolObject, int, int)} without sending notification for
+	 * all of them.
 	 * </p>
 	 */
 	@Override
@@ -65,8 +65,8 @@ public class IntArrayAttribute< O extends PoolObject< O, ?, ? > >
 	 * has changed.
 	 * <p>
 	 * This is exposed publicly to be able to change a few elements with
-	 * {@link #setQuiet(PoolObject, int, double)} without sending notification
-	 * for all of them.
+	 * {@link #setQuiet(PoolObject, int, int)} without sending notification for
+	 * all of them.
 	 * </p>
 	 */
 	@Override

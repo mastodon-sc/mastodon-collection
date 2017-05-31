@@ -2,9 +2,6 @@ package org.mastodon.undo;
 
 /**
  * Abstract base class for the UndoableEdit types to be recorded in {@link UndoRedoStack}.
- *
- * @param <T>
- *            the {@link UndoableEdit} type.
  */
 public abstract class AbstractUndoableEditType
 {

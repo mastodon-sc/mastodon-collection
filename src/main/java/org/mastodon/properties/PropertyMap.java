@@ -60,9 +60,9 @@ public interface PropertyMap< O, T > extends Property< O >
 	 * object is about to be deleted. This will remove the mapping for
 	 * {@code key} if it exists. In contrast to {@link #remove(Object)} this
 	 * does not emit any
-	 * {@link BeforePropertyChangeListener#beforePropertyChange(PropertyMap, Object)
+	 * {@link BeforePropertyChangeListener#beforePropertyChange(Object)
 	 * beforePropertyChange} or
-	 * {@link PropertyChangeListener#propertyChanged(PropertyMap, Object)
+	 * {@link PropertyChangeListener#propertyChanged(Object)
 	 * propertyChanged} events.
 	 * </p>
 	 *
@@ -73,16 +73,14 @@ public interface PropertyMap< O, T > extends Property< O >
 	/**
 	 * For internal use.
 	 * <p>
-	 * This is called by {@link PropertyMaps#clear()} when a pool is about to be cleared.
-	 * This will remove all mappings. In contrast to {@link #clear()} this
-	 * does not emit any
-	 * {@link BeforePropertyChangeListener#beforePropertyChange(PropertyMap, Object)
+	 * This is called by {@link PropertyMaps#beforeClearPool()} when a pool is
+	 * about to be cleared. This will remove all mappings. In contrast to
+	 * {@link #clear()} this does not emit any
+	 * {@link BeforePropertyChangeListener#beforePropertyChange(Object)
 	 * beforePropertyChange} or
-	 * {@link PropertyChangeListener#propertyChanged(PropertyMap, Object)
-	 * propertyChanged} events.
+	 * {@link PropertyChangeListener#propertyChanged(Object) propertyChanged}
+	 * events.
 	 * </p>
-	 *
-	 * @param key
 	 */
 	public void beforeClearPool();
 

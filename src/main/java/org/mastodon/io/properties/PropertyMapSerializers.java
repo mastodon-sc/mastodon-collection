@@ -5,15 +5,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import org.mastodon.properties.PropertyMap;
-
 /**
- * De/serialize a {@link PropertyMap} of type {@code M}.
+ * Map from {@code String} keys to {@link PropertyMapSerializer}. See
+ * {@link RawPropertyIO}.
  *
- * @param <M>
- *            the property map type
  * @param <O>
- *            type of object which the property is attached to.
+ *            type of object which properties are attached to.
  *
  * @author Tobias Pietzsch
  */

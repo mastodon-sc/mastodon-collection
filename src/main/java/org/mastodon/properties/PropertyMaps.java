@@ -9,9 +9,9 @@ import org.mastodon.RefPool;
 
 /**
  * Maintains a list of {@link PropertyMap}s, typically for a {@link RefPool}.
- * The purpose is to broadcast {@link #create(Object)} and
- * {@link #beforeDeleteObject(Object)} events to all {@link PropertyMap}s such that they can
- * update accordingly.
+ * The purpose is to broadcast {@link #objectCreated(Object)} and
+ * {@link #beforeDeleteObject(Object)} events to all {@link PropertyMap}s such
+ * that they can update accordingly.
  * <p>
  * The list only maintains {@link WeakReference}s to {@link PropertyMap}s. This
  * makes it easier to create temporary maps without worrying about book-keeping.
