@@ -68,6 +68,33 @@ public class GeometryUtil
 		return true;
 	}
 
+	public static final String printInterval( final RealInterval interval )
+	{
+		String out = "(Interval empty)";
+
+		if ( interval == null || interval.numDimensions() == 0 )
+			return out;
+
+		out = "[" + String.format( "%.1f", interval.realMin( 0 ) );
+
+		for ( int i = 1; i < interval.numDimensions(); i++ )
+			out += ", " + String.format( "%.1f", interval.realMin( i ) );
+
+		out += "] -> [" + String.format( "%.1f", interval.realMax( 0 ) );
+
+		for ( int i = 1; i < interval.numDimensions(); i++ )
+			out += ", " + String.format( "%.1f", interval.realMax( i ) );
+
+		out += "], dimensions (" + String.format( "%.1f", interval.realMax( 0 ) - interval.realMin( 0 ) );
+
+		for ( int i = 1; i < interval.numDimensions(); i++ )
+			out += ", " + String.format( "%.1f", interval.realMax( i ) - interval.realMin( i ) );
+
+		out += ")";
+
+		return out;
+	}
+
 	private GeometryUtil()
 	{}
 }
