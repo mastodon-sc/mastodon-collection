@@ -4,21 +4,22 @@ import java.util.Collection;
 
 import org.mastodon.Ref;
 import org.mastodon.RefPool;
+import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefStack;
 import org.mastodon.collection.ref.RefArrayList;
 import org.mastodon.collection.ref.RefArrayStack;
-import org.mastodon.pool.MappedElement;
-import org.mastodon.pool.MemPool;
-import org.mastodon.pool.MemPool.Factory;
+import org.mastodon.pool.ByteMappedElement;
+import org.mastodon.pool.ByteMappedElementArray;
 import org.mastodon.pool.Pool;
 import org.mastodon.pool.PoolObjectLayout;
+import org.mastodon.pool.SingleArrayMemPool;
 
 import gnu.trove.stack.TIntStack;
 import gnu.trove.stack.array.TIntArrayStack;
 import net.imglib2.RealInterval;
 
-public class RTree< O extends Geometry & Ref< O >, T extends MappedElement >
-extends Pool< RTreeNode< O, T >, T >
+public class RTree< O extends Geometry & Ref< O > >
+extends Pool< RTreeNode< O >, ByteMappedElement >
 {
 
 	private final int n;
@@ -29,16 +30,20 @@ extends Pool< RTreeNode< O, T >, T >
 
 	private long size = 0l;
 
-	private final int rootNodeId = 0;
+	private int rootNodeId = -1;
+
+//	public public RTree()
+//	{
+//		// TODO Auto-generated constructor stub
+//	}
 
 	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	private RTree(
 			final int initialCapacity,
 			final RTreeNodeLayout layout,
-			final Factory< T > memPoolFactory,
 			final RefPool< O > objectPool )
 	{
-		super( initialCapacity, layout, ( Class ) RTreeNode.class, memPoolFactory );
+		super( initialCapacity, layout, ( Class ) RTreeNode.class, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
 		this.layout = layout;
 		this.n = layout.n;
 		this.objectPool = objectPool;
@@ -47,7 +52,7 @@ extends Pool< RTreeNode< O, T >, T >
 	}
 
 	@Override
-	protected RTreeNode< O, T > createEmptyRef()
+	protected RTreeNode< O > createEmptyRef()
 	{
 		return new RTreeNode<>( this, n );
 	}
@@ -85,7 +90,7 @@ extends Pool< RTreeNode< O, T >, T >
 	 * stack from root to the selected leaf. Enables fast lookup of nodes when a
 	 * split is propagated up the tree by the <code>adjustTree</code> method.
 	 */
-	private final RefStack< RTreeNode< O, T > > parents;
+	private final RefStack< RTreeNode< O > > parents;
 
 	/**
 	 * Entry index of the child node in the parent entries.
@@ -97,13 +102,13 @@ extends Pool< RTreeNode< O, T >, T >
 		return objectPool;
 	}
 
-	public static < O extends Geometry & Ref< O >, T extends MappedElement >
-	RTree< O, T > rtree( final Collection< O > objects, final RefPool< O > objectPool, final MemPool.Factory< T > poolFactory )
+	public static < O extends Geometry & Ref< O > >
+	RTree< O > rtree( final RefCollection< O > objects, final RefPool< O > objectPool )
 	{
 		final int capacity = objects.size();
 		final int numDimensions = getNumDimensions( objects, objectPool );
 		final RTreeNodeLayout layout = new RTreeNodeLayout( numDimensions, 2, 4 );
-		final RTree< O, T > rtree = new RTree<>( capacity, layout, poolFactory, objectPool );
+		final RTree< O > rtree = new RTree<>( capacity, layout, objectPool );
 		rtree.build( objects );
 		return rtree;
 	}
@@ -113,58 +118,66 @@ extends Pool< RTreeNode< O, T >, T >
 		// TODO
 	}
 
-	public void add( final O o, final RTreeNode< O, T > ref )
+	public void add( final O o, final RTreeNode< O > ref )
 	{
-		add( o, ref, 1 );
 		size++;
-	}
 
-	private void add( final O o, final RTreeNode< O, T > ref, final int level )
-	{
+		if ( rootNodeId < 0 )
+		{
+			// First node, this is the root.
+			final RTreeNode< O > root = create( ref ).init( o );
+			root.setIsLeaf( true );
+			rootNodeId = root.getInternalPoolIndex();
+			return;
+		}
+
 		/*
 		 * I1 [Find position for new record] Invoke ChooseLeaf to select a leaf
 		 * node L in which to place o.
 		 */
-		final RTreeNode< O, T > node = chooseNode( o, ref, level );
+		final RTreeNode< O > node = chooseNode( o, ref );
 
 		/*
 		 * I2 [Add record to leaf node] If L has room for another entry, install
 		 * E. Otherwise invoke SplitNode to obtain L and LL containing E and all
 		 * the old entries of L.
 		 */
+		final RTreeNode< O > ref3 = createEmptyRef();
+		RTreeNode< O > newNode = null;
 		if ( node.getNEntries() < layout.maxNEntries )
 			node.addEntry( o );
 		else
 		{
-			final RTreeNode< O, T > ref2 = createEmptyRef();
-			final RTreeNode< O, T > newLeaf = splitNode( node, o, ref2, objectPool );
+			final RTreeNode< O > ref2 = createEmptyRef();
+			final RTreeNode< O > newLeaf = splitNode( node, o, ref2, objectPool );
 
-			final RTreeNode< O, T > ref3 = createEmptyRef();
-			final RTreeNode< O, T > newNode = adjustTree( node, newLeaf, ref3 );
+			newNode = adjustTree( node, newLeaf, ref3 );
 
 			releaseRef( ref2 );
-			releaseRef( ref3 );
 		}
 
-//
-//		// I3 [Propagate changes upwards] Invoke AdjustTree on L, also passing
-//		// LL
-//		// if a split was performed
-//
-//		// I4 [Grow tree taller] If node split propagation caused the root to
-//		// split, create a new root whose children are the two resulting nodes.
-//		if ( newNode != null )
-//		{
-//			final int oldRootNodeId = rootNodeId;
-//			final Node oldRoot = getNode( oldRootNodeId );
-//
-//			rootNodeId = getNextNodeId();
-//			treeHeight++;
-//			final Node root = new Node( rootNodeId, treeHeight, maxNodeEntries );
-//			root.addEntry( newNode.mbrMinX, newNode.mbrMinY, newNode.mbrMaxX, newNode.mbrMaxY, newNode.nodeId );
-//			root.addEntry( oldRoot.mbrMinX, oldRoot.mbrMinY, oldRoot.mbrMaxX, oldRoot.mbrMaxY, oldRoot.nodeId );
-//			nodeMap.put( rootNodeId, root );
-//		}
+		/*
+		 * I3 [Propagate changes upwards] Invoke AdjustTree on L, also passing
+		 * LL if a split was performed.
+		 */
+
+		/*
+		 * I4 [Grow tree taller] If node split propagation caused the root to
+		 * split, create a new root whose children are the two resulting nodes.
+		 */
+		if ( newNode != null )
+		{
+			final int oldRootNodeId = rootNodeId;
+			final RTreeNode< O > ref4 = createEmptyRef();
+			final RTreeNode< O > oldRoot = getObject( oldRootNodeId, ref4 );
+			final RTreeNode< O > root = create( ref4 ).init( oldRoot );
+			rootNodeId = root.getInternalPoolIndex();
+			root.addChild( newNode );
+
+			releaseRef( ref4 );
+
+		}
+		releaseRef( ref3 );
 	}
 
 	/**
@@ -173,7 +186,7 @@ extends Pool< RTreeNode< O, T >, T >
 	 *
 	 * @param ref3
 	 */
-	private RTreeNode< O, T > adjustTree( final RTreeNode< O, T > node, final RTreeNode< O, T > newLeaf, final RTreeNode< O, T > ref3 )
+	private RTreeNode< O > adjustTree( final RTreeNode< O > node, final RTreeNode< O > newLeaf, final RTreeNode< O > ref3 )
 	{
 		/*
 		 * AT1 [Initialize] Set N=L. If L was split previously, set NN to be the
@@ -189,7 +202,7 @@ extends Pool< RTreeNode< O, T >, T >
 			 * parent node of N, and let En be N's entry in P. Adjust EnI so
 			 * that it tightly encloses all entry rectangles in N.
 			 */
-			final RTreeNode< O, T > parent = parents.pop( ref3 );
+			final RTreeNode< O > parent = parents.pop( ref3 );
 			parent.recalculateMBR();
 
 			/*
@@ -199,16 +212,16 @@ extends Pool< RTreeNode< O, T >, T >
 			 * there is room. Otherwise, invoke splitNode to produce P and PP
 			 * containing Enn and all P's old entries.
 			 */
-			RTreeNode< O, T > newNode = null;
+			RTreeNode< O > newNode = null;
 			if ( newLeaf != null )
 			{
 				if ( parent.getNEntries() < layout.maxNEntries )
 				{
-					parent.addEntry( newLeaf );
+					parent.addChild( newLeaf );
 				}
 				else
 				{
-					final RTreeNode< O, T > ref4 = createEmptyRef();
+					final RTreeNode< O > ref4 = createEmptyRef();
 					newNode = splitNode( parent, newLeaf, ref4, this );
 					newLeaf.refTo( newNode );
 				}
@@ -222,7 +235,7 @@ extends Pool< RTreeNode< O, T >, T >
 		return newLeaf;
 	}
 
-	private < K extends Ref< K > & RealInterval > RTreeNode< O, T > splitNode( final RTreeNode< O, T > node, final K o, final RTreeNode< O, T > nodeRef,
+	private < K extends Ref< K > & RealInterval > RTreeNode< O > splitNode( final RTreeNode< O > node, final K o, final RTreeNode< O > nodeRef,
 			final RefPool< K > oPool )
 	{
 		/*
@@ -275,9 +288,9 @@ extends Pool< RTreeNode< O, T >, T >
 		 * add o2 as sole entry.
 		 */
 
-		final RTreeNode< O, T > newNode = create( nodeRef ).init( o1 );
+		final RTreeNode< O > newNode = create( nodeRef ).init( o1 );
 		node.reset();
-		node.addEntry( o2 );
+		node.add( o2 );
 
 		/*
 		 * Examine remaining nodes and assign them to the new node or the
@@ -294,14 +307,14 @@ extends Pool< RTreeNode< O, T >, T >
 			{
 				// Give all entries to this node, discard other cases.
 				for ( int j = 0; j < seedsForSplit.size(); j++ )
-					newNode.addEntry( seedsForSplit.get( j, objectRef1 ) );
+					newNode.add( seedsForSplit.get( j, objectRef1 ) );
 				break A;
 			}
 			if ( node.getNEntries() == ( layout.minNEntries - nRemainingEntries ) )
 			{
 				// Give all entries to this node, discard other cases.
 				for ( int j = 0; j < seedsForSplit.size(); j++ )
-					node.addEntry( seedsForSplit.get( j, objectRef1 ) );
+					node.add( seedsForSplit.get( j, objectRef1 ) );
 				break A;
 			}
 
@@ -312,11 +325,11 @@ extends Pool< RTreeNode< O, T >, T >
 			final double enlargement2 = GeometryUtil.enlargement( oi, node );
 			if ( enlargement1 < enlargement2 )
 			{
-				newNode.addEntry( oi );
+				newNode.add( oi );
 			}
 			else if ( enlargement2 < enlargement1 )
 			{
-				node.addEntry( oi );
+				node.add( oi );
 			}
 			else
 			{
@@ -325,20 +338,20 @@ extends Pool< RTreeNode< O, T >, T >
 				final double area2 = GeometryUtil.area( node );
 				if ( area1 < area2 )
 				{
-					newNode.addEntry( oi );
+					newNode.add( oi );
 				}
 				else if ( area2 < area1 )
 				{
-					node.addEntry( oi );
+					node.add( oi );
 				}
 				else if ( newNode.getNEntries() < node.getNEntries() )
 				{
 					// Tie 3. Solve with number of elements.
-					newNode.addEntry( oi );
+					newNode.add( oi );
 				}
 				else
 				{
-					node.addEntry( oi );
+					node.add( oi );
 				}
 			}
 		}
@@ -356,12 +369,12 @@ extends Pool< RTreeNode< O, T >, T >
 	/**
 	 * Used by add(). Chooses a leaf to add the geometry to.
 	 */
-	private RTreeNode< O, T > chooseNode( final O o, final RTreeNode< O, T > ref, final int level )
+	private RTreeNode< O > chooseNode( final O o, final RTreeNode< O > ref )
 	{
-		final RTreeNode< O, T > ref2 = createEmptyRef();
+		final RTreeNode< O > ref2 = createEmptyRef();
 
 		// CL1 [Initialize] Set N to be the root node
-		RTreeNode< O, T > node = getObject( rootNodeId, ref );
+		RTreeNode< O > node = getObject( rootNodeId, ref );
 		parents.clear();
 		parentsEntry.clear();
 
@@ -382,7 +395,7 @@ extends Pool< RTreeNode< O, T >, T >
 			for ( int i = 0; i < node.getNEntries(); i++ )
 			{
 				final int id = node.getEntry( i );
-				final RTreeNode< O, T > child = getObject( id, ref2 );
+				final RTreeNode< O > child = getObject( id, ref2 );
 				final double tempEnlargement = GeometryUtil.enlargement( child, o );
 				if ( ( tempEnlargement < leastEnlargement ) ||
 						( ( tempEnlargement == leastEnlargement ) && ( GeometryUtil.area( child ) < leastArea ) ) )

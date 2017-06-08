@@ -5,14 +5,14 @@ import static org.mastodon.pool.ByteUtils.INDEX_SIZE;
 
 import org.mastodon.Ref;
 import org.mastodon.RefPool;
-import org.mastodon.pool.MappedElement;
+import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.PoolObject;
 
 import net.imglib2.RealInterval;
 import net.imglib2.RealPositionable;
 
-public class RTreeNode< O extends Geometry & Ref< O >, T extends MappedElement >
-extends PoolObject< RTreeNode< O, T >, RTree< O, T >, T > implements Geometry
+public class RTreeNode< O extends Geometry & Ref< O > >
+extends PoolObject< RTreeNode< O >, RTree< O >, ByteMappedElement > implements Geometry
 {
 
 	private final RefPool< O > objPool;
@@ -27,10 +27,9 @@ extends PoolObject< RTreeNode< O, T >, RTree< O, T >, T > implements Geometry
 	private final int sizeInDoubles;
 
 	private final int maxNEntries;
-
 	private final int minNEntries;
 
-	protected RTreeNode( final RTree< O, T > rtree, final int numDimensions )
+	protected RTreeNode( final RTree< O > rtree, final int numDimensions )
 	{
 		super( rtree );
 		this.objPool = rtree.getObjectPool();
@@ -56,10 +55,10 @@ extends PoolObject< RTreeNode< O, T >, RTree< O, T >, T > implements Geometry
 	 *            the object to attach to this leaf node.
 	 * @return this node.
 	 */
-	public < K extends Ref< K > & RealInterval > RTreeNode< O, T > init( final K o )
+	public < K extends Ref< K > & RealInterval > RTreeNode< O > init( final K o )
 	{
 		reset();
-		addEntry( o );
+		add( o );
 		return this;
 	}
 
@@ -142,9 +141,21 @@ extends PoolObject< RTreeNode< O, T >, RTree< O, T >, T > implements Geometry
 		access.putIndex( id, ENTRIES_OFFSET + i * INDEX_SIZE );
 	}
 
-	public < K extends Ref< K > & RealInterval > void addEntry( final K o )
+	public void addEntry( final O o )
 	{
-		// TODO public method with braod generic types dangerous?
+		assert isLeaf(): "Can only store entries in leaf nodes.";
+		add( o );
+	}
+
+	public void addChild( final RTreeNode< O > child )
+	{
+		assert !isLeaf(): "Can only store child nodes in non-leaf nodes.";
+		add( child );
+	}
+
+	< K extends Ref< K > & RealInterval > void add( final K o )
+	{
+		// TODO public method with brood generic types dangerous?
 
 		// Store the id.
 		final int i = getNEntries();
@@ -243,5 +254,31 @@ extends PoolObject< RTreeNode< O, T >, RTree< O, T >, T > implements Geometry
 	public int numDimensions()
 	{
 		return n;
+	}
+
+	@Override
+	public String toString()
+	{
+		final StringBuilder str = new StringBuilder();
+		str.append( super.toString() + " id = " + getInternalPoolIndex() + "\n" );
+		str.append( "\tMBR: " + GeometryUtil.printInterval( this ) );
+		str.append( "\t- is leaf: " + isLeaf() + "\n" );
+		str.append( getNEntries() == 0 ? "\tEmpty.\n" : ( getNEntries() == 1 ? "\t1 entry.\n" : "\t" + getNEntries() + " entries:\n" ) );
+		if (getNEntries() > 0)
+		{
+			if (isLeaf())
+			{
+				final O ref = objPool.createRef();
+				for ( int i = 0; i < getNEntries(); i++ )
+					str.append( "\t\t" + i + ": " + objPool.getObject( getEntry( i ), ref ) + "\n" );
+				objPool.releaseRef( ref );
+			}
+			else
+			{
+				for ( int i = 0; i < getNEntries(); i++ )
+					str.append( "\t\t" + i + ": Node id = " + getEntry( i ) + "\n" );
+			}
+		}
+		return str.toString();
 	}
 }
