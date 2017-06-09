@@ -11,8 +11,8 @@ import org.mastodon.pool.PoolObject;
 import net.imglib2.RealInterval;
 import net.imglib2.RealPositionable;
 
-public class RTreeNode< O extends Geometry & Ref< O > >
-extends PoolObject< RTreeNode< O >, RTree< O >, ByteMappedElement > implements Geometry
+class RTreeNode< O extends RealInterval & Ref< O > >
+		extends PoolObject< RTreeNode< O >, RTree< O >, ByteMappedElement > implements RealInterval
 {
 
 	private final RefPool< O > objPool;
@@ -24,23 +24,15 @@ extends PoolObject< RTreeNode< O >, RTree< O >, ByteMappedElement > implements G
 	private final int N_ENTRIES_OFFSET;
 	private final int MBR_OFFSET;
 
-	private final int sizeInDoubles;
-
-	private final int maxNEntries;
-	private final int minNEntries;
-
-	protected RTreeNode( final RTree< O > rtree, final int numDimensions )
+	RTreeNode( final RTree< O > rtree, final int numDimensions )
 	{
 		super( rtree );
 		this.objPool = rtree.getObjectPool();
 		this.n = numDimensions;
-		this.maxNEntries = rtree.layout.maxNEntries;
-		this.minNEntries = rtree.layout.maxNEntries;
 		ISLEAF_OFFSET = rtree.layout.isLeaf.getOffset();
 		ENTRIES_OFFSET = rtree.layout.entries.getOffset();
 		N_ENTRIES_OFFSET = rtree.layout.nEntries.getOffset();
 		MBR_OFFSET = rtree.layout.mbr.getOffset();
-		sizeInDoubles = ( rtree.layout.getSizeInBytes() + DOUBLE_SIZE - 1 ) / DOUBLE_SIZE;
 	}
 
 	@Override
@@ -48,28 +40,25 @@ extends PoolObject< RTreeNode< O >, RTree< O >, ByteMappedElement > implements G
 	{}
 
 	/**
-	 * Initializes this node to be a leaf with the specified object as single
-	 * entry.
+	 * Initializes this node.
 	 *
-	 * @param o
-	 *            the object to attach to this leaf node.
 	 * @return this node.
 	 */
-	public < K extends Ref< K > & RealInterval > RTreeNode< O > init( final K o )
+	public < K extends Ref< K > & RealInterval > RTreeNode< O > init()
 	{
-		reset();
-		add( o );
+		// Empty placeholder for now.
+		clear();
 		return this;
 	}
 
 	/**
 	 * Empties the node.
 	 */
-	void reset()
+	void clear()
 	{
 		setNEntrie( 0 );
 		setIsLeaf( true );
-		for ( int i = 0; i < maxNEntries; i++ )
+		for ( int i = 0; i < pool.layout.maxNEntries; i++ )
 			access.putIndex( -1, ENTRIES_OFFSET + i * INDEX_SIZE );
 		for ( int d = 0; d < n; d++ )
 		{
@@ -87,18 +76,6 @@ extends PoolObject< RTreeNode< O >, RTree< O >, ByteMappedElement > implements G
 	{
 		return access.getInt( N_ENTRIES_OFFSET );
 	}
-
-//	protected void setMBR( final double[] minmax )
-//	{
-//		for ( int i = 0; i < minmax.length; i++ )
-//			access.putDouble( minmax[ i ], MBR_OFFSET + i * DOUBLE_SIZE );
-//	}
-
-//	public void getMBR( final double[] minmax )
-//	{
-//		for ( int i = 0; i < 2 * n; i++ )
-//			minmax[ i ] = access.getDouble( MBR_OFFSET + i * DOUBLE_SIZE );
-//	}
 
 	protected void setIsLeaf( final boolean isLeaf )
 	{
@@ -155,8 +132,6 @@ extends PoolObject< RTreeNode< O >, RTree< O >, ByteMappedElement > implements G
 
 	< K extends Ref< K > & RealInterval > void add( final K o )
 	{
-		// TODO public method with brood generic types dangerous?
-
 		// Store the id.
 		final int i = getNEntries();
 		setEntry( o.getInternalPoolIndex(), i );
@@ -260,23 +235,27 @@ extends PoolObject< RTreeNode< O >, RTree< O >, ByteMappedElement > implements G
 	public String toString()
 	{
 		final StringBuilder str = new StringBuilder();
-		str.append( super.toString() + " id = " + getInternalPoolIndex() + "\n" );
-		str.append( "\tMBR: " + GeometryUtil.printInterval( this ) );
+		str.append( super.toString() + " id = " + getInternalPoolIndex() + '\n' );
+		str.append( "\t- MBR: " + GeometryUtil.printInterval( this ) + '\n' );
 		str.append( "\t- is leaf: " + isLeaf() + "\n" );
-		str.append( getNEntries() == 0 ? "\tEmpty.\n" : ( getNEntries() == 1 ? "\t1 entry.\n" : "\t" + getNEntries() + " entries:\n" ) );
+		str.append( getNEntries() == 0 ?
+				"\t- Empty.\n"
+				: ( getNEntries() == 1 ?
+						"\t- 1 " + ( isLeaf() ? "entry.\n" : "child.\n" )
+						: "\t- " + getNEntries() + ( isLeaf() ? " entries:\n" : " children:\n" ) ) );
 		if (getNEntries() > 0)
 		{
 			if (isLeaf())
 			{
 				final O ref = objPool.createRef();
 				for ( int i = 0; i < getNEntries(); i++ )
-					str.append( "\t\t" + i + ": " + objPool.getObject( getEntry( i ), ref ) + "\n" );
+					str.append( "\t\t" + i + ": " + objPool.getObject( getEntry( i ), ref ) + '\n' );
 				objPool.releaseRef( ref );
 			}
 			else
 			{
 				for ( int i = 0; i < getNEntries(); i++ )
-					str.append( "\t\t" + i + ": Node id = " + getEntry( i ) + "\n" );
+					str.append( "\t\t" + i + ": Node id = " + getEntry( i ) + '\n' );
 			}
 		}
 		return str.toString();

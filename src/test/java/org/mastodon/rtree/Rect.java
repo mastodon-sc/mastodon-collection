@@ -7,7 +7,7 @@ import org.mastodon.pool.attributes.RealPointAttributeValue;
 import net.imglib2.RealInterval;
 import net.imglib2.RealPositionable;
 
-public class Rect extends PoolObject< Rect, RectPool, ByteMappedElement > implements RealInterval, Geometry
+public class Rect extends PoolObject< Rect, RectPool, ByteMappedElement > implements RealInterval
 {
 
 	final RealPointAttributeValue rmin;
