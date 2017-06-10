@@ -99,6 +99,49 @@ extends Pool< RTreeNode< O >, ByteMappedElement >
 		return rtree;
 	}
 
+	/*
+	 * R-TREE SEARCH METHODS.
+	 */
+
+	public RefCollection< O > intersects( final RealInterval rect )
+	{
+		RefCollection< O > storage = new RefArrayList<>( objectPool );
+		RTreeNode< O > ref = createEmptyRef();
+		RTreeNode< O > root = getObject( rootNodeId, ref );
+		intersects( rect, root, storage );
+		return storage;
+	}
+
+	private void intersects( final RealInterval rect, final RTreeNode< O > node, final RefCollection< O > storage )
+	{
+		if ( node.isLeaf() )
+		{
+			O ref = objectPool.createRef();
+			for ( int i = 0; i < node.getNEntries(); i++ )
+			{
+				O o = objectPool.getObject( node.getEntry( i ), ref );
+				if ( GeometryUtil.intersects( o, rect ) )
+					storage.add( o );
+			}
+			objectPool.releaseRef( ref );
+		}
+		else
+		{
+			RTreeNode< O > ref = createEmptyRef();
+			for ( int i = 0; i < node.getNEntries(); i++ )
+			{
+				RTreeNode< O > child = getObject( node.getEntry( i ), ref );
+				if ( GeometryUtil.intersects( child, rect ) )
+					intersects( rect, child, storage );
+			}
+			releaseRef( ref );
+		}
+	}
+
+	/*
+	 * R-TREE MODIFICATION METHODS.
+	 */
+
 	/**
 	 * Inserts the specified object in the tree and re-adjust the tree.
 	 *

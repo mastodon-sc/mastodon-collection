@@ -1,10 +1,18 @@
 package org.mastodon.rtree;
 
+import java.util.Locale;
+
+import org.mastodon.collection.RefCollection;
+
+import net.imglib2.FinalRealInterval;
+
 public class RTreeInteractiveTest
 {
 
 	public static void main( final String[] args )
 	{
+		Locale.setDefault( Locale.getDefault() );
+
 		final RectPool pool = new RectPool( 2, 10 );
 		final double[][] bounds = new double[][] {
 			{ 0., 0., 1., 1. }, // A
@@ -30,7 +38,7 @@ public class RTreeInteractiveTest
 		for ( int i = 0; i < bounds.length; i++ )
 			pool.create( rref ).init( Character.toString( ( char ) ( 'A' + i ) ), bounds[ i ] );
 
-		System.out.println( "Reactangle in play:" );
+		System.out.println( "Rectangle in play:" );
 		for ( final Rect rect : pool )
 			System.out.println( rect );
 
@@ -47,6 +55,17 @@ public class RTreeInteractiveTest
 			for ( final RTreeNode< Rect > node : rtree )
 				System.out.println( node );
 		}
+
+		/*
+		 * Search R-Tree.
+		 */
+
+		FinalRealInterval query = FinalRealInterval.createMinMax( -1., -1., 5., 5. );
+		System.out.println( "\n\n\nSearching intersection with: " + GeometryUtil.printInterval( query ) );
+
+		RefCollection< Rect > c = rtree.intersects( query );
+		for ( Rect rect : c )
+			System.out.println( rect );
 
 	}
 
