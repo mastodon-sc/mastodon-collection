@@ -41,7 +41,7 @@ public class RTreeInteractiveTest
 		final RTree< Rect > rtree = RTree.rtree( pool.asRefCollection(), pool );
 		for ( final Rect rect : pool )
 		{
-			rtree.add( rect );
+			rtree.insert( rect );
 
 			System.out.println( "\n\n\nAfter adding rect, Tree content:" );
 			for ( final RTreeNode< Rect > node : rtree )

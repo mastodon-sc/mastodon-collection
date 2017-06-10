@@ -105,7 +105,7 @@ extends Pool< RTreeNode< O >, ByteMappedElement >
 	 * @param o
 	 *            the object to add.
 	 */
-	public void add( final O o )
+	public void insert( final O o )
 	{
 		System.out.println( "\n\n[DEBUG] Adding " + o ); // DEBUG
 
