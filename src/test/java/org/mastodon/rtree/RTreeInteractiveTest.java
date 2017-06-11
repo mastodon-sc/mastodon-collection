@@ -72,10 +72,11 @@ public class RTreeInteractiveTest
 		/*
 		 * Search R-Tree nearest-neighbor.
 		 */
-		RealPoint point = RealPoint.wrap( new double[] {-1., -1.} );
+		RealPoint point = RealPoint.wrap( new double[] { 0.5, 4.5 } );
+		System.out.println( "\n\n\nSearchign nearest neighbor of " + Util.printCoordinates( point ) + "." );
 		Rect oref = pool.createEmptyRef();
 		Rect nn = rtree.nearestNeighbor( point, oref  );
-		System.out.println( "\n\n\nNearest neighbor of " + Util.printCoordinates( point ) + " is " + nn );
+		System.out.println( "Nearest neighbor of " + Util.printCoordinates( point ) + " is " + nn );
 
 
 	}

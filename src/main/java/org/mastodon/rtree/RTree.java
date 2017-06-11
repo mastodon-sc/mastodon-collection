@@ -146,8 +146,9 @@ extends Pool< RTreeNode< O >, ByteMappedElement >
 		if ( rootNodeId < 0 )
 			return null;
 
-		RTreeNode< O > ref = createEmptyRef();
-		RTreeNode< O > root = getObject( rootNodeId, ref );
+		RTreeNode< O > ref1 = createEmptyRef();
+		RTreeNode< O > ref2 = createEmptyRef();
+		RTreeNode< O > root = getObject( rootNodeId, ref1 );
 
 		Comparator< RTreeNode< O > > nodeComparator = GeometryUtil.distanceComparator( p );
 		RefArrayPriorityQueueComparator< RTreeNode< O > > queue = new RefArrayPriorityQueueComparator<>( this, nodeComparator );
@@ -156,19 +157,20 @@ extends Pool< RTreeNode< O >, ByteMappedElement >
 		RTreeNode< O > node = root;
 		while ( !queue.isEmpty() )
 		{
-			node = queue.poll( ref );
+			node = queue.poll( ref1 );
 			System.out.println( "[DEBUG] NN investigating node: " + node );
 
 			if ( node.isLeaf() )
 				break;
 
-			RTreeNode< O > ref2 = createEmptyRef();
 			for ( int i = 0; i < node.getNEntries(); i++ )
 			{
 				RTreeNode< O > child = getObject( node.getEntry( i ), ref2 );
 				queue.offer( child );
 			}
 		}
+		releaseRef( ref1 );
+		releaseRef( ref2 );
 
 		System.out.println( "[DEBUG] NN closest leaf node: " + node );
 
@@ -177,7 +179,6 @@ extends Pool< RTreeNode< O >, ByteMappedElement >
 			list.add( objectPool.getObject( node.getEntry( i ), oref ) );
 
 		list.sort( GeometryUtil.distanceComparator( p ) );
-		releaseRef( ref );
 		return list.get( 0, oref );
 	}
 
