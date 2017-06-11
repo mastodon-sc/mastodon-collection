@@ -5,6 +5,8 @@ import java.util.Locale;
 import org.mastodon.collection.RefCollection;
 
 import net.imglib2.FinalRealInterval;
+import net.imglib2.RealPoint;
+import net.imglib2.util.Util;
 
 public class RTreeInteractiveTest
 {
@@ -57,7 +59,7 @@ public class RTreeInteractiveTest
 		}
 
 		/*
-		 * Search R-Tree.
+		 * Search R-Tree intersections.
 		 */
 
 		FinalRealInterval query = FinalRealInterval.createMinMax( -1., -1., 5., 5. );
@@ -66,6 +68,15 @@ public class RTreeInteractiveTest
 		RefCollection< Rect > c = rtree.intersects( query );
 		for ( Rect rect : c )
 			System.out.println( rect );
+
+		/*
+		 * Search R-Tree nearest-neighbor.
+		 */
+		RealPoint point = RealPoint.wrap( new double[] {-1., -1.} );
+		Rect oref = pool.createEmptyRef();
+		Rect nn = rtree.nearestNeighbor( point, oref  );
+		System.out.println( "\n\n\nNearest neighbor of " + Util.printCoordinates( point ) + " is " + nn );
+
 
 	}
 

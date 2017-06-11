@@ -143,46 +143,42 @@ extends Pool< RTreeNode< O >, ByteMappedElement >
 
 	public O nearestNeighbor( final RealLocalizable p, final O oref )
 	{
+		if ( rootNodeId < 0 )
+			return null;
+
 		RTreeNode< O > ref = createEmptyRef();
 		RTreeNode< O > root = getObject( rootNodeId, ref );
-
 
 		Comparator< RTreeNode< O > > nodeComparator = GeometryUtil.distanceComparator( p );
 		RefArrayPriorityQueueComparator< RTreeNode< O > > queue = new RefArrayPriorityQueueComparator<>( this, nodeComparator );
 		queue.offer( root );
 
-		// Feed the queue with leaf nodes.
-		nearestNeighbor( queue, ref );
+		RTreeNode< O > node = root;
+		while ( !queue.isEmpty() )
+		{
+			node = queue.poll( ref );
+			System.out.println( "[DEBUG] NN investigating node: " + node );
 
-		// Nearest child node.
-		RTreeNode< O > child = queue.poll( ref );
+			if ( node.isLeaf() )
+				break;
 
-		RefArrayList< O > list = new RefArrayList<>( objectPool, child.getNEntries() );
-		for ( int i = 0; i < child.getNEntries(); i++ )
-			list.add( objectPool.getObject( child.getEntry( i ), oref ) );
+			RTreeNode< O > ref2 = createEmptyRef();
+			for ( int i = 0; i < node.getNEntries(); i++ )
+			{
+				RTreeNode< O > child = getObject( node.getEntry( i ), ref2 );
+				queue.offer( child );
+			}
+		}
+
+		System.out.println( "[DEBUG] NN closest leaf node: " + node );
+
+		RefArrayList< O > list = new RefArrayList<>( objectPool, node.getNEntries() );
+		for ( int i = 0; i < node.getNEntries(); i++ )
+			list.add( objectPool.getObject( node.getEntry( i ), oref ) );
 
 		list.sort( GeometryUtil.distanceComparator( p ) );
 		releaseRef( ref );
 		return list.get( 0, oref );
-	}
-
-	private void nearestNeighbor( final RefArrayPriorityQueueComparator< RTreeNode< O > > queue, final RTreeNode< O > ref )
-	{
-		if ( queue.isEmpty() )
-			return;
-
-		RTreeNode< O > node = queue.poll( ref );
-		if ( node.isLeaf() )
-			return;
-
-		RTreeNode< O > ref2 = createEmptyRef();
-		for ( int i = 0; i < node.getNEntries(); i++ )
-		{
-			RTreeNode< O > child = getObject( node.getEntry( i ), ref2 );
-			queue.offer( child );
-		}
-		nearestNeighbor( queue, ref2 );
-		releaseRef( ref2 );
 	}
 
 	/*
