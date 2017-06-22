@@ -2,8 +2,8 @@ package org.mastodon.properties;
 
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
-import org.mastodon.collection.RefCollections;
 import org.mastodon.collection.RefIntMap;
+import org.mastodon.collection.RefMaps;
 import org.mastodon.collection.ref.RefIntHashMap;
 import org.mastodon.properties.undo.IntPropertyUndoRedoStack;
 import org.mastodon.properties.undo.PropertyUndoRedoStack;
@@ -16,14 +16,14 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 
 	public IntPropertyMap( final RefCollection< O > pool, final int noEntryValue )
 	{
-		map = RefCollections.createRefIntMap( pool, noEntryValue );
+		map = RefMaps.createRefIntMap( pool, noEntryValue );
 		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
 	public IntPropertyMap( final RefCollection< O > pool, final int noEntryValue, final int initialCapacity )
 	{
-		map = RefCollections.createRefIntMap( pool, noEntryValue, initialCapacity );
+		map = RefMaps.createRefIntMap( pool, noEntryValue, initialCapacity );
 		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
