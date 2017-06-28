@@ -3,10 +3,10 @@ package org.mastodon.collection;
 import java.util.NoSuchElementException;
 
 /**
- * A stack thas is a {@link RefCollection}. Provides standard {@code push()}, {@code pop()}, and {@code peek()} methods
- * as well as variants that take object references that can be used for
- * retrieval. Depending on concrete implementation, these object references can
- * be cleared, ignored or re-used.
+ * A stack that is a {@link RefCollection}. Provides standard {@code push()},
+ * {@code pop()}, and {@code peek()} methods as well as variants that take
+ * object references that can be used for retrieval. Depending on concrete
+ * implementation, these object references can be cleared, ignored or re-used.
  *
  * @param <O>
  *            the type of elements maintained by this stack.
