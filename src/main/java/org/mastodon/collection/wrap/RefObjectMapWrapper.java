@@ -7,6 +7,9 @@ import java.util.Set;
 import org.mastodon.collection.RefObjectMap;
 import org.mastodon.collection.RefRefMap;
 
+/**
+ * Wraps a {@link RefObjectMap} as a {@link RefRefMap}.
+ */
 public class RefObjectMapWrapper< K, V > implements RefRefMap< K, V >
 {
 
