@@ -38,6 +38,9 @@ public interface ObjectRefMap< K, V > extends Map< K, V >
 	 */
 	public void releaseValueRef( final V obj );
 
+	@Override
+	public RefCollection< V > values();
+
 	/**
 	 * Associates the specified value with the specified key in this map
 	 * (optional operation). If the map previously contained a mapping for the

@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.mastodon.RefPool;
+import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefRefMap;
 import org.mastodon.collection.RefSet;
 
@@ -193,7 +194,7 @@ public class RefRefHashMap< K, V > implements RefRefMap< K, V >
 	}
 
 	@Override
-	public Collection< V > values()
+	public RefCollection< V > values()
 	{
 		return new CollectionValuesView();
 	}
@@ -239,7 +240,7 @@ public class RefRefHashMap< K, V > implements RefRefMap< K, V >
 	 * INNER CLASS
 	 */
 
-	private class CollectionValuesView implements Collection< V >
+	private class CollectionValuesView implements RefPoolBackedRefCollection< V >
 	{
 
 		@Override
@@ -384,6 +385,24 @@ public class RefRefHashMap< K, V > implements RefRefMap< K, V >
 			for ( int i = indices.length; i < a.length; i++ )
 				a[ i ] = null;
 			return a;
+		}
+
+		@Override
+		public V createRef()
+		{
+			return valuePool.createRef();
+		}
+
+		@Override
+		public void releaseRef( final V obj )
+		{
+			valuePool.releaseRef( obj );
+		}
+
+		@Override
+		public RefPool< V > getRefPool()
+		{
+			return valuePool;
 		}
 	}
 }

@@ -1,10 +1,10 @@
 package org.mastodon.collection.wrap;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
 import org.mastodon.collection.ObjectRefMap;
+import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefRefMap;
 import org.mastodon.collection.RefSet;
 
@@ -81,7 +81,7 @@ public class ObjectRefMapWrapper< K, L > implements RefRefMap< K, L >
 	}
 
 	@Override
-	public Collection< L > values()
+	public RefCollection< L > values()
 	{
 		return map.values();
 	}

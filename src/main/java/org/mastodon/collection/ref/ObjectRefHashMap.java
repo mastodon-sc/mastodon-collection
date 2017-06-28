@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.mastodon.RefPool;
 import org.mastodon.collection.ObjectRefMap;
+import org.mastodon.collection.RefCollection;
 
 import gnu.trove.impl.Constants;
 import gnu.trove.iterator.TIntIterator;
@@ -157,7 +158,7 @@ public class ObjectRefHashMap< K, V > implements ObjectRefMap< K, V >
 	}
 
 	@Override
-	public Collection< V > values()
+	public RefCollection< V > values()
 	{
 		return new CollectionValuesView();
 	}
@@ -205,7 +206,7 @@ public class ObjectRefHashMap< K, V > implements ObjectRefMap< K, V >
 	 * INNER CLASS
 	 */
 
-	private class CollectionValuesView implements Collection< V >
+	private class CollectionValuesView implements RefPoolBackedRefCollection< V >
 	{
 
 		@Override
@@ -350,6 +351,24 @@ public class ObjectRefHashMap< K, V > implements ObjectRefMap< K, V >
 			for ( int i = indices.length; i < a.length; i++ )
 				a[ i ] = null;
 			return a;
+		}
+
+		@Override
+		public V createRef()
+		{
+			return pool.createRef();
+		}
+
+		@Override
+		public void releaseRef( final V obj )
+		{
+			pool.releaseRef( obj );
+		}
+
+		@Override
+		public RefPool< V > getRefPool()
+		{
+			return pool;
 		}
 	}
 
