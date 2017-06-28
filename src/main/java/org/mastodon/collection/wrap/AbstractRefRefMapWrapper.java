@@ -3,19 +3,18 @@ package org.mastodon.collection.wrap;
 import java.util.Map;
 import java.util.Set;
 
-import org.mastodon.collection.ObjectRefMap;
 import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefRefMap;
 import org.mastodon.collection.RefSet;
 
 /**
- * Wraps a {@link ObjectRefMap} as a {@link RefRefMap}.
+ * Wraps a standard {@link Map} as a {@link RefRefMap}.
  */
-public class ObjectRefMapWrapper< K, L > implements RefRefMap< K, L >
+public abstract class AbstractRefRefMapWrapper< K, L, M extends Map< K, L > > implements RefRefMap< K, L >
 {
-	private final ObjectRefMap< K, L > map;
+	protected final M map;
 
-	public ObjectRefMapWrapper( final ObjectRefMap< K, L > map )
+	public AbstractRefRefMapWrapper( final M map )
 	{
 		this.map = map;
 	}
@@ -33,7 +32,7 @@ public class ObjectRefMapWrapper< K, L > implements RefRefMap< K, L >
 	}
 
 	@Override
-	public Set< Entry< K, L >> entrySet()
+	public Set< Entry< K, L > > entrySet()
 	{
 		return map.entrySet();
 	}
@@ -48,12 +47,6 @@ public class ObjectRefMapWrapper< K, L > implements RefRefMap< K, L >
 	public boolean isEmpty()
 	{
 		return map.isEmpty();
-	}
-
-	@Override
-	public RefSet< K > keySet()
-	{
-		return new RefSetWrapper<>( map.keySet() );
 	}
 
 	@Override
@@ -81,44 +74,48 @@ public class ObjectRefMapWrapper< K, L > implements RefRefMap< K, L >
 	}
 
 	@Override
-	public RefCollection< L > values()
-	{
-		return map.values();
-	}
-
-	@Override
 	public void clear()
 	{
 		map.clear();
 	}
 
 	@Override
+	public RefSet< K > keySet()
+	{
+		return new RefSetWrapper<>( map.keySet() );
+	}
+
+	@Override
+	public RefCollection< L > values()
+	{
+		return new RefCollectionWrapper<>( map.values() );
+	}
+
+	@Override
 	public L createValueRef()
 	{
-		return map.createValueRef();
+		return null;
 	}
 
 	@Override
 	public void releaseValueRef( final L obj )
-	{
-		map.releaseValueRef( obj );
-	}
+	{}
 
 	@Override
 	public L put( final K key, final L value, final L ref )
 	{
-		return put( key, value );
+		return map.put( key, value );
 	}
 
 	@Override
 	public L removeWithRef( final Object key, final L ref )
 	{
-		return remove( key );
+		return map.remove( key );
 	}
 
 	@Override
 	public L get( final Object key, final L ref )
 	{
-		return get( key );
+		return map.get( key );
 	}
 }
