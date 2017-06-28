@@ -3,8 +3,13 @@ package org.mastodon.collection;
 import java.util.Map;
 
 /**
- * Map-like interface for maps that map plain objects to possibly reusable
- * references.
+ * A {@link Map} whose values are object references. It provides variants of
+ * {@link Map} methods that take object references that can be used for
+ * retrieval. Depending on concrete implementation, these object references can
+ * be cleared, ignored or re-used.
+ *
+ * Similar to {@link RefCollection}, this class can create and release object
+ * references (of type {@code V}).
  *
  * @param <K>
  *            key type.

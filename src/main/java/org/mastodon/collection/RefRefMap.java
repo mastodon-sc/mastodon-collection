@@ -1,9 +1,11 @@
 package org.mastodon.collection;
 
+import java.util.Map;
 
 /**
- * Map-like interface for maps that map possibly reusable references to another
- * possibly reusable reference.
+ * A {@link Map} whose keys and values both are object references. Map-like
+ * interface for maps that map possibly reusable references to another possibly
+ * reusable reference.
  *
  * @param <K>
  *            key type.
