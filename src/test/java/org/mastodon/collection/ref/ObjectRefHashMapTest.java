@@ -17,7 +17,7 @@ import org.mastodon.pool.TestObjectPool;
 /**
  * Test ObjectRefHashMap.
  *
- * @author Jean-Yves Tinevez - 2017
+ * @author Jean-Yves Tinevez
  */
 public class ObjectRefHashMapTest
 {
@@ -106,12 +106,12 @@ public class ObjectRefHashMapTest
 		assertEquals( "Unexpected mapping for k2 (expected k2 -> v1)", v1, ref );
 		map.get( k4, ref );
 		assertEquals( "Unexpected mapping for k4 (expected k4 -> v3)", v3, ref );
-		assertNull( "There should not be a mapping for key k0.", map.get( k0, ref ) );
 
-		assertEquals( "Unexpected mapping for k1 (expected k1 -> v0).", v0, map.get( k1 ) );
-		assertEquals( "Unexpected mapping for k3 (expected k3 -> v2).", v2, map.get( k3 ) );
-		assertEquals( "Unexpected mapping for k2 (expected k2 -> v1).", v1, map.get( k2 ) );
-		assertEquals( "Unexpected mapping for k4 (expected k4 -> v3).", v3, map.get( k4 ) );
+		assertEquals( "Unexpected mapping for k1 (expected k1 -> v0).", v0, map.get( k1, ref ) );
+		assertEquals( "Unexpected mapping for k3 (expected k3 -> v2).", v2, map.get( k3, ref ) );
+		assertEquals( "Unexpected mapping for k2 (expected k2 -> v1).", v1, map.get( k2, ref ) );
+		assertEquals( "Unexpected mapping for k4 (expected k4 -> v3).", v3, map.get( k4, ref ) );
+		assertNull( "There should not be a mapping for key k0.", map.get( k0, ref ) );
 	}
 
 	@Test
@@ -125,6 +125,7 @@ public class ObjectRefHashMapTest
 		set.add( k4 );
 		// All but k0
 
+		assertEquals( "Unexpected keys found in the key set.", keySet, set );
 		for ( final String key : keySet )
 		{
 			assertTrue( "Unexpected key found in the key set.", set.remove( key ) );
