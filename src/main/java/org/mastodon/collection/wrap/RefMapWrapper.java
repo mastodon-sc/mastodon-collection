@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.mastodon.collection.RefRefMap;
+import org.mastodon.collection.RefSet;
 
 /**
  * Wraps a standard {@link Map} as a {@link RefRefMap}.
@@ -49,9 +50,9 @@ public class RefMapWrapper< K, L > implements RefRefMap< K, L >
 	}
 
 	@Override
-	public Set< K > keySet()
+	public RefSet< K > keySet()
 	{
-		return map.keySet();
+		return new RefSetWrapper<>( map.keySet() );
 	}
 
 	@Override
@@ -83,16 +84,6 @@ public class RefMapWrapper< K, L > implements RefRefMap< K, L >
 	{
 		return map.values();
 	}
-
-	@Override
-	public K createKeyRef()
-	{
-		return null;
-	}
-
-	@Override
-	public void releaseKeyRef( final K obj )
-	{}
 
 	@Override
 	public void clear()

@@ -6,13 +6,13 @@ import java.util.Set;
 
 import org.mastodon.collection.RefObjectMap;
 import org.mastodon.collection.RefRefMap;
+import org.mastodon.collection.RefSet;
 
 /**
  * Wraps a {@link RefObjectMap} as a {@link RefRefMap}.
  */
 public class RefObjectMapWrapper< K, V > implements RefRefMap< K, V >
 {
-
 	private final RefObjectMap< K, V > map;
 
 	public RefObjectMapWrapper( final RefObjectMap< K, V > map )
@@ -51,9 +51,9 @@ public class RefObjectMapWrapper< K, V > implements RefRefMap< K, V >
 	}
 
 	@Override
-	public Set< K > keySet()
+	public RefSet< K > keySet()
 	{
-		return map.keySet();
+		return new RefSetWrapper<>( map.keySet() );
 	}
 
 	@Override
@@ -84,18 +84,6 @@ public class RefObjectMapWrapper< K, V > implements RefRefMap< K, V >
 	public Collection< V > values()
 	{
 		return map.values();
-	}
-
-	@Override
-	public K createKeyRef()
-	{
-		return map.createKeyRef();
-	}
-
-	@Override
-	public void releaseKeyRef( final K obj )
-	{
-		map.releaseKeyRef( obj );
 	}
 
 	@Override
@@ -131,5 +119,4 @@ public class RefObjectMapWrapper< K, V > implements RefRefMap< K, V >
 	{
 		return get( key );
 	}
-
 }

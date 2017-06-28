@@ -183,13 +183,6 @@ public class RefRefHashMapTest extends RefRefHashMapAbstractTest
 	}
 
 	@Test
-	public void testCreateRef()
-	{
-		final TestObject ref = map.createKeyRef();
-		assertNotNull( "Created reference object is null.", ref );
-	}
-
-	@Test
 	public void testCreateValueRef()
 	{
 		final OtherTestObject ref = map.createValueRef();

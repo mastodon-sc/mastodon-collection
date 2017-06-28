@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefRefMap;
+import org.mastodon.collection.RefSet;
 
 import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TIntIntHashMap;
@@ -121,7 +122,7 @@ public class RefRefHashMap< K, V > implements RefRefMap< K, V >
 	}
 
 	@Override
-	public Set< K > keySet()
+	public RefSet< K > keySet()
 	{
 		return new RefSetImp<>( keyPool, indexmap.keySet() );
 	}
@@ -195,18 +196,6 @@ public class RefRefHashMap< K, V > implements RefRefMap< K, V >
 	public Collection< V > values()
 	{
 		return new CollectionValuesView();
-	}
-
-	@Override
-	public K createKeyRef()
-	{
-		return keyPool.createRef();
-	}
-
-	@Override
-	public void releaseKeyRef( final K obj )
-	{
-		keyPool.releaseRef( obj );
 	}
 
 	@Override

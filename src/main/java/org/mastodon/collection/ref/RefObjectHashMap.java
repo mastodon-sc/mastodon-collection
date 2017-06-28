@@ -16,7 +16,7 @@ import gnu.trove.map.hash.TIntObjectHashMap;
  * Incomplete!
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
-public class RefObjectHashMap< K, V > implements Map< K, V >, RefObjectMap< K, V >
+public class RefObjectHashMap< K, V > implements RefObjectMap< K, V >
 {
 	private final TIntObjectHashMap< V > indexmap;
 
@@ -125,18 +125,6 @@ public class RefObjectHashMap< K, V > implements Map< K, V >, RefObjectMap< K, V
 		return ( entrySet == null ) ? ( entrySet = new EntrySet() ) : entrySet;
 	}
 
-	@Override
-	public K createKeyRef()
-	{
-		return pool.createRef();
-	}
-
-	@Override
-	public void releaseKeyRef( final K obj )
-	{
-		pool.releaseRef( obj );
-	}
-
 	final class EntrySet extends AbstractSet< Entry< K, V > >
 	{
 		@Override
@@ -146,7 +134,7 @@ public class RefObjectHashMap< K, V > implements Map< K, V >, RefObjectMap< K, V
 
 			final Entry< K, V > entry = new Entry< K, V >()
 			{
-				final K ref = createKeyRef();
+				final K ref = pool.createRef();
 
 				@Override
 				public K getKey()

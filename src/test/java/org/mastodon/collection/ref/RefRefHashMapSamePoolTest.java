@@ -177,13 +177,6 @@ public class RefRefHashMapSamePoolTest extends RefRefHashMapSamePoolAbstractTest
 	}
 
 	@Test
-	public void testCreateRef()
-	{
-		final TestObject ref = map.createKeyRef();
-		assertNotNull( "Created reference object is null.", ref );
-	}
-
-	@Test
 	public void testCreateValueRef()
 	{
 		final TestObject ref = map.createValueRef();
