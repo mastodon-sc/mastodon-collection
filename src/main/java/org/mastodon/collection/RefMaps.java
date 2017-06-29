@@ -1,5 +1,7 @@
 package org.mastodon.collection;
 
+import static org.mastodon.collection.RefCollections.tryGetRefPool;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -187,13 +189,6 @@ public class RefMaps
 			return new IntRefHashMap<>( pool, noEntryKey, initialCapacity );
 		else
 			return new IntRefMapWrapper<>( noEntryKey, initialCapacity );
-	}
-
-	private static < O > RefPool< O > tryGetRefPool( final RefCollection< O > collection )
-	{
-		return ( collection instanceof RefPoolBackedRefCollection )
-				? ( ( org.mastodon.collection.ref.RefPoolBackedRefCollection< O > ) collection ).getRefPool()
-				: null;
 	}
 
 	private static < K, V > RefRefMap< K, V > wrap( final Map< K, V > map )
