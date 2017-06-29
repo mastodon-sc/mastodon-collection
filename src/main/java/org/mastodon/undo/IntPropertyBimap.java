@@ -3,8 +3,8 @@ package org.mastodon.undo;
 import org.mastodon.RefPool;
 import org.mastodon.collection.IntRefMap;
 import org.mastodon.collection.RefCollection;
-import org.mastodon.collection.RefCollections;
 import org.mastodon.collection.RefIntMap;
+import org.mastodon.collection.RefMaps;
 import org.mastodon.collection.ref.IntRefHashMap;
 import org.mastodon.collection.ref.RefIntHashMap;
 import org.mastodon.properties.AbstractPropertyMap;
@@ -30,16 +30,16 @@ class IntPropertyBimap< O > extends AbstractPropertyMap< O, Integer >
 	public IntPropertyBimap( final RefCollection< O > pool, final int noEntryValue )
 	{
 		this.noEntryValue = noEntryValue;
-		map = RefCollections.createRefIntMap( pool, noEntryValue );
-		rmap = RefCollections.createIntRefMap( pool, noEntryValue );
+		map = RefMaps.createRefIntMap( pool, noEntryValue );
+		rmap = RefMaps.createIntRefMap( pool, noEntryValue );
 		tryRegisterPropertyMap( pool );
 	}
 
 	public IntPropertyBimap( final RefCollection< O > pool, final int noEntryValue, final int initialCapacity )
 	{
 		this.noEntryValue = noEntryValue;
-		map = RefCollections.createRefIntMap( pool, noEntryValue, initialCapacity );
-		rmap = RefCollections.createIntRefMap( pool, noEntryValue, initialCapacity );
+		map = RefMaps.createRefIntMap( pool, noEntryValue, initialCapacity );
+		rmap = RefMaps.createIntRefMap( pool, noEntryValue, initialCapacity );
 		tryRegisterPropertyMap( pool );
 	}
 

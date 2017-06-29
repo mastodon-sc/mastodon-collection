@@ -3,8 +3,10 @@ package org.mastodon.collection;
 import java.util.Map;
 
 /**
- * Map-like interface for maps that map possibly reusable references to plain
- * objects.
+ * A {@link Map} whose keys are object references. In practice, this means that
+ * the key-set of the map is a {@link RefSet} providing methods that take object
+ * references. Depending on concrete implementation, these object references can
+ * be cleared, ignored or re-used.
  *
  * @param <K>
  *            key type.
@@ -12,10 +14,10 @@ import java.util.Map;
  *            value type.
  *
  * @author Jean-Yves Tinevez
+ * @author Tobias Pietzsch
  */
 public interface RefObjectMap< K, V > extends Map< K, V >
 {
-	public K createKeyRef();
-
-	public void releaseKeyRef( final K obj );
+	@Override
+	public RefSet< K > keySet();
 }

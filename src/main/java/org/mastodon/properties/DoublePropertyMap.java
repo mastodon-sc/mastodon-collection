@@ -2,8 +2,8 @@ package org.mastodon.properties;
 
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
-import org.mastodon.collection.RefCollections;
 import org.mastodon.collection.RefDoubleMap;
+import org.mastodon.collection.RefMaps;
 import org.mastodon.collection.ref.RefDoubleHashMap;
 import org.mastodon.properties.undo.DoublePropertyUndoRedoStack;
 import org.mastodon.properties.undo.PropertyUndoRedoStack;
@@ -16,14 +16,14 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 
 	public DoublePropertyMap( final RefCollection< O > pool, final double noEntryValue )
 	{
-		map = RefCollections.createRefDoubleMap( pool, noEntryValue );
+		map = RefMaps.createRefDoubleMap( pool, noEntryValue );
 		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}
 
 	public DoublePropertyMap( final RefCollection< O > pool, final double noEntryValue, final int initialCapacity )
 	{
-		map = RefCollections.createRefDoubleMap( pool, noEntryValue, initialCapacity );
+		map = RefMaps.createRefDoubleMap( pool, noEntryValue, initialCapacity );
 		this.noEntryValue = noEntryValue;
 		tryRegisterPropertyMap( pool );
 	}

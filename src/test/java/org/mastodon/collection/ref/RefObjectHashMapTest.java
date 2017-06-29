@@ -62,7 +62,7 @@ public class RefObjectHashMapTest
 	{
 		assertTrue( "Map should contain the key 'A', does not.", map.containsKey( A ) );
 		assertTrue( "Map should contain the key 'B', does not.", map.containsKey( B ) );
-		TestObject ref = map.createKeyRef();
+		TestObject ref = pool.createRef();
 		ref = pool.create( ref ).init( 10 );
 		assertFalse( "Map should not contain the key 'ref', but does.", map.containsKey( ref ) );
 	}

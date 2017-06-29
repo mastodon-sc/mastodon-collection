@@ -2,7 +2,7 @@ package org.mastodon.properties;
 
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
-import org.mastodon.collection.RefCollections;
+import org.mastodon.collection.RefMaps;
 import org.mastodon.collection.RefObjectMap;
 import org.mastodon.collection.ref.RefObjectHashMap;
 import org.mastodon.properties.undo.ObjPropertyUndoRedoStack;
@@ -14,13 +14,13 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 
 	public ObjPropertyMap( final RefCollection< O > pool )
 	{
-		map = RefCollections.createRefObjectMap( pool );
+		map = RefMaps.createRefObjectMap( pool );
 		tryRegisterPropertyMap( pool );
 	}
 
 	public ObjPropertyMap( final RefCollection< O > pool, final int initialCapacity )
 	{
-		map = RefCollections.createRefObjectMap( pool, initialCapacity );
+		map = RefMaps.createRefObjectMap( pool, initialCapacity );
 		tryRegisterPropertyMap( pool );
 	}
 

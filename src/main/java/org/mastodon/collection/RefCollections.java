@@ -4,35 +4,23 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.mastodon.RefPool;
-import org.mastodon.collection.ref.IntRefHashMap;
 import org.mastodon.collection.ref.RefArrayDeque;
 import org.mastodon.collection.ref.RefArrayList;
 import org.mastodon.collection.ref.RefArrayStack;
-import org.mastodon.collection.ref.RefDoubleHashMap;
-import org.mastodon.collection.ref.RefIntHashMap;
-import org.mastodon.collection.ref.RefObjectHashMap;
 import org.mastodon.collection.ref.RefPoolBackedRefCollection;
-import org.mastodon.collection.ref.RefRefHashMap;
 import org.mastodon.collection.ref.RefSetImp;
-import org.mastodon.collection.wrap.IntRefMapWrapper;
 import org.mastodon.collection.wrap.RefCollectionWrapper;
 import org.mastodon.collection.wrap.RefDequeWrapper;
-import org.mastodon.collection.wrap.RefDoubleMapWrapper;
-import org.mastodon.collection.wrap.RefIntMapWrapper;
 import org.mastodon.collection.wrap.RefListWrapper;
-import org.mastodon.collection.wrap.RefMapWrapper;
 import org.mastodon.collection.wrap.RefSetWrapper;
 import org.mastodon.collection.wrap.RefStackWrapper;
 import org.mastodon.pool.Pool;
-
 
 /**
  * Static utility methods to create collections for objects of a specified
@@ -134,97 +122,7 @@ public class RefCollections
 			return wrapAsStack( new ArrayDeque< O >( initialCapacity ) );
 	}
 
-	public static < O, T > RefObjectMap< O, T > createRefObjectMap( final RefCollection< O > collection )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new RefObjectHashMap<>( pool );
-		else
-			return wrap( new HashMap< O, T >() );
-	}
-
-	public static < O, T > RefObjectMap< O, T > createRefObjectMap( final RefCollection< O > collection, final int initialCapacity )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new RefObjectHashMap<>( pool, initialCapacity );
-		else
-			return wrap( new HashMap< O, T >( initialCapacity ) );
-	}
-
-	public static < O > RefRefMap< O, O > createRefRefMap( final RefCollection< O > collection )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new RefRefHashMap<>( pool, pool );
-		else
-			return wrap( new HashMap< O, O >() );
-	}
-
-	public static < O > RefRefMap< O, O > createRefRefMap( final RefCollection< O > collection, final int initialCapacity )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new RefRefHashMap<>( pool, pool, initialCapacity );
-		else
-			return wrap( new HashMap< O, O >( initialCapacity ) );
-	}
-
-	public static < O > RefIntMap< O > createRefIntMap( final RefCollection< O > collection, final int noEntryValue )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new RefIntHashMap<>( pool, noEntryValue );
-		else
-			return new RefIntMapWrapper<>( noEntryValue );
-	}
-
-	public static < O > RefIntMap< O > createRefIntMap( final RefCollection< O > collection, final int noEntryValue, final int initialCapacity )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new RefIntHashMap<>( pool, noEntryValue, initialCapacity );
-		else
-			return new RefIntMapWrapper<>( noEntryValue, initialCapacity );
-	}
-
-	public static < O > RefDoubleMap< O > createRefDoubleMap( final RefCollection< O > collection, final double noEntryValue )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new RefDoubleHashMap<>( pool, noEntryValue );
-		else
-			return new RefDoubleMapWrapper<>( noEntryValue );
-	}
-
-	public static < O > RefDoubleMap< O > createRefDoubleMap( final RefCollection< O > collection, final double noEntryValue, final int initialCapacity )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new RefDoubleHashMap<>( pool, noEntryValue, initialCapacity );
-		else
-			return new RefDoubleMapWrapper<>( noEntryValue, initialCapacity );
-	}
-
-	public static < O > IntRefMap< O > createIntRefMap( final RefCollection< O > collection, final int noEntryKey )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new IntRefHashMap<>( pool, noEntryKey );
-		else
-			return new IntRefMapWrapper<>( noEntryKey );
-	}
-
-	public static < O > IntRefMap< O > createIntRefMap( final RefCollection< O > collection, final int noEntryKey, final int initialCapacity )
-	{
-		final RefPool< O > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new IntRefHashMap<>( pool, noEntryKey, initialCapacity );
-		else
-			return new IntRefMapWrapper<>( noEntryKey, initialCapacity );
-	}
-
-	private static < O > RefPool< O > tryGetRefPool( final RefCollection< O > collection )
+	static < O > RefPool< O > tryGetRefPool( final RefCollection< O > collection )
 	{
 		return ( collection instanceof RefPoolBackedRefCollection )
 				? ( (org.mastodon.collection.ref.RefPoolBackedRefCollection< O > ) collection ).getRefPool()
@@ -249,10 +147,5 @@ public class RefCollections
 	private static < O > RefStack< O > wrapAsStack( final Deque< O > set )
 	{
 		return new RefStackWrapper<>( set );
-	}
-
-	private static < K, O > RefRefMap< K, O > wrap( final Map< K, O > map )
-	{
-		return new RefMapWrapper<>( map );
 	}
 }
