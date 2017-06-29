@@ -38,7 +38,6 @@ import org.mastodon.pool.Pool;
  */
 public class RefMaps
 {
-
 	public static < K, V > RefRefMap< K, V > createRefRefMap( final RefCollection< K > keyCollection, final RefCollection< V > valueCollection )
 	{
 		final RefPool< K > keyPool = tryGetRefPool( keyCollection );
@@ -49,7 +48,7 @@ public class RefMaps
 		}
 		else if ( keyPool != null && valuePool == null )
 		{
-			return wrap( new RefObjectHashMap<>( keyPool ) );
+			return wrapROM( new RefObjectHashMap<>( keyPool ) );
 		}
 		else if ( keyPool == null && valuePool != null )
 		{
@@ -57,7 +56,7 @@ public class RefMaps
 		}
 		else
 		{
-			return wrap( new HashMap< K, V >() );
+			return wrapM( new HashMap< K, V >() );
 		}
 	}
 
@@ -79,119 +78,112 @@ public class RefMaps
 		}
 		else
 		{
-			return wrap( new HashMap< K, V >( initialCapacity ) );
+			return wrapM( new HashMap< K, V >( initialCapacity ) );
 		}
 	}
 
-	public static < K, V > RefObjectMap< K, V > createRefObjectMap( final RefCollection< K > collection )
+	public static < T > RefRefMap< T, T > createRefRefMap( final RefCollection< T > collection )
 	{
-		final RefPool< K > pool = tryGetRefPool( collection );
+		return createRefRefMap( collection, collection );
+	}
+
+	public static < T > RefRefMap< T, T > createRefRefMap( final RefCollection< T > collection, final int initialCapacity )
+	{
+		return createRefRefMap( collection, collection, initialCapacity );
+	}
+
+
+	public static < K, V > RefObjectMap< K, V > createRefObjectMap( final RefCollection< K > keyCollection )
+	{
+		final RefPool< K > pool = tryGetRefPool( keyCollection );
 		if ( pool != null )
 			return new RefObjectHashMap<>( pool );
 		else
-			return wrap( new HashMap< K, V >() );
+			return wrapM( new HashMap< K, V >() );
 	}
 
-	public static < K, V > ObjectRefMap< K, V > createObjectRefMap( final RefCollection< V > collection, final int initialCapacity )
+	public static < K, V > RefObjectMap< K, V > createRefObjectMap( final RefCollection< K > keyCollection, final int initialCapacity )
 	{
-		final RefPool< V > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new ObjectRefHashMap<>( pool, initialCapacity );
-		else
-			return wrap( new HashMap< K, V >( initialCapacity ) );
-	}
-
-	public static < K, V > ObjectRefMap< K, V > createObjectRefMap( final RefCollection< V > collection )
-	{
-		final RefPool< V > pool = tryGetRefPool( collection );
-		if ( pool != null )
-			return new ObjectRefHashMap<>( pool );
-		else
-			return wrap( new HashMap< K, V >() );
-	}
-
-	public static < K, V > RefObjectMap< K, V > createRefObjectMap( final RefCollection< K > collection, final int initialCapacity )
-	{
-		final RefPool< K > pool = tryGetRefPool( collection );
+		final RefPool< K > pool = tryGetRefPool( keyCollection );
 		if ( pool != null )
 			return new RefObjectHashMap<>( pool, initialCapacity );
 		else
-			return wrap( new HashMap< K, V >( initialCapacity ) );
+			return wrapM( new HashMap< K, V >( initialCapacity ) );
 	}
 
-	public static < K > RefRefMap< K, K > createRefRefMap( final RefCollection< K > collection )
+	public static < K, V > ObjectRefMap< K, V > createObjectRefMap( final RefCollection< V > valueCollection )
 	{
-		final RefPool< K > pool = tryGetRefPool( collection );
+		final RefPool< V > pool = tryGetRefPool( valueCollection );
 		if ( pool != null )
-			return new RefRefHashMap<>( pool, pool );
+			return new ObjectRefHashMap<>( pool );
 		else
-			return wrap( new HashMap< K, K >() );
+			return wrapM( new HashMap< K, V >() );
 	}
 
-	public static < K > RefRefMap< K, K > createRefRefMap( final RefCollection< K > collection, final int initialCapacity )
+	public static < K, V > ObjectRefMap< K, V > createObjectRefMap( final RefCollection< V > valueCollection, final int initialCapacity )
 	{
-		final RefPool< K > pool = tryGetRefPool( collection );
+		final RefPool< V > pool = tryGetRefPool( valueCollection );
 		if ( pool != null )
-			return new RefRefHashMap<>( pool, pool, initialCapacity );
+			return new ObjectRefHashMap<>( pool, initialCapacity );
 		else
-			return wrap( new HashMap< K, K >( initialCapacity ) );
+			return wrapM( new HashMap< K, V >( initialCapacity ) );
 	}
 
-	public static < K > RefIntMap< K > createRefIntMap( final RefCollection< K > collection, final int noEntryValue )
+	public static < K > RefIntMap< K > createRefIntMap( final RefCollection< K > keyCollection, final int noEntryValue )
 	{
-		final RefPool< K > pool = tryGetRefPool( collection );
+		final RefPool< K > pool = tryGetRefPool( keyCollection );
 		if ( pool != null )
 			return new RefIntHashMap<>( pool, noEntryValue );
 		else
 			return new RefIntMapWrapper<>( noEntryValue );
 	}
 
-	public static < K > RefIntMap< K > createRefIntMap( final RefCollection< K > collection, final int noEntryValue, final int initialCapacity )
+	public static < K > RefIntMap< K > createRefIntMap( final RefCollection< K > keyCollection, final int noEntryValue, final int initialCapacity )
 	{
-		final RefPool< K > pool = tryGetRefPool( collection );
+		final RefPool< K > pool = tryGetRefPool( keyCollection );
 		if ( pool != null )
 			return new RefIntHashMap<>( pool, noEntryValue, initialCapacity );
 		else
 			return new RefIntMapWrapper<>( noEntryValue, initialCapacity );
 	}
 
-	public static < K > RefDoubleMap< K > createRefDoubleMap( final RefCollection< K > collection, final double noEntryValue )
+	public static < K > RefDoubleMap< K > createRefDoubleMap( final RefCollection< K > keyCollection, final double noEntryValue )
 	{
-		final RefPool< K > pool = tryGetRefPool( collection );
+		final RefPool< K > pool = tryGetRefPool( keyCollection );
 		if ( pool != null )
 			return new RefDoubleHashMap<>( pool, noEntryValue );
 		else
 			return new RefDoubleMapWrapper<>( noEntryValue );
 	}
 
-	public static < K > RefDoubleMap< K > createRefDoubleMap( final RefCollection< K > collection, final double noEntryValue, final int initialCapacity )
+	public static < K > RefDoubleMap< K > createRefDoubleMap( final RefCollection< K > keyCollection, final double noEntryValue, final int initialCapacity )
 	{
-		final RefPool< K > pool = tryGetRefPool( collection );
+		final RefPool< K > pool = tryGetRefPool( keyCollection );
 		if ( pool != null )
 			return new RefDoubleHashMap<>( pool, noEntryValue, initialCapacity );
 		else
 			return new RefDoubleMapWrapper<>( noEntryValue, initialCapacity );
 	}
 
-	public static < V > IntRefMap< V > createIntRefMap( final RefCollection< V > collection, final int noEntryKey )
+	public static < V > IntRefMap< V > createIntRefMap( final RefCollection< V > keyCollection, final int noEntryKey )
 	{
-		final RefPool< V > pool = tryGetRefPool( collection );
+		final RefPool< V > pool = tryGetRefPool( keyCollection );
 		if ( pool != null )
 			return new IntRefHashMap<>( pool, noEntryKey );
 		else
 			return new IntRefMapWrapper<>( noEntryKey );
 	}
 
-	public static < V > IntRefMap< V > createIntRefMap( final RefCollection< V > collection, final int noEntryKey, final int initialCapacity )
+	public static < V > IntRefMap< V > createIntRefMap( final RefCollection< V > valueCollection, final int noEntryKey, final int initialCapacity )
 	{
-		final RefPool< V > pool = tryGetRefPool( collection );
+		final RefPool< V > pool = tryGetRefPool( valueCollection );
 		if ( pool != null )
 			return new IntRefHashMap<>( pool, noEntryKey, initialCapacity );
 		else
 			return new IntRefMapWrapper<>( noEntryKey, initialCapacity );
 	}
 
-	private static < K, V > RefRefMap< K, V > wrap( final Map< K, V > map )
+	private static < K, V > RefRefMap< K, V > wrapM( final Map< K, V > map )
 	{
 		return new RefRefMapWrapper.FromMap<>( map );
 	}
@@ -210,5 +202,4 @@ public class RefMaps
 
 	private RefMaps()
 	{}
-
 }
