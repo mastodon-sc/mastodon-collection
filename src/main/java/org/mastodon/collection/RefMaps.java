@@ -12,11 +12,9 @@ import org.mastodon.collection.ref.RefObjectHashMap;
 import org.mastodon.collection.ref.RefPoolBackedRefCollection;
 import org.mastodon.collection.ref.RefRefHashMap;
 import org.mastodon.collection.wrap.IntRefMapWrapper;
-import org.mastodon.collection.wrap.ObjectRefMapAsRefRefMapWrapper;
 import org.mastodon.collection.wrap.RefDoubleMapWrapper;
 import org.mastodon.collection.wrap.RefIntMapWrapper;
-import org.mastodon.collection.wrap.MapAsRefRefMapWrapper;
-import org.mastodon.collection.wrap.RefObjectMapAsRefRefMapWrapper;
+import org.mastodon.collection.wrap.RefRefMapWrapper;
 import org.mastodon.pool.Pool;
 
 /**
@@ -200,19 +198,19 @@ public class RefMaps
 
 	private static < K, V > RefRefMap< K, V > wrap( final Map< K, V > map )
 	{
-		return new MapAsRefRefMapWrapper<>( map );
+		return new RefRefMapWrapper.FromMap<>( map );
 	}
 
 
 	private static < K, V > RefRefMap< K, V > wrapORM( final ObjectRefMap< K, V > map )
 	{
-		return new ObjectRefMapAsRefRefMapWrapper<>( map );
+		return new RefRefMapWrapper.FromObjectRefMap<>( map );
 	}
 
 
 	private static < K, V > RefRefMap< K, V > wrapROM( final RefObjectMap< K, V > map )
 	{
-		return new RefObjectMapAsRefRefMapWrapper<>(map);
+		return new RefRefMapWrapper.FromRefObjectMap<>(map);
 	}
 
 	private RefMaps()
