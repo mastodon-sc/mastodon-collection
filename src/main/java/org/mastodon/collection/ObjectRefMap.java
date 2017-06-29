@@ -17,6 +17,7 @@ import java.util.Map;
  *            value type.
  *
  * @author Jean-Yves Tinevez
+ * @author Tobias Pietzsch
  */
 public interface ObjectRefMap< K, V > extends Map< K, V >
 {
@@ -46,7 +47,7 @@ public interface ObjectRefMap< K, V > extends Map< K, V >
 	 * (optional operation). If the map previously contained a mapping for the
 	 * key, the old value is replaced by the specified value. (A map <tt>m</tt>
 	 * is said to contain a mapping for a key <tt>k</tt> if and only if
-	 * {@link #containsKey(int) m.containsKey(k)} would return <tt>true</tt>.)
+	 * {@link #containsKey(Object) m.containsKey(k)} would return <tt>true</tt>.)
 	 *
 	 * @param key
 	 *            key with which the specified value is to be associated
@@ -81,7 +82,7 @@ public interface ObjectRefMap< K, V > extends Map< K, V >
 	 *
 	 * <p>
 	 * This method is a (potentially) allocation-free version of
-	 * {@link #remove(K)}.
+	 * {@link #remove(Object)}.
 	 *
 	 * @param key
 	 *            the key whose associated value is to be returned.
@@ -102,7 +103,7 @@ public interface ObjectRefMap< K, V > extends Map< K, V >
 	 *
 	 * <p>
 	 * This method is a (potentially) allocation-free version of
-	 * {@link #get(K)}.
+	 * {@link #get(Object)}.
 	 *
 	 * @param key
 	 *            the key whose associated value is to be returned.

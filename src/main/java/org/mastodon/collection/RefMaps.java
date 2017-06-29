@@ -28,10 +28,10 @@ import org.mastodon.pool.Pool;
  * could be a {@link Pool} or a wrapped standard {@link java.util.Collection}.
  * <p>
  * If specified {@link RefCollection} implements
- * {@link RefPoolBackedRefCollection}, specialized maps are created that
- * are backed by Trove collections over pool indices. Otherwise, standard
- * {@code java.util} {@link Maps} are created and wrapped as
- * {@link RefRefMap} or similar.
+ * {@link RefPoolBackedRefCollection}, specialized maps are created that are
+ * backed by Trove collections over pool indices. Otherwise, standard
+ * {@link java.util.Map}s are created and wrapped as {@link RefRefMap} or
+ * similar.
  *
  * @author Tobias Pietzsch
  * @author Jean-Yves Tinevez
