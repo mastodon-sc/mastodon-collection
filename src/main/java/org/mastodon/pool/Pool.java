@@ -1,6 +1,7 @@
 package org.mastodon.pool;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.mastodon.RefPool;
@@ -102,7 +103,15 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	@Override
 	public O getObject( final int index, final O obj )
 	{
+		if ( index < 0 || index >= memPool.capacity )
+			throw new NoSuchElementException();
+
 		obj.updateAccess( this, index );
+
+		final boolean isFree = obj.access.getInt( 0 ) == MemPool.FREE_ELEMENT_MAGIC_NUMBER;
+		if (isFree)
+			throw new NoSuchElementException();
+
 		return obj;
 	}
 
@@ -155,6 +164,9 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 			public O next()
 			{
 				final int index = pi.next();
+				if ( index >= memPool.allocatedSize )
+					throw new NoSuchElementException();
+
 				obj.updateAccess( Pool.this, index );
 				return obj;
 			}
