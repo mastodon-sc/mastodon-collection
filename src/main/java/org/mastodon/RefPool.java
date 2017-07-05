@@ -58,6 +58,23 @@ public interface RefPool< O >
 	public O getObject( final int id, final O obj );
 
 	/**
+	 * Get the object associated with the given {@code id}.
+	 * <p>
+	 * If this pool stores {@link Ref} objects, the provided reference
+	 * {@code obj} will be used to refer to the object at {@code index} in the
+	 * pool, and returned.
+	 *
+	 * @param id
+	 *            internal pool index.
+	 * @param obj
+	 *            reusable reference that may be used to refer to object
+	 *            associated with {@code id}, and return it.
+	 * @return the object associated with the given {@code id} or {@code null}
+	 *         if no such object exists.
+	 */
+	public O getObjectIfExists( final int id, final O obj );
+
+	/**
 	 * Get the (unique) ID associated with the given object.
 	 * <p>
 	 * If the object is a {@link Ref}, then the ID depends on the data the

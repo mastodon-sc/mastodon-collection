@@ -85,6 +85,22 @@ public class UndoIdBimap< O > implements RefPool< O >
 		return objUndoIdBimap.getKey( undoId, ref );
 	}
 
+	/**
+	 * Returns the object mapped to the specified undo ID.
+	 *
+	 * @param undoId
+	 *            the undo ID.
+	 * @param ref
+	 *            a pool reference that might be used for object retrieval.
+	 * @return the object mapped to the specified undo ID, or <code>null</code>
+	 *         is there are no such undo ID stored in this map.
+	 */
+	@Override
+	public O getObjectIfExists( final int undoId, final O ref )
+	{
+		return objUndoIdBimap.getKey( undoId, ref );
+	}
+
 	@Override
 	public O createRef()
 	{

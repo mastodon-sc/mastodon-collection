@@ -1,5 +1,6 @@
 package org.mastodon.collection.util;
 
+import java.util.NoSuchElementException;
 import org.mastodon.RefPool;
 
 import gnu.trove.impl.Constants;
@@ -43,7 +44,13 @@ public class HashBimap< O > implements RefPool< O >
 	{
 		final O o = idToObj.get( id );
 		if ( o == null )
-			throw new IllegalArgumentException();
+			throw new NoSuchElementException();
+		return o;
+	}
+
+	@Override public O getObjectIfExists( final int id, final O obj )
+	{
+		final O o = idToObj.get( id );
 		return o;
 	}
 
