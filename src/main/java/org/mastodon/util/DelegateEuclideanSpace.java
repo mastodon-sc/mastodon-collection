@@ -1,4 +1,4 @@
-package org.mastodon.collection.util;
+package org.mastodon.util;
 
 import net.imglib2.EuclideanSpace;
 

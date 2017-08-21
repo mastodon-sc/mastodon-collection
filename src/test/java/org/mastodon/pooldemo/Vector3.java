@@ -1,7 +1,7 @@
 package org.mastodon.pooldemo;
 
-import org.mastodon.collection.util.DelegateRealLocalizable;
-import org.mastodon.collection.util.DelegateRealPositionable;
+import org.mastodon.util.DelegateRealLocalizable;
+import org.mastodon.util.DelegateRealPositionable;
 import org.mastodon.pool.ByteMappedElement;
 import org.mastodon.pool.PoolObject;
 import org.mastodon.pool.attributes.RealPointAttributeValue;

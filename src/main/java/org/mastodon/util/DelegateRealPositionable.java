@@ -1,8 +1,9 @@
-package org.mastodon.collection.util;
+package org.mastodon.util;
 
 import net.imglib2.Localizable;
 import net.imglib2.RealLocalizable;
 import net.imglib2.RealPositionable;
+import org.mastodon.util.DelegateEuclideanSpace;
 
 /**
  * A {@link RealPositionable} backed by another {@link RealPositionable}.
