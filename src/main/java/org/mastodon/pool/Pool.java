@@ -117,6 +117,21 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	}
 
 	@Override
+	public O getObjectIfExists( final int index, final O obj )
+	{
+		if ( index < 0 || index >= memPool.capacity )
+			return null;
+
+		obj.updateAccess( memPool, index );
+
+		final boolean isFree = obj.access.getInt( 0 ) == MemPool.FREE_ELEMENT_MAGIC_NUMBER;
+		if (isFree)
+			return null;
+
+		return obj;
+	}
+
+	@Override
 	public int getId( final O o )
 	{
 		return o.getInternalPoolIndex();
