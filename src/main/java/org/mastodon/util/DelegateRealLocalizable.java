@@ -9,6 +9,7 @@ import org.mastodon.util.DelegateEuclideanSpace;
  * @author Curtis Rueden
  * @author Tobias Pietzsch
  */
+// TODO: this should probably be in imglib?
 public interface DelegateRealLocalizable extends RealLocalizable, DelegateEuclideanSpace
 {
 	@Override
