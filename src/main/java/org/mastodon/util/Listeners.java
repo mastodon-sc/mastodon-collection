@@ -1,6 +1,7 @@
 package org.mastodon.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * A set of listeners of type {@code T}.
@@ -29,6 +30,16 @@ public interface Listeners< T >
 	 *         {@code false} if the listener was not present.
 	 */
 	public boolean remove( final T listener );
+
+	public default boolean addAll( final Collection< ? extends T > listeners )
+	{
+		return listeners.stream().map( l -> add( l ) ).reduce( Boolean::logicalOr ).get();
+	}
+
+	public default boolean removeAll( final Collection< ? extends T > listeners )
+	{
+		return listeners.stream().map( l -> remove( l ) ).reduce( Boolean::logicalOr ).get();
+	}
 
 	/**
 	 * Implements {@link Listeners} using an {@link ArrayList}.
