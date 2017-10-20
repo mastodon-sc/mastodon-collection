@@ -2,6 +2,7 @@ package org.mastodon.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * A set of listeners of type {@code T}.
@@ -46,6 +47,18 @@ public interface Listeners< T >
 	 */
 	public static class List< T > implements Listeners< T >
 	{
+		private final Consumer< T > onAdd;
+
+		public List( final Consumer< T > onAdd )
+		{
+			this.onAdd = onAdd;
+		}
+
+		public List()
+		{
+			this( o -> {} );
+		}
+
 		public final ArrayList< T > list = new ArrayList<>();
 
 		@Override
@@ -54,6 +67,7 @@ public interface Listeners< T >
 			if ( !list.contains( listener ) )
 			{
 				list.add( listener );
+				onAdd.accept( listener );
 				return true;
 			}
 			return false;
@@ -72,6 +86,16 @@ public interface Listeners< T >
 	 */
 	public static class SynchronizedList< T > extends List< T >
 	{
+		public SynchronizedList( final Consumer< T > onAdd )
+		{
+			super( onAdd );
+		}
+
+		public SynchronizedList()
+		{
+			super();
+		}
+
 		@Override
 		public synchronized boolean add( final T listener )
 		{
