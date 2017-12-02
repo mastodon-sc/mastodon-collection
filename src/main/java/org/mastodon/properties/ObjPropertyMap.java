@@ -106,4 +106,23 @@ public class ObjPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	{
 		throw new UnsupportedOperationException( "TODO" );
 	}
+
+	@Override
+	public boolean equals( final Object o )
+	{
+		if ( this == o )
+			return true;
+		if ( o == null || getClass() != o.getClass() )
+			return false;
+
+		final ObjPropertyMap< ?, ? > that = ( ObjPropertyMap< ?, ? > ) o;
+
+		return map.equals( that.map );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return map.hashCode();
+	}
 }
