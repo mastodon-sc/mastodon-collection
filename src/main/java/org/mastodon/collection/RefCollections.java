@@ -122,7 +122,7 @@ public class RefCollections
 			return wrapAsStack( new ArrayDeque< O >( initialCapacity ) );
 	}
 
-	static < O > RefPool< O > tryGetRefPool( final RefCollection< O > collection )
+	public static < O > RefPool< O > tryGetRefPool( final RefCollection< O > collection )
 	{
 		return ( collection instanceof RefPoolBackedRefCollection )
 				? ( (org.mastodon.collection.ref.RefPoolBackedRefCollection< O > ) collection ).getRefPool()
