@@ -56,7 +56,7 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 		notifyBeforePropertyChange( key );
 		final double old = map.put( key, value );
 		notifyPropertyChanged( key );
-		return ( old == noEntryValue ) ? null : Double.valueOf( old );
+		return ( old == noEntryValue ) ? null : old;
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 		notifyBeforePropertyChange( key );
 		final double old = map.remove( key );
 		notifyPropertyChanged( key );
-		return ( old == noEntryValue ) ? null : Double.valueOf( old );
+		return ( old == noEntryValue ) ? null : old;
 	}
 
 	public double removeDouble( final O key )
@@ -137,5 +137,24 @@ public class DoublePropertyMap< O > extends AbstractPropertyMap< O, Double >
 	public void clear()
 	{
 		throw new UnsupportedOperationException( "TODO" );
+	}
+
+	@Override
+	public boolean equals( final Object o )
+	{
+		if ( this == o )
+			return true;
+		if ( o == null || getClass() != o.getClass() )
+			return false;
+
+		final DoublePropertyMap< ? > that = ( DoublePropertyMap< ? > ) o;
+
+		return map.equals( that.map );
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return map.hashCode();
 	}
 }
