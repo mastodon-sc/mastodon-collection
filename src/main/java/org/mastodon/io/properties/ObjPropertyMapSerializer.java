@@ -10,8 +10,6 @@ import org.mastodon.io.FileIdToObjectMap;
 import org.mastodon.io.ObjectToFileIdMap;
 import org.mastodon.properties.ObjPropertyMap;
 
-import gnu.trove.map.hash.TIntObjectHashMap;
-
 public class ObjPropertyMapSerializer< O, T > implements PropertyMapSerializer< O, ObjPropertyMap< O, T > >
 {
 	private final ObjPropertyMap< O, T > propertyMap;
@@ -27,11 +25,17 @@ public class ObjPropertyMapSerializer< O, T > implements PropertyMapSerializer< 
 			final ObjectOutputStream oos )
 					throws IOException
 	{
-		final TIntObjectHashMap< T > fmap = new TIntObjectHashMap< >();
 		final RefObjectMap< O, T > pmap = propertyMap.getMap();
+
+		// NUMBER OF ENTRIES
+		oos.writeInt( pmap.size() );
+
+		// ENTRIES
 		for ( final Entry< O, T > e : pmap.entrySet() )
-			fmap.put( idmap.getId( e.getKey() ), e.getValue() );
-		oos.writeObject( fmap );
+		{
+			oos.writeInt( idmap.getId( e.getKey() ) );
+			oos.writeObject( e.getValue() );
+		}
 	}
 
 	@Override
@@ -40,15 +44,21 @@ public class ObjPropertyMapSerializer< O, T > implements PropertyMapSerializer< 
 			final ObjectInputStream ois )
 					throws IOException, ClassNotFoundException
 	{
-		@SuppressWarnings( "unchecked" )
-		final TIntObjectHashMap< T > fmap = ( TIntObjectHashMap< T > ) ois.readObject();
 		final RefObjectMap< O, T > pmap = propertyMap.getMap();
 		pmap.clear();
+
+		// NUMBER OF ENTRIES
+		final int size = ois.readInt();
+
+		// ENTRIES
 		final O ref = idmap.createRef();
-		fmap.forEachEntry( ( final int key, final T value ) -> {
+		for ( int i = 0; i < size; i++ )
+		{
+			final int key = ois.readInt();
+			@SuppressWarnings( "unchecked" )
+			final T value = ( T ) ois.readObject();
 			pmap.put( idmap.getObject( key, ref ), value );
-			return true;
-		} );
+		}
 		idmap.releaseRef( ref );
 	}
 
