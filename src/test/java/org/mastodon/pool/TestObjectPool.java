@@ -13,10 +13,18 @@ public class TestObjectPool extends Pool< TestObject, ByteMappedElement >
 
 	final IntAttribute< TestObject > id;
 
+	public TestObjectPool( final int initialCapacity, final boolean useMultiArrayMemPool )
+	{
+		super( initialCapacity, layout, TestObject.class,
+				useMultiArrayMemPool
+						? MultiArrayMemPool.factory( ByteMappedElementArray.factory )
+						: SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
+		id = new IntAttribute<>( layout.id, this );
+	}
+
 	public TestObjectPool( final int initialCapacity )
 	{
-		super( initialCapacity, layout, TestObject.class, SingleArrayMemPool.factory( ByteMappedElementArray.factory ) );
-		id = new IntAttribute<>( layout.id, this );
+		this( initialCapacity, false );
 	}
 
 	@Override

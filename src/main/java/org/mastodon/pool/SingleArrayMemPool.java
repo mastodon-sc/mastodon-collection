@@ -9,7 +9,7 @@ package org.mastodon.pool;
  * @param <A>
  *            the type of the primitive array used in the
  *            {@link MappedElementArray}.
- * 
+ *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
 public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends MappedElement > extends MemPool< T >
@@ -29,7 +29,7 @@ public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends
 		final int index = allocatedSize++;
 		if ( allocatedSize > capacity )
 		{
-			capacity = Math.min( capacity << 1, data.maxSize() );
+			capacity = Math.max( 1, Math.min( capacity << 1, data.maxSize() ) );
 			if ( allocatedSize > capacity )
 				throw new IllegalArgumentException( "cannot store more than " + data.maxSize() + " elements" );
 			data.resize( capacity );
@@ -57,7 +57,7 @@ public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends
 
 	/**
 	 * <b>For internal use only!</b>
-	 * 
+	 *
 	 * @return the data array used in this class.
 	 */
 	public A getDataArray()
@@ -69,7 +69,7 @@ public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends
 	 * Creates a factory for {@link SingleArrayMemPool}s that use the specified
 	 * {@code arrayFactory} for creating their storage
 	 * {@link MappedElementArray}.
-	 * 
+	 *
 	 * @param arrayFactory
 	 *            the array factory.
 	 * @return a new factory that can create {@link MemPool}.

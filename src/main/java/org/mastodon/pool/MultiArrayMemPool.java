@@ -62,7 +62,7 @@ public class MultiArrayMemPool< A extends MappedElementArray< A, T >, T extends 
 					lastArray.resize( lastCapacity );
 				else
 					// if there is only one array, double its size
-					lastArray.resize( Math.min( lastCapacity << 1, elementsPerArray ) );
+					lastArray.resize( Math.max( 1, Math.min( lastCapacity << 1, elementsPerArray ) ) );
 				capacity += lastArray.size() - lastCapacity;
 			}
 		}
