@@ -116,6 +116,55 @@ public class BufferMappedElementArray implements MappedElementArray< BufferMappe
 		}
 	};
 
+	/**
+	 * Wrap an existing buffer
+	 * TODO: clarify doc
+	 */
+	private BufferMappedElementArray( final ByteBuffer byteBuffer, final int bytesPerElement )
+	{
+		this.bytesPerElement = bytesPerElement;
+		this.data = byteBuffer;
+		this.size = byteBuffer.capacity() / bytesPerElement;
+	}
+
+	/**
+	 * Create a (one-time use) factory to wrap the specified {@code ByteBuffer}.
+	 * TODO: clarify doc
+	 */
+	public static final MappedElementArray.Factory< BufferMappedElementArray > wrappingFactory( final ByteBuffer byteBuffer )
+	{
+		return new MappedElementArray.Factory< BufferMappedElementArray >()
+		{
+			@Override
+			public BufferMappedElementArray createArray( final int numElements, final int bytesPerElement )
+			{
+				assert( numElements == byteBuffer.capacity() / bytesPerElement );
+				return new BufferMappedElementArray( byteBuffer, bytesPerElement );
+			}
+		};
+	}
+
+	/**
+	 * TODO: doc
+	 * TODO: where to put this???
+	 */
+	public static < A extends MappedElementArray< A, BufferMappedElement > >
+			MemPool.Factory< BufferMappedElement > wrappingMemPoolFactory( final ByteBuffer byteBuffer )
+	{
+		return new MemPool.Factory< BufferMappedElement >()
+		{
+			@Override
+			public MemPool< BufferMappedElement > createPool( final int capacity, final int bytesPerElement )
+			{
+				final int numElements = byteBuffer.capacity() / bytesPerElement;
+				final MemPool< BufferMappedElement > pool = new SingleArrayMemPool<>( wrappingFactory( byteBuffer ), numElements, bytesPerElement );
+				pool.size = numElements;
+				pool.allocatedSize = numElements;
+				return pool;
+			}
+		};
+	}
+
 	public ByteBuffer getBuffer()
 	{
 		data.rewind();
