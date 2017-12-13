@@ -191,6 +191,6 @@ public class DoubleMappedElement implements MappedElement
 	@Override
 	public int hashCode()
 	{
-		return dataArray.hashCode() + baseOffset;
+		return dataArray.hashCode() + 31 * baseOffset;
 	}
 }
