@@ -32,26 +32,19 @@ public abstract class PoolObject< O extends PoolObject< O, P, T >, P extends Poo
 	private int index;
 
 	/**
-	 * The {@link MemPool} into which this proxy currently refers.
+	 * The {@link Pool} into which this proxy currently refers.
 	 */
-	private MemPool< T > memPool;
-
-	/**
-	 * The {@link Pool} that created this {@link PoolObject}.
-	 * This is used only to forward {@link #releaseRef()} to the creating {@link Pool}.
-	 */
-	protected final P pool;
+	protected P pool;
 
 	/**
 	 * Create a {@link PoolObject} referring data in the given {@link Pool}.
 	 * The element that it references to can be set by
-	 * {@link #updateAccess(MemPool, int)}.
+	 * {@link #updateAccess(Pool, int)}.
 	 */
 	protected PoolObject( final P pool )
 	{
 		this.pool = pool;
-		this.memPool = pool.getMemPool();
-		this.access = memPool.createAccess();
+		this.access = pool.getMemPool().createAccess();
 	}
 
 	@Override
@@ -73,47 +66,24 @@ public abstract class PoolObject< O extends PoolObject< O, P, T >, P extends Poo
 	 * Make this proxy refer the element at the specified {@code index} in the
 	 * specified {@code pool}.
 	 *
-	 * @param memPool
+	 * @param pool
 	 * @param index
 	 */
-	void updateAccess( final MemPool< T > memPool, final int index )
+	void updateAccess( final Pool< O, T > pool, final int index )
 	{
-		this.memPool = memPool;
+		if ( this.pool != pool )
+			this.pool = ( P ) pool;
 		this.index = index;
-		memPool.updateAccess( access, index );
-	}
-
-	/**
-	 * Make this proxy refer the element at the specified {@code index} in the
-	 * current {@link #memPool}.
-	 *
-	 * @param index
-	 */
-	// TODO: go through updateAccess( pool, index ) uses an find out, when this one can be used instead.
-	void updateAccess( final int index )
-	{
-		this.index = index;
-		memPool.updateAccess( access, index );
+		this.pool.getMemPool().updateAccess( access, index );
 	}
 
 	@Override
 	@SuppressWarnings( "unchecked" )
 	public O refTo( final O obj )
 	{
-		final PoolObject< ?, ?, T > other = obj;
-		if ( other.pool != pool )
-			throw new IllegalArgumentException( "Cannot point a proxy to an object from a different pool" );
-		updateAccess( other.memPool, other.index );
+		final PoolObject< ?, P, T > other = obj;
+		updateAccess( other.pool, other.index );
 		return ( O ) this;
-	}
-
-	/**
-	 * Make the {@link Pool} that created this proxy {@link Pool#releaseRef(PoolObject) release} it.
-	 */
-	@SuppressWarnings( "unchecked" )
-	void releaseRef()
-	{
-		pool.releaseRef( ( O ) this );
 	}
 
 	@Override

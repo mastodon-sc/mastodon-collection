@@ -96,23 +96,13 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	@Override
 	public void releaseRef( final O obj )
 	{
-		if ( obj.pool == this )
-			tmpObjRefs.add( obj );
-		else
-			obj.releaseRef();
-	}
-
-	// TODO: find instances where releaseRefs( PoolObject<?> ... objs ) can be used instead of separately releasing refs (Then probably don't use it because it creates an Object array).
-	public static void releaseRefs( final PoolObject< ?, ?, ? >... objs )
-	{
-		for ( final PoolObject< ?, ?, ? > obj : objs )
-			obj.releaseRef();
+		tmpObjRefs.add( obj );
 	}
 
 	@Override
 	public O getObject( final int index, final O obj )
 	{
-		obj.updateAccess( memPool, index );
+		obj.updateAccess( this, index );
 		return obj;
 	}
 
@@ -122,7 +112,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 		if ( index < 0 || index >= memPool.capacity )
 			return null;
 
-		obj.updateAccess( memPool, index );
+		obj.updateAccess( this, index );
 
 		final boolean isFree = obj.access.getInt( 0 ) == MemPool.FREE_ELEMENT_MAGIC_NUMBER;
 		if (isFree)
@@ -165,7 +155,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 			public O next()
 			{
 				final int index = pi.next();
-				obj.updateAccess( memPool, index );
+				obj.updateAccess( Pool.this, index );
 				return obj;
 			}
 
@@ -208,7 +198,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	protected O create( final O obj )
 	{
 		final int index = memPool.create();
-		obj.updateAccess( memPool, index );
+		obj.updateAccess( this, index );
 		obj.setToUninitializedState();
 		propertyMaps.objectCreated( obj );
 		return obj;
