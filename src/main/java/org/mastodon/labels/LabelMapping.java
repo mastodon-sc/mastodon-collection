@@ -1,14 +1,16 @@
 package org.mastodon.labels;
 
-import gnu.trove.impl.Constants;
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import gnu.trove.impl.Constants;
+import gnu.trove.map.TObjectIntMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
+import gnu.trove.map.hash.TObjectIntHashMap;
 
 /**
  * The LabelMapping maps a set of labels of an object to an index value
@@ -90,6 +92,8 @@ class LabelMapping< T >
 
 		final HashSet< T > background = new HashSet< T >( 0 );
 		theEmptySet = intern( background );
+
+		cachedDiffs = new TIntObjectHashMap<>();
 	}
 
 	/**
@@ -264,6 +268,60 @@ class LabelMapping< T >
 	}
 
 	/**
+	 * Get the diff (elements added and elements removed) between the label set
+	 * at index {@code fromIndex} and the label set at index {@code toIndex}.
+	 *
+	 * @param fromIndex
+	 * @param toIndex
+	 * @return diff between set at {@code fromIndex} and set at {@code toIndex}.
+	 */
+	Diff diff( final int fromIndex, final int toIndex )
+	{
+		TIntObjectHashMap< Diff > toIndexToDiff = cachedDiffs.get( fromIndex );
+		if ( toIndexToDiff == null )
+		{
+			toIndexToDiff = new TIntObjectHashMap<>();
+			cachedDiffs.put( fromIndex, toIndexToDiff );
+		}
+		Diff diff = toIndexToDiff.get( toIndex );
+		if ( diff == null )
+		{
+			diff = new Diff( fromIndex, toIndex );
+			toIndexToDiff.put( toIndex, diff );
+		}
+		return diff;
+	}
+
+	private final TIntObjectHashMap< TIntObjectHashMap< Diff > > cachedDiffs;
+
+	class Diff
+	{
+		private final Set< T > addedLabels;
+
+		private final Set< T > removedLabels;
+
+		public Diff( final int fromIndex, final int toIndex )
+		{
+			final Set< T > fromSet = setsByIndex.get( fromIndex ).getSet();
+			final Set< T > toSet = setsByIndex.get( toIndex ).getSet();
+			addedLabels = new HashSet<>( toSet );
+			addedLabels.removeAll( fromSet );
+			removedLabels = new HashSet<>( fromSet );
+			removedLabels.removeAll( toSet );
+		}
+
+		public Set< T > getAddedLabels()
+		{
+			return addedLabels;
+		}
+
+		public Set< T > getRemovedLabels()
+		{
+			return removedLabels;
+		}
+	}
+
+	/**
 	 * Internals. Can be derived for implementing de/serialisation of the
 	 * {@link LabelMapping}.
 	 */
@@ -278,7 +336,7 @@ class LabelMapping< T >
 
 		protected List< Set< T > > getLabelSets()
 		{
-			final ArrayList< Set< T > > labelSets= new ArrayList<>( labelMapping.numSets() );
+			final ArrayList< Set< T > > labelSets = new ArrayList<>( labelMapping.numSets() );
 			for ( final InternedSet< T > interned : labelMapping.setsByIndex )
 				labelSets.add( interned.getSet() );
 			return labelSets;
