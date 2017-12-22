@@ -11,7 +11,7 @@ import org.mastodon.properties.AbstractPropertyMap;
 
 /**
  * Property map ({@code O} keys to {@code int} values) that also keeps a reverse
- * map ({@code int} keys to {@code O} values). This is used to implements
+ * map ({@code int} keys to {@code O} values). This is used to implement
  * {@link UndoIdBimap}.
  *
  * @param <O>
