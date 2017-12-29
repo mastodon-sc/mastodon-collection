@@ -7,11 +7,22 @@ import org.mastodon.properties.undo.PropertyUndoRedoStack;
  * be notified about changes.
  *
  * @param <O>
+ *            type of object which the property is attached to.
  *
  * @author Tobias Pietzsch
  */
 public interface Property< O >
 {
+	/**
+	 * Returns whether (the value of) this property is set for the specified
+	 * object ({@code key}) or not.
+	 *
+	 * @param key
+	 *            the object
+	 * @return whether a property is set for the specified object.
+	 */
+	public boolean isSet( O key );
+
 	/**
 	 * Register a {@link BeforePropertyChangeListener} that will be notified
 	 * before the value of this property is changed. Specifically,

@@ -13,7 +13,7 @@ package org.mastodon.properties;
  * </p>
  *
  * @param <O>
- *            type of object which the property should be attached to.
+ *            type of object which the property is attached to.
  * @param <T>
  *            type of the property.
  *
@@ -90,22 +90,13 @@ public interface PropertyMap< O, T > extends Property< O >
 	public void clear();
 
 	/**
-	 * Returns the value of this property for the specified ({@code key}).
+	 * Returns the value of this property for the specified ({@code key}). If
+	 * {@code isSet(key) == false} then {@code get(key) == null}.
 	 *
 	 * @param key
 	 * @return the value, may be {@code null}.
 	 */
 	public T get( O key );
-
-	/**
-	 * Returns whether this feature value is set for the specified ({@code key})
-	 * or not. If {@code false}, the value returned by {@link #get(Object)} is
-	 * {@code null}.
-	 *
-	 * @param key
-	 * @return whether a property value is set for the specified data item.
-	 */
-	public boolean isSet( O key );
 
 	/**
 	 * Returns the number of mappings in this {@link PropertyMap}.

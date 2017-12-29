@@ -30,4 +30,10 @@ public class AbstractAttribute< O extends PoolObject< O, ?, ? > >
 	{
 		return new AttributeUndoRedoStack<>( this );
 	}
+
+	@Override
+	public boolean isSet( final O key )
+	{
+		return true;
+	}
 }
