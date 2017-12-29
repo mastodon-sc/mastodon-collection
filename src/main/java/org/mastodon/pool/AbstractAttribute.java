@@ -11,6 +11,7 @@ import org.mastodon.properties.undo.PropertyUndoRedoStack;
  */
 public class AbstractAttribute< O extends PoolObject< O, ?, ? > >
 	extends AbstractProperty< O >
+	implements Attribute
 {
 	final PrimitiveField field;
 
