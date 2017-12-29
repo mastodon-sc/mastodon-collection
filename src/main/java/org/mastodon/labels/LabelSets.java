@@ -5,13 +5,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.mastodon.RefPool;
+import org.mastodon.collection.RefIntMap;
 import org.mastodon.collection.RefSet;
+import org.mastodon.collection.ref.RefIntHashMap;
 import org.mastodon.collection.ref.RefSetImp;
+import org.mastodon.properties.AbstractProperty;
 import org.mastodon.properties.IntPropertyMap;
+import org.mastodon.properties.undo.PropertyUndoRedoStack;
 
-import gnu.trove.map.hash.TObjectIntHashMap;
-
-public class LabelSets< O, T >
+public class LabelSets< O, T > extends AbstractProperty< O >
 {
 	private final RefPool< O > pool;
 
@@ -19,8 +21,21 @@ public class LabelSets< O, T >
 
 	final LabelMapping< T > mapping;
 
+	/**
+	 * Maps label to set of objects currently having the label.
+	 */
 	private final ConcurrentHashMap< T, RefSet< O > > labelToObjects;
 
+	/**
+	 * Maps object whose label set is changing to the index of the label set before the change.
+	 * This is used in maintaining {@code }labelToObjects} maps.
+	 * Mappings are added in {@code beforePropertyChange} and removed in {@code propertyChanged}.
+	 */
+	private final RefIntMap< O > changingObjToOldSetIndex;
+
+	/**
+	 * Reusable {@code LabelSet} ref objects.
+	 */
 	private final ConcurrentLinkedQueue< LabelSet< O, T> > tmpObjRefs;
 
 	public LabelSets( final RefPool< O > pool )
@@ -40,6 +55,7 @@ public class LabelSets< O, T >
 		mapping = new LabelMapping<>();
 		labelToObjects = new ConcurrentHashMap<>();
 		tmpObjRefs = new ConcurrentLinkedQueue<>();
+		changingObjToOldSetIndex = new RefIntHashMap<>( pool, -1 );
 	}
 
 	public LabelSet< O, T > getLabels( final O obj )
@@ -74,41 +90,49 @@ public class LabelSets< O, T >
 		tmpObjRefs.add( obj );
 	}
 
+	@Override
+	public boolean isSet( final O key )
+	{
+		return backingProperty.isSet( key );
+	}
+
+	@Override
+	public PropertyUndoRedoStack< O > createUndoRedoStack()
+	{
+		return backingProperty.createUndoRedoStack();
+	}
+
 	private LabelSet< O, T > createEmptyRef()
 	{
 		return new LabelSet<>( mapping, pool.createRef(), backingProperty, this );
 	}
 
-	public RefSet< O > allObjectsContaining( final T label )
+	public RefSet< O > getLabeledWith( final T label )
 	{
 		return labelToObjects.computeIfAbsent( label, k -> new RefSetImp<>( pool ) );
 	}
 
 	private void beforeDeleteObject( final O obj )
 	{
-		for ( final T label : labelsFor( obj ) )
+		final Set< T > labels = mapping.setAtIndex( backingProperty.get( obj ) ).getSet();
+		for ( final T label : labels )
 			labelToObjects.computeIfAbsent( label, k -> new RefSetImp<>( pool ) ).remove( obj );
 	}
 
-	private final TObjectIntHashMap< O > changing = new TObjectIntHashMap<>();
-
 	private void beforePropertyChange( final O obj )
 	{
-		changing.put( obj, backingProperty.get( obj ) );
+		changingObjToOldSetIndex.put( obj, backingProperty.get( obj ) );
+		notifyBeforePropertyChange( obj );
 	}
 
 	private void propertyChanged( final O obj )
 	{
-		final int fromIndex = changing.remove( obj );
+		final int fromIndex = changingObjToOldSetIndex.remove( obj );
 		final LabelMapping< T >.Diff diff = mapping.diff( fromIndex, backingProperty.get( obj ) );
 		for ( final T label : diff.getAddedLabels() )
 			labelToObjects.computeIfAbsent( label, k -> new RefSetImp<>( pool ) ).add( obj );
 		for ( final T label : diff.getRemovedLabels() )
 			labelToObjects.computeIfAbsent( label, k -> new RefSetImp<>( pool ) ).remove( obj );
-	}
-
-	private Set< T > labelsFor( final O obj )
-	{
-		return mapping.setAtIndex( backingProperty.get( obj ) ).getSet();
+		notifyPropertyChanged( obj );
 	}
 }
