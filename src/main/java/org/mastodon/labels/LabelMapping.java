@@ -28,7 +28,7 @@ import gnu.trove.map.hash.TObjectIntHashMap;
  * @author Lee Kamentsky
  * @author Tobias Pietzsch
  */
-class LabelMapping< T >
+public class LabelMapping< T >
 {
 	private static final int INT_NO_ENTRY_VALUE = -1;
 

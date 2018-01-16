@@ -112,6 +112,22 @@ public class LabelSets< O, T > extends AbstractProperty< O >
 		return labelToObjects.computeIfAbsent( label, k -> new RefSetImp<>( pool ) );
 	}
 
+	/**
+	 * For internal use. Needed for serialization.
+	 */
+	public IntPropertyMap< O > getBackingProperty()
+	{
+		return backingProperty;
+	}
+
+	/**
+	 * For internal use. Needed for serialization.
+	 */
+	public LabelMapping< T > getLabelMapping()
+	{
+		return mapping;
+	}
+
 	private void beforeDeleteObject( final O obj )
 	{
 		final Set< T > labels = mapping.setAtIndex( backingProperty.get( obj ) ).getSet();
