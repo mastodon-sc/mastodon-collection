@@ -1,24 +1,23 @@
 package org.mastodon.io;
 
-import gnu.trove.map.hash.TIntIntHashMap;
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Random;
 import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.mastodon.collection.ref.RefSetImp;
 import org.mastodon.io.labels.LabelSetsSerializer;
-import org.mastodon.io.properties.IntPropertyMapSerializer;
-import org.mastodon.labels.LabelSet;
 import org.mastodon.labels.LabelSets;
 import org.mastodon.pool.TestObject;
 import org.mastodon.pool.TestObjectPool;
-import org.mastodon.properties.IntPropertyMap;
 
-import static org.junit.Assert.assertEquals;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 public class LabelSetsSerializerTest
 {
@@ -38,7 +37,6 @@ public class LabelSetsSerializerTest
 		final TIntIntHashMap objectIdToFileId = new TIntIntHashMap( 10, 0.75f, -1, -1 );
 		final TIntIntHashMap fileIdToObjectId = new TIntIntHashMap( 10, 0.75f, -1, -1 );
 		final TestObject ref = pool.createRef();
-		final Random random = new Random();
 		for ( int i = 0; i < 10; i++ )
 		{
 			final int id = 20 + i;
@@ -78,12 +76,12 @@ public class LabelSetsSerializerTest
 				return ois.readInt();
 			}
 		};
-		new LabelSetsSerializer<>( labelsets, labelSerializer ).writePropertyMap( objectToFileIdMap, oos );
+		LabelSetsSerializer.writePropertyMap( labelsets, labelSerializer, objectToFileIdMap, oos );
 		oos.close();
 
 		final ObjectInputStream ois = new ObjectInputStream( new ByteArrayInputStream( bs.toByteArray() ) );
 		final LabelSets< TestObject, Integer > rlabelsets = new LabelSets<>( pool );
-		new LabelSetsSerializer<>( rlabelsets, labelSerializer ).readPropertyMap( fileIdToObjectMap, ois );
+		LabelSetsSerializer.readPropertyMap( rlabelsets, labelSerializer, fileIdToObjectMap, ois );
 
 //		pool.forEach( o -> {
 //			System.out.println( labelsets.getLabels( o ) );
@@ -92,5 +90,11 @@ public class LabelSetsSerializerTest
 //		} );
 
 		pool.forEach( o -> assertEquals( labelsets.getLabels( o ), rlabelsets.getLabels( o ) ) );
+
+		for ( int i = 0; i < 20; ++ i )
+		{
+			// TODO: add RefSetImp.equals() and hashcode()
+			assertEquals( ( ( RefSetImp ) labelsets.getLabeledWith( i ) ).getIndexCollection(), ( ( RefSetImp ) rlabelsets.getLabeledWith( i ) ).getIndexCollection() );
+		}
 	}
 }

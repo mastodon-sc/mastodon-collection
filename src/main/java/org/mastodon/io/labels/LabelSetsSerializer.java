@@ -1,10 +1,5 @@
 package org.mastodon.io.labels;
 
-import gnu.trove.iterator.TIntIterator;
-import gnu.trove.list.TIntList;
-import gnu.trove.list.array.TIntArrayList;
-import gnu.trove.map.TIntIntMap;
-import gnu.trove.map.hash.TIntIntHashMap;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,23 +8,27 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.mastodon.collection.RefIntMap;
+import org.mastodon.collection.RefList;
+import org.mastodon.collection.ref.RefArrayList;
 import org.mastodon.io.FileIdToObjectMap;
 import org.mastodon.io.ObjectToFileIdMap;
 import org.mastodon.labels.LabelMapping;
 import org.mastodon.labels.LabelMapping.SerialisationAccess;
 import org.mastodon.labels.LabelSets;
-import org.mastodon.properties.IntPropertyMap;
+
+import gnu.trove.iterator.TIntIterator;
+import gnu.trove.list.TIntList;
+import gnu.trove.list.array.TIntArrayList;
+import gnu.trove.map.TIntIntMap;
+import gnu.trove.map.hash.TIntIntHashMap;
 
 /*
  * TODO: PropertyMapSerializer should work for Property, not only PropertyMap
  */
 public class LabelSetsSerializer< O, T > // TODO implements PropertyMapSerializer< O, LabelSets< O, T > >
 {
-	private final LabelSets< O, T > propertyMap;
-
-	private final LabelSerializer< T > labelSerializer;
-
 	public interface LabelSerializer< T >
 	{
 		void writeLabel( final T label, final ObjectOutputStream oos ) throws IOException;
@@ -37,13 +36,9 @@ public class LabelSetsSerializer< O, T > // TODO implements PropertyMapSerialize
 		T readLabel( final ObjectInputStream ois ) throws IOException;
 	}
 
-	public LabelSetsSerializer( final LabelSets< O, T > propertyMap, LabelSerializer< T > labelSerializer )
-	{
-		this.propertyMap = propertyMap;
-		this.labelSerializer = labelSerializer;
-	}
-
-	public void writePropertyMap(
+	public static < O, T > void writePropertyMap(
+			final LabelSets< O, T > propertyMap,
+			final LabelSerializer< T > labelSerializer,
 			final ObjectToFileIdMap< O > idmap,
 			final ObjectOutputStream oos )
 			throws IOException
@@ -51,8 +46,8 @@ public class LabelSetsSerializer< O, T > // TODO implements PropertyMapSerialize
 		final LabelMapping< T > mapping = propertyMap.getLabelMapping();
 		final RefIntMap< O > pmap = propertyMap.getBackingProperty().getMap();
 
-		TIntList used = new TIntArrayList();
-		TIntIntMap mappingIndexToFileIndex = new TIntIntHashMap();
+		final TIntList used = new TIntArrayList();
+		final TIntIntMap mappingIndexToFileIndex = new TIntIntHashMap();
 		used.add( 0 );
 		mappingIndexToFileIndex.put( 0, 0 );
 		pmap.forEachValue( index -> {
@@ -68,15 +63,15 @@ public class LabelSetsSerializer< O, T > // TODO implements PropertyMapSerialize
 		oos.writeInt( used.size() );
 
 		// LABEL SETS
-		for ( TIntIterator it = used.iterator(); it.hasNext(); )
+		for ( final TIntIterator it = used.iterator(); it.hasNext(); )
 		{
-			Set< T > labels = mapping.labelsAtIndex( it.next() );
+			final Set< T > labels = mapping.labelsAtIndex( it.next() );
 
 			// NUMBER OF LABELS IN SET
 			oos.writeInt( labels.size() );
 
 			// LABELS
-			for ( T label : labels )
+			for ( final T label : labels )
 				labelSerializer.writeLabel( label, oos );
 		}
 
@@ -105,12 +100,13 @@ public class LabelSetsSerializer< O, T > // TODO implements PropertyMapSerialize
 		}
 	}
 
-	public void readPropertyMap(
+	public static < O, T > void readPropertyMap(
+			final LabelSets< O, T > propertyMap,
+			final LabelSerializer< T > labelSerializer,
 			final FileIdToObjectMap< O > idmap,
 			final ObjectInputStream ois )
-			throws IOException, ClassNotFoundException
+			throws IOException
 	{
-
 		final LabelMapping< T > mapping = propertyMap.getLabelMapping();
 		final RefIntMap< O > pmap = propertyMap.getBackingProperty().getMap();
 		pmap.clear();
@@ -119,14 +115,14 @@ public class LabelSetsSerializer< O, T > // TODO implements PropertyMapSerialize
 		final int numSets = ois.readInt();
 
 		// LABEL SETS
-		ArrayList< Set< T > > labelSets = new ArrayList<>();
+		final ArrayList< Set< T > > labelSets = new ArrayList<>();
 		for ( int i = 0; i < numSets; i++ )
 		{
 			// NUMBER OF LABELS IN SET
 			final int numLabels = ois.readInt();
 
 			// LABELS
-			Set< T > labels = new HashSet< T >();
+			final Set< T > labels = new HashSet< T >();
 			for ( int j = 0; j < numLabels; j++ )
 				labels.add( labelSerializer.readLabel( ois ) );
 
@@ -146,12 +142,42 @@ public class LabelSetsSerializer< O, T > // TODO implements PropertyMapSerialize
 
 		// ENTRIES
 		final O ref = idmap.createRef();
+		final RefList< O > labeled = new RefArrayList<>( propertyMap.getPool() );
 		for ( int i = 0; i < size; i++ )
 		{
 			final int key = ois.readInt();
 			final int value = ois.readInt();
-			pmap.put( idmap.getObject( key, ref ), value );
+			final O object = idmap.getObject( key, ref );
+			labeled.add( object );
+			pmap.put( object, value );
 		}
+		propertyMap.recomputeLabelToObjects( labeled );
 		idmap.releaseRef( ref );
+	}
+
+	private final LabelSets< O, T > propertyMap;
+
+	private final LabelSerializer< T > labelSerializer;
+
+	public LabelSetsSerializer( final LabelSets< O, T > propertyMap, final LabelSerializer< T > labelSerializer )
+	{
+		this.propertyMap = propertyMap;
+		this.labelSerializer = labelSerializer;
+	}
+
+	public void writePropertyMap(
+			final ObjectToFileIdMap< O > idmap,
+			final ObjectOutputStream oos )
+			throws IOException
+	{
+		writePropertyMap( propertyMap, labelSerializer, idmap, oos );
+	}
+
+	public void readPropertyMap(
+			final FileIdToObjectMap< O > idmap,
+			final ObjectInputStream ois )
+			throws IOException, ClassNotFoundException
+	{
+		readPropertyMap( propertyMap, labelSerializer, idmap, ois );
 	}
 }

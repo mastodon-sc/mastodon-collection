@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.mastodon.RefPool;
+import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefIntMap;
 import org.mastodon.collection.RefSet;
 import org.mastodon.collection.ref.RefIntHashMap;
@@ -126,6 +127,28 @@ public class LabelSets< O, T > extends AbstractProperty< O >
 	public LabelMapping< T > getLabelMapping()
 	{
 		return mapping;
+	}
+
+	/**
+	 * For internal use. Needed for serialization.
+	 */
+	public RefPool< O > getPool()
+	{
+		return pool;
+	}
+
+	/**
+	 * For internal use. Needed for serialization.
+	 */
+	public void recomputeLabelToObjects( final RefCollection< O > objects )
+	{
+		labelToObjects.clear();
+		for ( final O obj : objects )
+		{
+			final Set< T > labels = mapping.setAtIndex( backingProperty.get( obj ) ).getSet();
+			for ( final T label : labels )
+				labelToObjects.computeIfAbsent( label, k -> new RefSetImp<>( pool ) ).add( obj );
+		}
 	}
 
 	private void beforeDeleteObject( final O obj )
