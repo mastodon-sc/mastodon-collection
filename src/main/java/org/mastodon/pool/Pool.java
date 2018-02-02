@@ -104,13 +104,13 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	public O getObject( final int index, final O obj )
 	{
 		if ( index < 0 || index >= memPool.capacity )
-			throw new NoSuchElementException();
+			throw new NoSuchElementException( "index=" + index + " capacity=" + memPool.capacity + ", refClass=" + getRefClass().getSimpleName() );
 
 		obj.updateAccess( this, index );
 
 		final boolean isFree = obj.access.getInt( 0 ) == MemPool.FREE_ELEMENT_MAGIC_NUMBER;
 		if (isFree)
-			throw new NoSuchElementException();
+			throw new NoSuchElementException( "index=" + index + " is free, refClass=" + getRefClass().getSimpleName() );
 
 		return obj;
 	}
