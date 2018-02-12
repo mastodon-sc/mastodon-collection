@@ -78,6 +78,11 @@ public interface Listeners< T >
 		{
 			return list.remove( listener );
 		}
+
+		public ArrayList< T > listCopy()
+		{
+			return new ArrayList<>( list );
+		}
 	}
 
 	/**
@@ -106,6 +111,12 @@ public interface Listeners< T >
 		public synchronized boolean remove( final T listener )
 		{
 			return super.remove( listener );
+		}
+
+		@Override
+		public synchronized ArrayList< T > listCopy()
+		{
+			return super.listCopy();
 		}
 	}
 }
