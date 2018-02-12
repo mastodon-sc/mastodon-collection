@@ -20,7 +20,7 @@ public interface Listeners< T >
 	 * @return {@code true} if the listener was added. {@code false} if it was
 	 *         already present.
 	 */
-	public boolean add( final T listener );
+	boolean add( final T listener );
 
 	/**
 	 * Removes a listener from this set.
@@ -30,22 +30,22 @@ public interface Listeners< T >
 	 * @return {@code true} if the listener was successfully removed.
 	 *         {@code false} if the listener was not present.
 	 */
-	public boolean remove( final T listener );
+	boolean remove( final T listener );
 
-	public default boolean addAll( final Collection< ? extends T > listeners )
+	default boolean addAll( final Collection< ? extends T > listeners )
 	{
-		return listeners.stream().map( l -> add( l ) ).reduce( Boolean::logicalOr ).get();
+		return listeners.stream().map( this::add ).reduce( Boolean::logicalOr ).get();
 	}
 
-	public default boolean removeAll( final Collection< ? extends T > listeners )
+	default boolean removeAll( final Collection< ? extends T > listeners )
 	{
-		return listeners.stream().map( l -> remove( l ) ).reduce( Boolean::logicalOr ).get();
+		return listeners.stream().map( this::remove ).reduce( Boolean::logicalOr ).get();
 	}
 
 	/**
 	 * Implements {@link Listeners} using an {@link ArrayList}.
 	 */
-	public static class List< T > implements Listeners< T >
+	class List< T > implements Listeners< T >
 	{
 		private final Consumer< T > onAdd;
 
@@ -89,7 +89,7 @@ public interface Listeners< T >
 	 * Extends {@link Listeners.List}, making {@code add} and {@code remove}
 	 * methods synchronized.
 	 */
-	public static class SynchronizedList< T > extends List< T >
+	class SynchronizedList< T > extends List< T >
 	{
 		public SynchronizedList( final Consumer< T > onAdd )
 		{
