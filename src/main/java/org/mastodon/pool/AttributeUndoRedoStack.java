@@ -92,9 +92,11 @@ public class AttributeUndoRedoStack< O extends PoolObject< O, ?, ? > > implement
 	 */
 	private void swap( final O obj, final ByteArrayRef buffer )
 	{
+		attribute.notifyBeforePropertyChange( obj );
 		attribute.access( obj ).getBytes( swapdata, offset );
 		buffer.getBytes( 0, data );
 		buffer.putBytes( 0, swapdata );
 		attribute.access( obj ).putBytes( data, offset );
+		attribute.notifyPropertyChanged( obj );
 	}
 }

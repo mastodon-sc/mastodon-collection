@@ -37,4 +37,16 @@ public class AbstractAttribute< O extends PoolObject< O, ?, ? > >
 	{
 		return true;
 	}
+
+	@Override
+	protected void notifyBeforePropertyChange( final O object )
+	{
+		super.notifyBeforePropertyChange( object );
+	}
+
+	@Override
+	protected void notifyPropertyChanged( final O object )
+	{
+		super.notifyPropertyChanged( object );
+	}
 }
