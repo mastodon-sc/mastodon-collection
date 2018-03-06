@@ -36,7 +36,7 @@ public final class NearestNeighborSearchOnKDTree< O extends RealLocalizable, T e
 		n = tree.numDimensions();
 		pos = new double[ n ];
 		bestPointNodeIndex = -1;
-		bestSquDistance = Double.MAX_VALUE;
+		bestSquDistance = Double.POSITIVE_INFINITY;
 		this.tree = tree;
 		this.node = tree.createRef();
 		this.obj = tree.getObjectPool().createRef();
@@ -64,7 +64,8 @@ public final class NearestNeighborSearchOnKDTree< O extends RealLocalizable, T e
 		else
 		{
 			p.localize( pos );
-			bestSquDistance = Double.MAX_VALUE;
+			bestPointNodeIndex = -1;
+			bestSquDistance = Double.POSITIVE_INFINITY;
 			searchNode( tree.rootIndex, 0 );
 		}
 	}
@@ -171,6 +172,8 @@ public final class NearestNeighborSearchOnKDTree< O extends RealLocalizable, T e
 			final int depth = ( tree.size() <= 0 ) ? 0 :
 				( int ) ( Math.log( tree.size() ) / Math.log( 2 ) ) + 2;
 			pos = new double[ n ];
+			bestIndex = -1;
+			bestSquDistance = Double.POSITIVE_INFINITY;
 			doubles = tree.getDoubles();
 			doublesRootIndex = tree.rootIndex * nodeSizeInDoubles;
 			axisDiffs = new double[ depth ];
@@ -185,8 +188,8 @@ public final class NearestNeighborSearchOnKDTree< O extends RealLocalizable, T e
 			p.localize( pos );
 			int currentIndex = doublesRootIndex;
 			int depth = 0;
-			double bestSquDistanceL = Double.MAX_VALUE;
-			int bestIndexL = 0;
+			double bestSquDistanceL = Double.POSITIVE_INFINITY;
+			int bestIndexL = -1;
 			while ( true )
 			{
 				final double distance = squDistance( currentIndex );
@@ -229,7 +232,7 @@ public final class NearestNeighborSearchOnKDTree< O extends RealLocalizable, T e
 
 		int getBestPointNodeIndex()
 		{
-			return bestIndex / nodeSizeInDoubles;
+			return bestIndex == -1 ? -1 : bestIndex / nodeSizeInDoubles;
 		}
 
 		double getBestSquDistance()
