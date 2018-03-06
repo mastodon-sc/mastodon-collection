@@ -90,7 +90,7 @@ public class KDTreeTest
 	 *
 	 * @param sorted
 	 *            is returned and stores the ordered list of data vertices.
-	 * @param t
+	 * @param query
 	 *            query
 	 */
 	private RefArrayList< RealPoint > getOrderedNeighborList( final RefArrayList< RealPoint > sorted, final RealLocalizable query )
@@ -110,7 +110,7 @@ public class KDTreeTest
 	 *
 	 * @param sorted
 	 *            is returned and stores the ordered list of valid data vertices.
-	 * @param t
+	 * @param query
 	 *            query
 	 */
 	private RefArrayList< RealPoint > getOrderedValidNeighborList( final RefArrayList< RealPoint > sorted, final RealLocalizable query )
@@ -135,7 +135,7 @@ public class KDTreeTest
 	 */
 	private RealPoint findNearestNeighborExhaustive( final RealPoint nearest, final RealLocalizable t )
 	{
-		double minDistance = Double.MAX_VALUE;
+		double minDistance = Double.POSITIVE_INFINITY;
 
 		final int n = t.numDimensions();
 		final double[] tpos = new double[ n ];
@@ -168,7 +168,7 @@ public class KDTreeTest
 	 */
 	private RealPoint findNearestValidNeighborExhaustive( final RealPoint nearest, final RealLocalizable t )
 	{
-		double minDistance = Double.MAX_VALUE;
+		double minDistance = Double.POSITIVE_INFINITY;
 
 		final int n = t.numDimensions();
 		final double[] tpos = new double[ n ];
