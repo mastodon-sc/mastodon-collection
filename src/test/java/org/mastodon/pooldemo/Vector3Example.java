@@ -73,7 +73,7 @@ public class Vector3Example
 			}
 
 			vecs.stream()
-				.filter( v -> color.get( v ) == "blue" )
+				.filter( v -> color.get( v ).equals( "blue" ) )
 				.forEach( v -> System.out.println( "LOOK!!! a blue vector! " + v ) );
 
 			final Vector3 v = vecs.get( 5 );
