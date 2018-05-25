@@ -34,11 +34,15 @@ public interface Listeners< T >
 
 	default boolean addAll( final Collection< ? extends T > listeners )
 	{
+		if ( listeners.isEmpty() )
+			return false;
 		return listeners.stream().map( this::add ).reduce( Boolean::logicalOr ).get();
 	}
 
 	default boolean removeAll( final Collection< ? extends T > listeners )
 	{
+		if ( listeners.isEmpty() )
+			return false;
 		return listeners.stream().map( this::remove ).reduce( Boolean::logicalOr ).get();
 	}
 
