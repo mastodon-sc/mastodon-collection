@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.mastodon.Options;
 import org.mastodon.RefPool;
 import org.mastodon.pool.MemPool.PoolIterator;
 import org.mastodon.properties.HasPropertyMaps;
@@ -103,14 +104,17 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	@Override
 	public O getObject( final int index, final O obj )
 	{
-		if ( index < 0 || index >= memPool.capacity )
+		if ( Options.DEBUG && ( index < 0 || index >= memPool.capacity ) )
 			throw new NoSuchElementException( "index=" + index + " capacity=" + memPool.capacity + ", refClass=" + getRefClass().getSimpleName() );
 
 		obj.updateAccess( this, index );
 
-		final boolean isFree = obj.access.getInt( 0 ) == MemPool.FREE_ELEMENT_MAGIC_NUMBER;
-		if (isFree)
-			throw new NoSuchElementException( "index=" + index + " is free, refClass=" + getRefClass().getSimpleName() );
+		if ( Options.DEBUG )
+		{
+			final boolean isFree = obj.access.getInt( 0 ) == MemPool.FREE_ELEMENT_MAGIC_NUMBER;
+			if ( isFree )
+				throw new NoSuchElementException( "index=" + index + " is free, refClass=" + getRefClass().getSimpleName() );
+		}
 
 		return obj;
 	}
@@ -164,7 +168,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 			public O next()
 			{
 				final int index = pi.next();
-				if ( index >= memPool.allocatedSize )
+				if ( Options.DEBUG && ( index >= memPool.allocatedSize ) )
 					throw new NoSuchElementException();
 
 				obj.updateAccess( Pool.this, index );

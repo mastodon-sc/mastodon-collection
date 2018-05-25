@@ -6,15 +6,23 @@ import static org.junit.Assert.assertFalse;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
+import org.mastodon.Options;
 
 /**
- * These tests ensure that proper exceptions are raised when a Pool is queries
+ * These tests ensure that proper exceptions are raised when a Pool is queried
  * with invalid index.
- *
  */
 public class PoolInvalidAccessTest
 {
+	@Before
+	public void checkDebugFlag()
+	{
+		// This class tests DEBUG behaviour. If DEBUG==false, ignore tests.
+		Assume.assumeTrue( Options.DEBUG );
+	}
 
 	@Test( expected = NoSuchElementException.class )
 	public void testGetObjectNegative()
