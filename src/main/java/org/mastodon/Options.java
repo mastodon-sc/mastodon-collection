@@ -10,7 +10,7 @@ public class Options
 	 *     <li>Check whether {@code Pool.delete} tries to free an already freed element, and throw IllegalArgumentException.</li>
 	 * </ul>
 	 */
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 
 //	static {
 //		String debug = System.getProperty( "mastodon-collection.debug", "false" ).trim();
