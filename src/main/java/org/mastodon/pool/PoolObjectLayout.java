@@ -11,12 +11,12 @@ import static org.mastodon.pool.ByteUtils.SHORT_SIZE;
 
 public abstract class PoolObjectLayout
 {
-	static class CurrentSizeInBytes
+	protected static class CurrentSizeInBytes
 	{
 		int size = 0;
 	}
 
-	private final CurrentSizeInBytes currentSizeInBytes = new CurrentSizeInBytes();
+	protected final CurrentSizeInBytes currentSizeInBytes = new CurrentSizeInBytes();
 
 	/**
 	 * Called by the pool on the (completed) layout to determine the object size
@@ -36,7 +36,7 @@ public abstract class PoolObjectLayout
 
 		private final int sizeInBytes;
 
-		PrimitiveField( final CurrentSizeInBytes sib, final int elementSizeInBytes )
+		protected PrimitiveField( final CurrentSizeInBytes sib, final int elementSizeInBytes )
 		{
 			offset = sib.size;
 			sizeInBytes = elementSizeInBytes;
@@ -58,7 +58,7 @@ public abstract class PoolObjectLayout
 	{
 		private final int numElements;
 
-		PrimitiveArrayField( final CurrentSizeInBytes sib, final int numElements, final int elementSizeInBytes )
+		protected PrimitiveArrayField( final CurrentSizeInBytes sib, final int numElements, final int elementSizeInBytes )
 		{
 			super( sib, numElements * elementSizeInBytes );
 			this.numElements = numElements;
