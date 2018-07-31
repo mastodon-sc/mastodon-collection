@@ -1,6 +1,7 @@
 package org.mastodon.pool;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * A {@link MappedElementArray} that stores {@link BufferMappedElement
@@ -38,7 +39,7 @@ public class BufferMappedElementArray implements MappedElementArray< BufferMappe
 			throw new IllegalArgumentException(
 					"trying to create a " + getClass().getName() + " with more than " + maxSize() + " elements of " + bytesPerElement + " bytes.");
 
-		this.data = ByteBuffer.allocateDirect( ( int ) numBytes );
+		this.data = ByteBuffer.allocateDirect( ( int ) numBytes ).order( ByteOrder.nativeOrder() );
 		this.size = numElements;
 	}
 
@@ -97,8 +98,8 @@ public class BufferMappedElementArray implements MappedElementArray< BufferMappe
 		if ( numBytes > Integer.MAX_VALUE )
 			throw new IllegalArgumentException(
 					"trying to resize a " + getClass().getName() + " to more than " + maxSize() + " elements of " + bytesPerElement + " bytes.");
-		final ByteBuffer buf = ByteBuffer.allocateDirect( ( int ) numBytes );
-		data.position( 0 );
+		final ByteBuffer buf = ByteBuffer.allocateDirect( ( int ) numBytes ).order( ByteOrder.nativeOrder() );
+		data.rewind();
 		buf.put( data );
 		size = numElements;
 		data = buf;
