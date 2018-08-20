@@ -54,14 +54,14 @@ public abstract class MemPool< T extends MappedElement >
 	protected int size;
 
 	/**
-	 * The max size this pool ever had. This equals {@link #size} the number of
+	 * The max size this pool ever had. This equals {@link #size} plus the number of
 	 * elements in the free-element linked list.
 	 */
 	protected int allocatedSize;
 
 	/**
 	 * The element index of the first free element, that is, the start of the
-	 * free-element linekd list.
+	 * free-element linked list.
 	 */
 	protected int firstFreeIndex;
 
