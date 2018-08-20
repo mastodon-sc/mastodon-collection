@@ -19,7 +19,7 @@ import org.mastodon.properties.AbstractPropertyMap;
  *
  * @author Tobias Pietzsch
  */
-class IntPropertyBimap< O > extends AbstractPropertyMap< O, Integer >
+public class IntPropertyBimap< O > extends AbstractPropertyMap< O, Integer >
 {
 	private final int noEntryValue;
 
