@@ -104,9 +104,7 @@ public class RefSetImp< O > implements IntBackedRefCollection< O >, RefPoolBacke
 	@Override
 	public boolean contains( final Object obj )
 	{
-		return ( elementType.isInstance( obj ) )
-				? indices.contains( pool.getId( ( O ) obj ) )
-				: false;
+		return ( elementType.isInstance( obj ) ) && indices.contains( pool.getId( ( O ) obj ) );
 	}
 
 	@Override
@@ -162,9 +160,7 @@ public class RefSetImp< O > implements IntBackedRefCollection< O >, RefPoolBacke
 	@Override
 	public boolean remove( final Object obj )
 	{
-		return elementType.isInstance( obj )
-			? indices.remove( pool.getId( ( O ) obj ) )
-			: false;
+		return elementType.isInstance( obj ) && indices.remove( pool.getId( ( O ) obj ) );
 	}
 
 	@Override
