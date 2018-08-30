@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.mastodon.Ref;
 import org.mastodon.RefPool;
+import org.mastodon.collection.MaybeRefIterator;
 import org.mastodon.collection.RefSet;
 
 import gnu.trove.iterator.TIntIterator;
@@ -130,30 +131,38 @@ public class RefSetImp< O > implements IntBackedRefCollection< O >, RefPoolBacke
 	@Override
 	public Iterator< O > iterator()
 	{
-		return new Iterator< O >()
+		return new Iter();
+	}
+
+	class Iter implements Iterator< O >, MaybeRefIterator
+	{
+		final TIntIterator ii = indices.iterator();
+
+		final O obj = pool.createRef();
+
+		@Override
+		public boolean hasNext()
 		{
-			final TIntIterator ii = indices.iterator();
+			return ii.hasNext();
+		}
 
-			final O obj = pool.createRef();
+		@Override
+		public O next()
+		{
+			return pool.getObject( ii.next(), obj );
+		}
 
-			@Override
-			public boolean hasNext()
-			{
-				return ii.hasNext();
-			}
+		@Override
+		public void remove()
+		{
+			ii.remove();
+		}
 
-			@Override
-			public O next()
-			{
-				return pool.getObject( ii.next(), obj );
-			}
-
-			@Override
-			public void remove()
-			{
-				ii.remove();
-			}
-		};
+		@Override
+		public boolean isRefIterator()
+		{
+			return true;
+		}
 	}
 
 	@SuppressWarnings( "unchecked" )
