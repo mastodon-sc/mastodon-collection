@@ -493,7 +493,7 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 			}
 			setSquDistance( 0 );
 			return this;
-		};
+		}
 
 		public NodeData init( final int nodeIndex, final int splitDim, final NodeData parent )
 		{

@@ -70,7 +70,7 @@ public final class NearestNeighborSearchOnKDTree< O extends RealLocalizable, T e
 		}
 	}
 
-	private final void searchNode( final int currentNodeIndex, final int d )
+	private void searchNode( final int currentNodeIndex, final int d )
 	{
 		// consider the current node
 		tree.getObject( currentNodeIndex, node );
@@ -205,7 +205,7 @@ public final class NearestNeighborSearchOnKDTree< O extends RealLocalizable, T e
 
 				final long leftright = Double.doubleToRawLongBits( doubles[ currentIndex + n ] );
 				final int left = ( int ) ( leftright >> 32 );
-				final int right = ( int ) ( leftright & 0xffffffff );
+				final int right = ( int ) leftright;
 
 				// search the near branch
 				final int nearChildNodeIndex = leftIsNearBranch ? left : right;
@@ -240,7 +240,7 @@ public final class NearestNeighborSearchOnKDTree< O extends RealLocalizable, T e
 			return bestSquDistance;
 		}
 
-		private final double squDistance( final int index )
+		private double squDistance( final int index )
 		{
 			double sum = 0;
 			for ( int d = 0; d < n; ++d )

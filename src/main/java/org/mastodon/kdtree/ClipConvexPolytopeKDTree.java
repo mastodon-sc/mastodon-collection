@@ -351,7 +351,7 @@ public class ClipConvexPolytopeKDTree< O extends RealLocalizable, T extends Mapp
 			final double sc = doubles[ currentIndex + sd ];
 			final long leftright = Double.doubleToRawLongBits( doubles[ currentIndex + n ] );
 			final int left = ( int ) ( leftright >> 32 );
-			final int right = ( int ) ( leftright & 0xffffffff );
+			final int right = ( int ) leftright;
 
 			final boolean[] active = getActiveArray( recursionDepth );
 			final boolean[] ps = getPsArray( recursionDepth );

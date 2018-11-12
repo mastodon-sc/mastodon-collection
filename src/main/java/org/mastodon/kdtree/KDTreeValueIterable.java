@@ -142,9 +142,9 @@ public class KDTreeValueIterable< O extends RealLocalizable, T extends MappedEle
 			{
 				final int currentIndex = stack.pop();
 				final long leftright = Double.doubleToRawLongBits( doubles[ currentIndex + n ] );
-				final int objIndex = ( int ) ( Double.doubleToRawLongBits( doubles[ currentIndex + n + 1 ] ) & 0xffffffff );
+				final int objIndex = ( int ) Double.doubleToRawLongBits( doubles[ currentIndex + n + 1 ] );
 				final int left = ( int ) ( leftright >> 32 );
-				final int right = ( int ) ( leftright & 0xffffffff );
+				final int right = ( int ) leftright;
 				if ( left >= 0 )
 					stack.push( left );
 				if ( right >= 0 )
@@ -155,9 +155,9 @@ public class KDTreeValueIterable< O extends RealLocalizable, T extends MappedEle
 			{
 				final int currentIndex = subtrees.get( nextSubtreeIndex++ );
 				final long leftright = Double.doubleToRawLongBits( doubles[ currentIndex + n ] );
-				final int objIndex = ( int ) ( Double.doubleToRawLongBits( doubles[ currentIndex + n + 1 ] ) & 0xffffffff );
+				final int objIndex = ( int ) Double.doubleToRawLongBits( doubles[ currentIndex + n + 1 ] );
 				final int left = ( int ) ( leftright >> 32 );
-				final int right = ( int ) ( leftright & 0xffffffff );
+				final int right = ( int ) leftright;
 				if ( left >= 0 )
 					stack.push( left );
 				if ( right >= 0 )
@@ -167,7 +167,7 @@ public class KDTreeValueIterable< O extends RealLocalizable, T extends MappedEle
 			else if ( nextNodeIndex < nodes.size() )
 			{
 				final int currentIndex = nodes.get( nextNodeIndex++ );
-				final int objIndex = ( int ) ( Double.doubleToRawLongBits( doubles[ currentIndex + n + 1 ] ) & 0xffffffff );
+				final int objIndex = ( int ) Double.doubleToRawLongBits( doubles[ currentIndex + n + 1 ] );
 				return pool.getObject( objIndex, obj );
 			}
 			else

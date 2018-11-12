@@ -221,7 +221,7 @@ public class SplitHyperPlaneKDTree< O extends RealLocalizable, T extends MappedE
 			final double sc = doubles[ currentIndex + sd ];
 			final long leftright = Double.doubleToRawLongBits( doubles[ currentIndex + n ] );
 			final int left = ( int ) ( leftright >> 32 );
-			final int right = ( int ) ( leftright & 0xffffffff );
+			final int right = ( int ) leftright;
 
 			double dot = 0;
 			for ( int d = 0; d < n; ++d )
