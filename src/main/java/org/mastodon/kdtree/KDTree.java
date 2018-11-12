@@ -145,7 +145,7 @@ public class KDTree<
 			final MemPool.Factory< T > memPoolFactory,
 			final RefPool< O > objectPool )
 	{
-		super( initialCapacity, layout, ( Class ) KDTreeNode.class, memPoolFactory );
+		super( initialCapacity, layout, ( Class ) KDTreeNode.class, memPoolFactory, MemPool.FreeElementPolicy.UNCHECKED );
 		this.layout = layout;
 		this.n = layout.position.numElements();
 		this.objectPool = objectPool;
