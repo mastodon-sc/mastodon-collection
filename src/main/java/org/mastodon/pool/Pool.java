@@ -45,8 +45,18 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 			final Class< O > poolObjectClass,
 			final MemPool.Factory< T > memPoolFactory )
 	{
+		this( initialCapacity, poolObjectLayout, poolObjectClass, memPoolFactory, MemPool.FreeElementPolicy.CHECK_MAGIC_NUMBER );
+	}
+
+	public Pool(
+			final int initialCapacity,
+			final PoolObjectLayout poolObjectLayout,
+			final Class< O > poolObjectClass,
+			final MemPool.Factory< T > memPoolFactory,
+			final MemPool.FreeElementPolicy freeElementPolicy )
+	{
 		this.poolObjectClass = poolObjectClass;
-		this.memPool = memPoolFactory.createPool( initialCapacity, poolObjectLayout.getSizeInBytes() );
+		this.memPool = memPoolFactory.createPool( initialCapacity, poolObjectLayout.getSizeInBytes(), freeElementPolicy );
 		this.tmpObjRefs = new ConcurrentLinkedQueue<>();
 		this.asRefCollection = new PoolCollectionWrapper<>( this );
 		this.propertyMaps = new PropertyMaps<>();
@@ -109,12 +119,8 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 
 		obj.updateAccess( this, index );
 
-		if ( Options.DEBUG )
-		{
-			final boolean isFree = obj.access.getInt( 0 ) == MemPool.FREE_ELEMENT_MAGIC_NUMBER;
-			if ( isFree )
+		if ( Options.DEBUG && memPool.isFree( obj.access, index ) )
 				throw new NoSuchElementException( "index=" + index + " is free, refClass=" + getRefClass().getSimpleName() );
-		}
 
 		return obj;
 	}
@@ -127,8 +133,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 
 		obj.updateAccess( this, index );
 
-		final boolean isFree = obj.access.getInt( 0 ) == MemPool.FREE_ELEMENT_MAGIC_NUMBER;
-		if (isFree)
+		if ( memPool.isFree( obj.access, index ) )
 			return null;
 
 		return obj;

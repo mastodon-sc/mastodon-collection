@@ -155,10 +155,10 @@ public class BufferMappedElementArray implements MappedElementArray< BufferMappe
 		return new MemPool.Factory< BufferMappedElement >()
 		{
 			@Override
-			public MemPool< BufferMappedElement > createPool( final int capacity, final int bytesPerElement )
+			public MemPool< BufferMappedElement > createPool( final int capacity, final int bytesPerElement, final MemPool.FreeElementPolicy freeElementPolicy )
 			{
 				final int numElements = byteBuffer.capacity() / bytesPerElement;
-				final MemPool< BufferMappedElement > pool = new SingleArrayMemPool<>( wrappingFactory( byteBuffer ), numElements, bytesPerElement );
+				final MemPool< BufferMappedElement > pool = new SingleArrayMemPool<>( wrappingFactory( byteBuffer ), numElements, bytesPerElement, freeElementPolicy );
 				pool.size = numElements;
 				pool.allocatedSize = numElements;
 				return pool;

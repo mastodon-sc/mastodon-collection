@@ -22,9 +22,9 @@ public class MultiArrayMemPool< A extends MappedElementArray< A, T >, T extends 
 
 	private final ArrayList< A > data;
 
-	public MultiArrayMemPool( final MappedElementArray.Factory< A > arrayFactory, final int capacity, final int bytesPerElement )
+	public MultiArrayMemPool( final MappedElementArray.Factory< A > arrayFactory, final int capacity, final int bytesPerElement, final FreeElementPolicy freeElementPolicy )
 	{
-		super( capacity, bytesPerElement );
+		super( capacity, bytesPerElement, freeElementPolicy );
 		this.arrayFactory = arrayFactory;
 
 		elementsPerArray = arrayFactory.createArray( 0, this.bytesPerElement ).maxSize();
@@ -114,9 +114,9 @@ public class MultiArrayMemPool< A extends MappedElementArray< A, T >, T extends 
 		return new MemPool.Factory< T >()
 		{
 			@Override
-			public MemPool< T > createPool( final int capacity, final int bytesPerElement )
+			public MemPool< T > createPool( final int capacity, final int bytesPerElement, final FreeElementPolicy freeElementPolicy )
 			{
-				return new MultiArrayMemPool<>( arrayFactory, capacity, bytesPerElement );
+				return new MultiArrayMemPool<>( arrayFactory, capacity, bytesPerElement, freeElementPolicy );
 			}
 		};
 	}

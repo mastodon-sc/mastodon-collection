@@ -7,6 +7,7 @@ public class Options
 	 * <ul>
 	 *     <li>Check whether {@code ByteUtils} methods access out of bounds array values, and throw ArrayIndexOutOfBoundsException.</li>
 	 *     <li>Check whether {@code Pool.getObject} tries to retrieve a freed element, and throw NoSuchElementException.</li>
+	 *     <li>Check whether {@code Pool.delete} tries to free an already freed element, and throw IllegalArgumentException.</li>
 	 * </ul>
 	 */
 	public static final boolean DEBUG = false;

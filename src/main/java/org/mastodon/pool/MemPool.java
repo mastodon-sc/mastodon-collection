@@ -2,6 +2,10 @@ package org.mastodon.pool;
 
 import java.util.Iterator;
 
+import org.mastodon.Options;
+
+import gnu.trove.list.array.TIntArrayList;
+
 /**
  * A pool of {@link MappedElement MappedElements}. This is realized on top of
  * one or more {@link MappedElementArray}. It has a current size() and capacity,
@@ -26,10 +30,42 @@ import java.util.Iterator;
 public abstract class MemPool< T extends MappedElement >
 {
 	/**
+	 * How to check whether an element is free. This is relevant for
+	 * {@link MemPool#iterator()} because the iterator should skip over free
+	 * elements, and for {@link MemPool#free(int)} to guard against freeing
+	 * already freed elements.
+	 */
+	public enum FreeElementPolicy
+	{
+		/**
+		 * Don't check whether an element is free. Adding/freeing elements works
+		 * as expected, but free elements will not be skipped when iterating!
+		 */
+		UNCHECKED,
+
+		/**
+		 * Use a magic number (first 4 bytes == -2) to check whether an element
+		 * is free. This works, as long as this magic number never occurs in
+		 * valid element data.
+		 */
+		CHECK_MAGIC_NUMBER,
+
+		/**
+		 * When iterating the MemPool, explicitly build a list of free indices.
+		 * This is the safest choice, but potentially expensive.
+		 */
+		CHECK_FREE_ELEMENT_LIST
+	}
+
+	/**
 	 * Magic number used to indicate a free element slot. Allocated elements
 	 * must never use this number as the first 4 bytes of their data.
 	 */
 	public static final int FREE_ELEMENT_MAGIC_NUMBER = -2;
+
+	private final FreeElementPolicy freeElementPolicy;
+
+	private final TIntArrayList tmpFreeList;
 
 	/**
 	 * How many bytes each T occupies.
@@ -73,9 +109,13 @@ public abstract class MemPool< T extends MappedElement >
 	 *            how many elements this pool should hold.
 	 * @param bytesPerElement
 	 *            how many bytes each element occupies.
+	 * @param freeElementPolicy
+	 *            how to check for free elements.
 	 */
-	public MemPool( final int capacity, final int bytesPerElement )
+	public MemPool( final int capacity, final int bytesPerElement, final FreeElementPolicy freeElementPolicy )
 	{
+		this.freeElementPolicy = freeElementPolicy;
+		this.tmpFreeList = new TIntArrayList( 10, -1 );
 		this.bytesPerElement = Math.max( bytesPerElement, 8 );
 		this.capacity = capacity;
 		clear();
@@ -132,15 +172,50 @@ public abstract class MemPool< T extends MappedElement >
 		if ( index >= 0 && index < allocatedSize )
 		{
 			updateAccess( dataAccess, index );
-			final boolean isFree = dataAccess.getInt( 0 ) == FREE_ELEMENT_MAGIC_NUMBER;
-			if ( !isFree )
+
+			if ( Options.DEBUG )
 			{
-				--size;
-				dataAccess.putIndex( FREE_ELEMENT_MAGIC_NUMBER, 0 );
-				dataAccess.putIndex( firstFreeIndex, 4 );
-				firstFreeIndex = index;
+				if ( isFree( dataAccess, index ) )
+					throw new IllegalArgumentException( "Element at index " + index + " is already free." );
 			}
+
+			--size;
+			dataAccess.putIndex( FREE_ELEMENT_MAGIC_NUMBER, 0 );
+			dataAccess.putIndex( firstFreeIndex, 4 );
+			firstFreeIndex = index;
 		}
+	}
+
+	boolean isFree( final T access, final int index )
+	{
+		switch ( freeElementPolicy )
+		{
+		default:
+			return false;
+		case CHECK_MAGIC_NUMBER:
+			return access.getInt( 0 ) == FREE_ELEMENT_MAGIC_NUMBER;
+		case CHECK_FREE_ELEMENT_LIST:
+			return ordererFreeElementsList( tmpFreeList ).contains( index );
+		}
+	}
+
+	/**
+	 * Put ordered list of indices of free elements into {@code free}.
+	 */
+	private TIntArrayList ordererFreeElementsList( final TIntArrayList free )
+	{
+		final int nFree = allocatedSize - size;
+		free.ensureCapacity( nFree );
+		free.clear();
+		int i = firstFreeIndex;
+		while ( i >= 0 )
+		{
+			free.add( i );
+			updateAccess( dataAccess, i );
+			i = dataAccess.getIndex( 4 );
+		}
+		free.sort();
+		return free;
 	}
 
 	/**
@@ -153,7 +228,7 @@ public abstract class MemPool< T extends MappedElement >
 
 	/**
 	 * Makes {@code access} refer to the element at {@code index}.
-	 * 
+	 *
 	 * @param access
 	 *            the proxy to update.
 	 * @param index
@@ -163,7 +238,7 @@ public abstract class MemPool< T extends MappedElement >
 
 	/**
 	 * Swaps the element at {@code index0} with the element at {@code index1}.
-	 * 
+	 *
 	 * @param index0
 	 *            the index of the first element.
 	 * @param index1
@@ -175,7 +250,7 @@ public abstract class MemPool< T extends MappedElement >
 	 * Appends a new element at the end of the list. Must be implemented in
 	 * subclasses. It is called when allocating an element and the free-element
 	 * list is empty.
-	 * 
+	 *
 	 * @return the index of the appended new element.
 	 */
 	protected abstract int append();
@@ -186,34 +261,55 @@ public abstract class MemPool< T extends MappedElement >
 	 * A {@link PoolIterator} is not an {@link Iterator Iterator&lt;T&gt;} of
 	 * the allocated elements themselves, but rather an iterator of their
 	 * element indices.
-	 * 
+	 *
 	 * @return a new iterator.
 	 */
 	public PoolIterator< T > iterator()
 	{
-		return new PoolIterator<>( this );
+		switch ( freeElementPolicy )
+		{
+		default:
+		case UNCHECKED:
+			return new UncheckedPoolIterator<>( this );
+		case CHECK_MAGIC_NUMBER:
+			return new CheckMagicNumberPoolIterator<>( this );
+		case CHECK_FREE_ELEMENT_LIST:
+			return new CheckFreeListPoolIterator<>( this );
+		}
 	}
 
 	/**
 	 * Iterator of the indices of allocated elements.
 	 */
-	public static class PoolIterator< T extends MappedElement >
+	public interface PoolIterator< T extends MappedElement >
 	{
-		private final MemPool< T > pool;
+		public void reset();
 
-		private int nextIndex;
+		public boolean hasNext();
 
-		private int currentIndex;
+		public int next();
 
-		private final T element;
+		public void remove();
+	}
 
-		private PoolIterator( final MemPool< T > pool )
+	/**
+	 * Iterator base class for all {@link FreeElementPolicy
+	 * FreeElementPolicies}.
+	 */
+	private static abstract class AbstractPoolIterator< T extends MappedElement > implements PoolIterator< T >
+	{
+		protected final MemPool< T > pool;
+
+		protected int nextIndex;
+
+		protected int currentIndex;
+
+		protected AbstractPoolIterator( final MemPool< T > pool )
 		{
 			this.pool = pool;
-			element = pool.createAccess();
-			reset();
 		}
 
+		@Override
 		public void reset()
 		{
 			nextIndex = ( pool.allocatedSize == 0 ) ? 1 : -1;
@@ -221,7 +317,62 @@ public abstract class MemPool< T extends MappedElement >
 			prepareNextElement();
 		}
 
-		private void prepareNextElement()
+		protected void prepareNextElement()
+		{
+			if ( hasNext() )
+				++nextIndex;
+		}
+
+		@Override
+		public boolean hasNext()
+		{
+			return nextIndex < pool.allocatedSize;
+		}
+
+		@Override
+		public int next()
+		{
+			currentIndex = nextIndex;
+			prepareNextElement();
+			return currentIndex;
+		}
+
+		@Override
+		public void remove()
+		{
+			if ( currentIndex >= 0 )
+				pool.free( currentIndex );
+		}
+	}
+
+	/**
+	 * Iterator for {@code FreeElementPolicy.UNCHECKED}.
+	 */
+	private static class UncheckedPoolIterator< T extends MappedElement > extends AbstractPoolIterator< T >
+	{
+		private UncheckedPoolIterator( final MemPool< T > pool )
+		{
+			super( pool );
+			reset();
+		}
+	}
+
+	/**
+	 * Iterator for {@code FreeElementPolicy.CHECK_MAGIC_NUMBER}.
+	 */
+	private static class CheckMagicNumberPoolIterator< T extends MappedElement > extends AbstractPoolIterator< T >
+	{
+		private final T element;
+
+		private CheckMagicNumberPoolIterator( final MemPool< T > pool )
+		{
+			super( pool );
+			element = pool.createAccess();
+			reset();
+		}
+
+		@Override
+		protected void prepareNextElement()
 		{
 			if ( hasNext() )
 			{
@@ -234,23 +385,47 @@ public abstract class MemPool< T extends MappedElement >
 				}
 			}
 		}
+	}
 
-		public boolean hasNext()
+	/**
+	 * Iterator for {@code FreeElementPolicy.CHECK_FREE_ELEMENT_LIST}.
+	 */
+	private static class CheckFreeListPoolIterator< T extends MappedElement > extends AbstractPoolIterator< T >
+	{
+		private final TIntArrayList freeElements;
+
+		private int nextFreeElementsIndex;
+
+		private int nextFree;
+
+		private CheckFreeListPoolIterator( final MemPool< T > pool )
 		{
-			return nextIndex < pool.allocatedSize;
+			super( pool );
+			freeElements = new TIntArrayList();
+			reset();
 		}
 
-		public int next()
+		@Override
+		public void reset()
 		{
-			currentIndex = nextIndex;
-			prepareNextElement();
-			return currentIndex;
+			pool.ordererFreeElementsList( freeElements );
+			nextFreeElementsIndex = 0;
+			nextFree = nextFreeElementsIndex < freeElements.size() ? freeElements.getQuick( nextFreeElementsIndex++ ) : pool.allocatedSize;
+			super.reset();
 		}
 
-		public void remove()
+		@Override
+		protected void prepareNextElement()
 		{
-			if ( currentIndex >= 0 )
-				pool.free( currentIndex );
+			if ( hasNext() )
+			{
+				while ( ++nextIndex < pool.allocatedSize )
+				{
+					if ( nextIndex != nextFree )
+						break;
+					nextFree = nextFreeElementsIndex < freeElements.size() ? freeElements.getQuick( nextFreeElementsIndex++ ) : pool.allocatedSize;
+				}
+			}
 		}
 	}
 
@@ -260,8 +435,8 @@ public abstract class MemPool< T extends MappedElement >
 	 * @param <T>
 	 *            the {@link MappedElement} type of the created pool.
 	 */
-	public static interface Factory< T extends MappedElement >
+	public interface Factory< T extends MappedElement >
 	{
-		public MemPool< T > createPool( final int capacity, final int bytesPerElement );
+		public MemPool< T > createPool( final int capacity, final int bytesPerElement, final FreeElementPolicy freeElementPolicy );
 	}
 }

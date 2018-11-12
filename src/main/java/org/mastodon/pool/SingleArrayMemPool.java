@@ -16,9 +16,9 @@ public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends
 {
 	private final A data;
 
-	public SingleArrayMemPool( final MappedElementArray.Factory< A > arrayFactory, final int capacity, final int bytesPerElement )
+	public SingleArrayMemPool( final MappedElementArray.Factory< A > arrayFactory, final int capacity, final int bytesPerElement, final FreeElementPolicy freeElementPolicy )
 	{
-		super( capacity, bytesPerElement );
+		super( capacity, bytesPerElement, freeElementPolicy );
 		data = arrayFactory.createArray( capacity, this.bytesPerElement );
 		dataAccess = data.createAccess();
 	}
@@ -86,9 +86,9 @@ public class SingleArrayMemPool< A extends MappedElementArray< A, T >, T extends
 		return new MemPool.Factory< T >()
 		{
 			@Override
-			public MemPool< T > createPool( final int capacity, final int bytesPerElement )
+			public MemPool< T > createPool( final int capacity, final int bytesPerElement, final FreeElementPolicy freeElementPolicy )
 			{
-				return new SingleArrayMemPool<>( arrayFactory, capacity, bytesPerElement );
+				return new SingleArrayMemPool<>( arrayFactory, capacity, bytesPerElement, freeElementPolicy );
 			}
 		};
 	}
