@@ -29,7 +29,7 @@ public class LabelSets< O, T > extends AbstractProperty< O >
 
 	/**
 	 * Maps object whose label set is changing to the index of the label set before the change.
-	 * This is used in maintaining {@code }labelToObjects} maps.
+	 * This is used in maintaining {@code labelToObjects} maps.
 	 * Mappings are added in {@code beforePropertyChange} and removed in {@code propertyChanged}.
 	 */
 	private final RefIntMap< O > changingObjToOldSetIndex;
