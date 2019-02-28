@@ -114,6 +114,16 @@ public class LabelSets< O, T > extends AbstractProperty< O >
 	}
 
 	/**
+	 * Removes all labels from all objects and clears the mapping
+	 */
+	public void clear()
+	{
+		backingProperty.clear();
+		mapping.clear();
+		labelToObjects.clear();
+	}
+
+	/**
 	 * For internal use. Needed for serialization.
 	 */
 	public IntPropertyMap< O > getBackingProperty()

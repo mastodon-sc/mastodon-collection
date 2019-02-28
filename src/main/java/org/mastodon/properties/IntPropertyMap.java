@@ -136,7 +136,7 @@ public class IntPropertyMap< O > extends AbstractPropertyMap< O, Integer >
 	@Override
 	public void clear()
 	{
-		throw new UnsupportedOperationException( "TODO" );
+		map.clear();
 	}
 
 	@Override

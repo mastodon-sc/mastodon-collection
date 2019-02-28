@@ -79,7 +79,25 @@ public class PropertyMaps< O >
 	 */
 	public void beforeClearPool()
 	{
-		forEachPropertyMap( m -> m.beforeClearPool() );
+		forEachPropertyMap( PropertyMap::beforeClearPool );
+	}
+
+	/**
+	 * Forward to {@link PropertyMap#pauseListeners()} of all registered
+	 * property maps. Also cleans up maps that have been garbage collected.
+	 */
+	public void pauseListeners()
+	{
+		forEachPropertyMap( PropertyMap::pauseListeners );
+	}
+
+	/**
+	 * Forward to {@link PropertyMap#resumeListeners()} of all registered
+	 * property maps. Also cleans up maps that have been garbage collected.
+	 */
+	public void resumeListeners()
+	{
+		forEachPropertyMap( PropertyMap::resumeListeners );
 	}
 
 	private void forEachPropertyMap( final Consumer< PropertyMap< O, ? > > consumer )

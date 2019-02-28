@@ -96,6 +96,22 @@ public class LabelMapping< T >
 		cachedDiffs = new TIntObjectHashMap<>();
 	}
 
+	void clear()
+	{
+		// clear everything
+		internedSets.clear();
+		setsByIndex.clear();
+		addMapsByIndex.clear();
+		subMapsByIndex.clear();
+		cachedDiffs.clear();
+
+		// add back the empty set
+		setsByIndex.add( theEmptySet );
+		addMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
+		subMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
+		internedSets.put( theEmptySet.getSet(), theEmptySet );
+	}
+
 	/**
 	 * Canonical representative for a label set. Contains a label set and the
 	 * index to which it is mapped.
@@ -321,6 +337,7 @@ public class LabelMapping< T >
 		}
 	}
 
+
 	/**
 	 * Internals. Can be derived for implementing de/serialisation of the
 	 * {@link LabelMapping}.
@@ -350,18 +367,7 @@ public class LabelMapping< T >
 			if ( !labelSets.get( 0 ).isEmpty() )
 				throw new IllegalArgumentException( "label-set at index 0 expected to be the empty label set" );
 
-			// clear everything
-			labelMapping.internedSets.clear();
-			labelMapping.setsByIndex.clear();
-			labelMapping.addMapsByIndex.clear();
-			labelMapping.subMapsByIndex.clear();
-
-			// add back the empty set
-			final InternedSet< T > theEmptySet = labelMapping.theEmptySet;
-			labelMapping.setsByIndex.add( theEmptySet );
-			labelMapping.addMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
-			labelMapping.subMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
-			labelMapping.internedSets.put( theEmptySet.getSet(), theEmptySet );
+			labelMapping.clear();
 
 			// add remaining label sets
 			for ( int i = 1; i < labelSets.size(); ++i )

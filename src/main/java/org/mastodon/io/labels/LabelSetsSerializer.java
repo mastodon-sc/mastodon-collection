@@ -107,9 +107,10 @@ public class LabelSetsSerializer< O, T > // TODO implements PropertyMapSerialize
 			final ObjectInputStream ois )
 			throws IOException
 	{
+		propertyMap.clear();
+
 		final LabelMapping< T > mapping = propertyMap.getLabelMapping();
 		final RefIntMap< O > pmap = propertyMap.getBackingProperty().getMap();
-		pmap.clear();
 
 		// NUMBER OF LABEL SETS
 		final int numSets = ois.readInt();
@@ -128,14 +129,8 @@ public class LabelSetsSerializer< O, T > // TODO implements PropertyMapSerialize
 
 			labelSets.add( labels );
 		}
-		new SerialisationAccess< T >( mapping )
-		{
-			@Override
-			protected void setLabelSets( final List< Set< T > > labelSets )
-			{
-				super.setLabelSets( labelSets );
-			}
-		}.setLabelSets( labelSets );
+
+		new SerialisationAccess< T >( mapping ) {{setLabelSets( labelSets );}};
 
 		// NUMBER OF ENTRIES
 		final int size = ois.readInt();
