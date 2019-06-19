@@ -85,6 +85,12 @@ public class AttributeUndoRedoStack< O extends PoolObject< O, ?, ? > > implement
 		swap( obj, stack.redo( size, ref ) );
 	}
 
+	@Override
+	public void clear()
+	{
+		stack.clear();
+	}
+
 	/**
 	 * Replace the element at {@code top} with the property value of {@code obj}.
 	 *

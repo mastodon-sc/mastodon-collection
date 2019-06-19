@@ -130,6 +130,14 @@ public class UndoRedoStack implements UndoPointMarker
 	}
 
 	/**
+	 * Remove all entries.
+	 */
+	public void clear()
+	{
+		stack.clear();
+	}
+
+	/**
 	 * Read-only access to an element on this {@link UndoRedoStack}.
 	 */
 	public class Element
@@ -251,6 +259,8 @@ public class UndoRedoStack implements UndoPointMarker
 
 		void trimToSize();
 
+		void clear();
+
 		int maxEditTypeIndex();
 	}
 
@@ -349,6 +359,12 @@ public class UndoRedoStack implements UndoPointMarker
 		public void trimToSize()
 		{
 			buf.trimToSize();
+		}
+
+		@Override
+		public void clear()
+		{
+			buf.clear();
 		}
 
 		@Override

@@ -36,6 +36,16 @@ public class UndoIdBimap< O > implements RefPool< O >
 	}
 
 	/**
+	 * Removes all mappings.
+	 * Resets the undo ID generator.
+	 */
+	public synchronized void clear()
+	{
+		objUndoIdBimap.clear();
+		idgen = 0;
+	}
+
+	/**
 	 * Returns the undo ID for the specified object,
 	 * <p>
 	 * Creates new undo ID if {@code o} is not in map yet.

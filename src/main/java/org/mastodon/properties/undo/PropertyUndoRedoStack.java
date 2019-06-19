@@ -51,4 +51,6 @@ public interface PropertyUndoRedoStack< O >
 	 *            {@code top}.
 	 */
 	public void redo( final O obj );
+
+	public void clear();
 }

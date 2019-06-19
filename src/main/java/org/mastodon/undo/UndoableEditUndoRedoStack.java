@@ -79,4 +79,11 @@ public class UndoableEditUndoRedoStack
 			stack.remove( end );
 		stack.trimToSize();
 	}
+
+	public void clear()
+	{
+		stack.clear();
+		top = 0;
+		end = 0;
+	}
 }

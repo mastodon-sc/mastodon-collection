@@ -89,6 +89,14 @@ public class DoublePropertyUndoRedoStack< O > implements PropertyUndoRedoStack< 
 		}
 	}
 
+	@Override
+	public void clear()
+	{
+		stack.clear();
+		top = 0;
+		end = 0;
+	}
+
 	/**
 	 * Replace the element at {@code top} with the property value of {@code obj}.
 	 *

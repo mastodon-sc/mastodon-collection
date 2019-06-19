@@ -18,8 +18,7 @@ public class ByteArrayUndoRedoStack
 	private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 2;
 
 	/**
-	 * The current data storage. This is changed when the array is
-	 * {@link #resize(int) resized}.
+	 * The current data storage. This is changed when the array is resized.
 	 */
 	byte[] buf;
 
@@ -135,6 +134,11 @@ public class ByteArrayUndoRedoStack
 		ref.offset = top;
 		top += size;
 		return ref;
+	}
+
+	public void clear()
+	{
+		top = 0;
 	}
 
 	public ByteArrayRef createRef()

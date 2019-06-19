@@ -12,8 +12,13 @@ public class GenericUndoableEditType< E extends UndoableEdit > extends AbstractU
 
 	public GenericUndoableEditType( final UndoRedoStack undoRedoStack )
 	{
+		this( new UndoableEditUndoRedoStack(), undoRedoStack );
+	}
+
+	public GenericUndoableEditType( final UndoableEditUndoRedoStack edits, final UndoRedoStack undoRedoStack )
+	{
 		super( undoRedoStack );
-		edits = new UndoableEditUndoRedoStack();
+		this.edits = edits;
 	}
 
 	@Override
