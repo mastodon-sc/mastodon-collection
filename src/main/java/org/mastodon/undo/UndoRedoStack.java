@@ -216,7 +216,7 @@ public class UndoRedoStack implements UndoPointMarker
 		return index;
 	}
 
-	static interface Access
+	interface Access
 	{
 		/**
 		 * Point this {@link Access} to the specified index of the {@link Stack}.
@@ -237,7 +237,7 @@ public class UndoRedoStack implements UndoPointMarker
 		void setUndoPoint( final boolean isUndoPoint );
 	}
 
-	static interface Stack
+	interface Stack
 	{
 		Access createRef();
 
