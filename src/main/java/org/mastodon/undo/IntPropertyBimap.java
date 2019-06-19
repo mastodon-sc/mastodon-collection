@@ -152,12 +152,13 @@ public class IntPropertyBimap< O > extends AbstractPropertyMap< O, Integer >
 	@Override
 	public void beforeClearPool()
 	{
-		map.clear();
+		clear();
 	}
 
 	@Override
 	public void clear()
 	{
-		throw new UnsupportedOperationException( "TODO" );
+		map.clear();
+		rmap.clear();
 	}
 }
