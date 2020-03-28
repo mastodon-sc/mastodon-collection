@@ -125,6 +125,8 @@ public class LabelSets< O, T > extends AbstractProperty< O >
 
 	/**
 	 * For internal use. Needed for serialization.
+	 * 
+	 * @return the backing property.
 	 */
 	public IntPropertyMap< O > getBackingProperty()
 	{
@@ -133,6 +135,8 @@ public class LabelSets< O, T > extends AbstractProperty< O >
 
 	/**
 	 * For internal use. Needed for serialization.
+	 * 
+	 * @return the label mapping.
 	 */
 	public LabelMapping< T > getLabelMapping()
 	{
@@ -141,6 +145,8 @@ public class LabelSets< O, T > extends AbstractProperty< O >
 
 	/**
 	 * For internal use. Needed for serialization.
+	 * 
+	 * @return the pool of objects for which this label set is defined.
 	 */
 	public RefPool< O > getPool()
 	{
@@ -149,6 +155,10 @@ public class LabelSets< O, T > extends AbstractProperty< O >
 
 	/**
 	 * For internal use. Needed for serialization.
+	 * 
+	 * @param objects
+	 *            the collection of objects for which we need to recompute
+	 *            labels.
 	 */
 	public void recomputeLabelToObjects( final RefCollection< O > objects )
 	{

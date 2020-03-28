@@ -1,6 +1,7 @@
 package org.mastodon.collection.util;
 
 import java.util.NoSuchElementException;
+
 import org.mastodon.RefPool;
 
 import gnu.trove.impl.Constants;
@@ -16,8 +17,9 @@ import gnu.trove.map.hash.TObjectIntHashMap;
  * IDs are assigned to objects when first requested ({@link #getId(Object)}).
  *
  * @param <O>
+ *            the type of objects for which the map is defined.
  *
- * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ * @author Tobias Pietzsch
  */
 public class HashBimap< O > implements RefPool< O >
 {

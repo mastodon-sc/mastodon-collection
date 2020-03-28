@@ -25,7 +25,9 @@ public interface PropertyMap< O, T > extends Property< O >
 	 * Set the {@code value} of this property for the specified ({@code key}).
 	 *
 	 * @param key
+	 *            the object.
 	 * @param value
+	 *            the value to set in this map.
 	 * @return the previous value associated with {@code key} (or {@code null}
 	 *         if the property was not set before).
 	 */
@@ -35,6 +37,7 @@ public interface PropertyMap< O, T > extends Property< O >
 	 * Remove the mapping for the specified {@code key} (if it exists).
 	 *
 	 * @param key
+	 *            the object.
 	 * @return the previous value associated with {@code key} (or {@code null}
 	 *         if the property was not set before).
 	 */
@@ -49,6 +52,7 @@ public interface PropertyMap< O, T > extends Property< O >
 	 * </p>
 	 *
 	 * @param key
+	 *            the object just created.
 	 */
 	public default void objectCreated( final O key )
 	{}
@@ -62,11 +66,12 @@ public interface PropertyMap< O, T > extends Property< O >
 	 * does not emit any
 	 * {@link BeforePropertyChangeListener#beforePropertyChange(Object)
 	 * beforePropertyChange} or
-	 * {@link PropertyChangeListener#propertyChanged(Object)
-	 * propertyChanged} events.
+	 * {@link PropertyChangeListener#propertyChanged(Object) propertyChanged}
+	 * events.
 	 * </p>
 	 *
 	 * @param key
+	 *            the object to be deleted.
 	 */
 	public void beforeDeleteObject( final O key );
 
@@ -94,6 +99,7 @@ public interface PropertyMap< O, T > extends Property< O >
 	 * {@code isSet(key) == false} then {@code get(key) == null}.
 	 *
 	 * @param key
+	 *            the object.
 	 * @return the value, may be {@code null}.
 	 */
 	public T get( O key );

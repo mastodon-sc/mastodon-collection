@@ -14,11 +14,16 @@ import gnu.trove.iterator.TIntIterator;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
 /**
- *
+ * A data structure that maps objects to reference objects.
+ * <p>
+ * Based on a Trove Object -&gt; int hash-map.
+ * 
  * @author Jean-Yves Tinevez
  *
  * @param <K>
+ *            the type of keys in the map.
  * @param <V>
+ *            the type of values in the map. Must be pool objects.
  */
 public class ObjectRefHashMap< K, V > implements ObjectRefMap< K, V >
 {

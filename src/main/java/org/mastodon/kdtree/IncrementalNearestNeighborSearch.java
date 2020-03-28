@@ -19,18 +19,23 @@ public interface IncrementalNearestNeighborSearch< T > extends RealCursor< T >
 	 * Perform nearest-neighbor search for a reference coordinate.
 	 *
 	 * @param reference
+	 *            the coordinate to search for.
 	 */
 	public void search( final RealLocalizable reference );
 
 	/**
 	 * Access the square Euclidean distance between the reference location as
 	 * used for the last search and the current nearest neighbor.
+	 * 
+	 * @return the square distance.
 	 */
 	public double getSquareDistance();
 
 	/**
 	 * Access the Euclidean distance between the reference location as used for
 	 * the last search and the current nearest neighbor.
+	 * 
+	 * @return the distance.
 	 */
 	public double getDistance();
 

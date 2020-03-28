@@ -88,7 +88,9 @@ public interface Property< O >
 	public void resumeListeners();
 
 	/**
-	 * Optional.
+	 * Unsupported.
+	 * 
+	 * @return nothing. Thrown an exception.
 	 */
 	public default PropertyUndoRedoStack< O > createUndoRedoStack()
 	{

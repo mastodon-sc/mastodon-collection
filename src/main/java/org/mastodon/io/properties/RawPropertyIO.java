@@ -25,6 +25,8 @@ public class RawPropertyIO
 	 *             if a serializer cannot be found for a key occurring in the
 	 *             input stream, or the class of a serialized object cannot be
 	 *             found, or for usual I/O errors.
+	 * @param <O>
+	 *            the type of objects for which the maps are defined.
 	 */
 	public static < O > void readPropertyMaps(
 			final FileIdToObjectMap< O > idmap,
@@ -61,7 +63,10 @@ public class RawPropertyIO
 	 *            stream.
 	 * @param oos
 	 *            the output stream for serializing.
+	 * @param <O>
+	 *            the type of objects for which the maps are defined.
 	 * @throws IOException
+	 *             if there is a problem writing to the output stream.
 	 */
 	public static < O > void writePropertyMaps(
 			final ObjectToFileIdMap< O > idmap,

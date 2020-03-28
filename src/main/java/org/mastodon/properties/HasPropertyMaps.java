@@ -9,6 +9,7 @@ import org.mastodon.pool.Pool;
  * currently only implemented by {@link Pool}.
  *
  * @param <O>
+ *            the type of objects managed in the maps.
  *
  * @author Tobias Pietzsch
  */

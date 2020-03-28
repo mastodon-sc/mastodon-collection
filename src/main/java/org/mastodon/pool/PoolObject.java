@@ -37,9 +37,12 @@ public abstract class PoolObject< O extends PoolObject< O, P, T >, P extends Poo
 	protected P pool;
 
 	/**
-	 * Create a {@link PoolObject} referring data in the given {@link Pool}.
+	 * Creates a {@link PoolObject} referring data in the given {@link Pool}.
 	 * The element that it references to can be set by
 	 * {@link #updateAccess(Pool, int)}.
+	 * 
+	 * @param pool
+	 *            the pool to refer to.
 	 */
 	protected PoolObject( final P pool )
 	{

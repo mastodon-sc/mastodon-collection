@@ -44,6 +44,7 @@ public class PropertyMaps< O >
 	 * be notified about addition and removal of objects.
 	 *
 	 * @param map
+	 *            the map to remove.
 	 */
 	public void removePropertyMap( final PropertyMap< O, ? > map )
 	{
@@ -56,6 +57,7 @@ public class PropertyMaps< O >
 	 * collected.
 	 *
 	 * @param key
+	 *            the object whose create deletion is to be notified.
 	 */
 	public void beforeDeleteObject( final O key )
 	{
@@ -67,6 +69,7 @@ public class PropertyMaps< O >
 	 * property maps. Also cleans up maps that have been garbage collected.
 	 *
 	 * @param key
+	 *            the object whose create addition is to be notified.
 	 */
 	public void objectCreated( final O key )
 	{

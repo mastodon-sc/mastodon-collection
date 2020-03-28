@@ -196,6 +196,8 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 
 	/**
 	 * Attributes and "permanent" {@link PropertyMap}s of this pool.
+	 * 
+	 * @return the properties.
 	 */
 	protected Properties< O > getProperties()
 	{
@@ -203,8 +205,11 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	}
 
 	/**
-	 * Add a {@link PropertyMap} to list of {@link Properties}. (See
-	 * {@link #getProperties()}).
+	 * Add a {@link PropertyMap} to list of {@link Properties}.
+	 * 
+	 * @param propertyMap
+	 *            the map to register.
+	 * @see #getProperties()
 	 */
 	protected void registerPropertyMap( final PropertyMap< O, ? > propertyMap )
 	{

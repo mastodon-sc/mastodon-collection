@@ -129,8 +129,14 @@ public class BufferMappedElementArray implements MappedElementArray< BufferMappe
 	}
 
 	/**
-	 * Create a (one-time use) factory to wrap the specified {@code ByteBuffer}.
+	 * Creates a (one-time use) factory to wrap the specified
+	 * {@code ByteBuffer}.
+	 * 
 	 * TODO: clarify doc
+	 * 
+	 * @param byteBuffer
+	 *            the byte buffer.
+	 * @return a new factory.
 	 */
 	public static final MappedElementArray.Factory< BufferMappedElementArray > wrappingFactory( final ByteBuffer byteBuffer )
 	{
@@ -146,8 +152,18 @@ public class BufferMappedElementArray implements MappedElementArray< BufferMappe
 	}
 
 	/**
+	 * Returns a new factory that can create memory pool relying on the
+	 * specified byte buffer.
+	 * 
 	 * TODO: doc
+	 * 
 	 * TODO: where to put this???
+	 * 
+	 * @param <A>
+	 *            the type the mapped element array in the memory pool.
+	 * @param byteBuffer
+	 *            the byte buffer.
+	 * @return a new {@link MemPool.Factory}.
 	 */
 	public static < A extends MappedElementArray< A, BufferMappedElement > >
 			MemPool.Factory< BufferMappedElement > wrappingMemPoolFactory( final ByteBuffer byteBuffer )

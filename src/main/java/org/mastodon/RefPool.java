@@ -22,7 +22,7 @@ import org.mastodon.pool.PoolObject;
  * @param <O>
  *            the object type.
  *
- * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ * @author Tobias Pietzsch
  */
 public interface RefPool< O >
 {

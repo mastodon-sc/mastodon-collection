@@ -250,7 +250,9 @@ public class LabelMapping< T >
 	}
 
 	/**
-	 * Returns the number of indexed labeling sets
+	 * Returns the number of indexed labeling sets.
+	 * 
+	 * @return the number of indexed labeling sets.
 	 */
 	public int numSets()
 	{
@@ -259,6 +261,10 @@ public class LabelMapping< T >
 
 	/**
 	 * Returns the (unmodifiable) set of labels for the given index value.
+	 * 
+	 * @param index
+	 *            the index.
+	 * @return the set of labels.
 	 */
 	// TODO: cache unmodifiable sets (in InternedSet)?
 	public Set< T > labelsAtIndex( final int index )
@@ -267,7 +273,9 @@ public class LabelMapping< T >
 	}
 
 	/**
-	 * Return the set of all labels defined in this {@code LabelMapping}.
+	 * Returns the set of all labels defined in this {@code LabelMapping}.
+	 * 
+	 * @return the set of all labels.
 	 */
 	// TODO: build only once (while adding labels).
 	public Set< T > getLabels()
