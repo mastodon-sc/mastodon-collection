@@ -1,4 +1,4 @@
-[![](https://travis-ci.org/bigdataviewer/mastodon-collection.svg?branch=master)](https://travis-ci.org/bigdataviewer/mastodon-collection)
+[![](https://travis-ci.com/mastodon-sc/mastodon-collection.svg?branch=master)](https://travis-ci.com/mastodon-sc/mastodon-collection)
 
 TrackMate3
 ==========
