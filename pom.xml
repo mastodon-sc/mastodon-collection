@@ -64,7 +64,7 @@
 
 	<scm>
 		<connection>scm:git:git://github.com/mastodon-sc/mastodon-collection</connection>
-		<developerConnection>scm:git:git@mastodon-sc/mastodon-collection</developerConnection>
+		<developerConnection>scm:git:git@github.com:mastodon-sc/mastodon-collection</developerConnection>
 		<tag>HEAD</tag>
 		<url>https://github.com/mastodon-sc/mastodon-collection</url>
 	</scm>
