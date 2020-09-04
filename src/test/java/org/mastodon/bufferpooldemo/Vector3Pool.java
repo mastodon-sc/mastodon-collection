@@ -32,6 +32,7 @@ public class Vector3Pool extends Pool< Vector3, BufferMappedElement >
 
 	public FloatBuffer getFloatBuffer()
 	{
+		@SuppressWarnings( "unchecked" )
 		final SingleArrayMemPool< BufferMappedElementArray, ? > memPool = ( SingleArrayMemPool< BufferMappedElementArray, ? > ) getMemPool();
 		final BufferMappedElementArray dataArray = memPool.getDataArray();
 		return dataArray.getBuffer().asFloatBuffer();

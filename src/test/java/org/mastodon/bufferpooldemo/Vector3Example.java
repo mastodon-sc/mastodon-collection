@@ -86,7 +86,7 @@ public class Vector3Example
 
 		// FloatBuffer currently (!) underlying the pool
 		final FloatBuffer floatBuffer = pool.getFloatBuffer();
-		final float[] dataForPrinting = new float[ pool.size() * pool.layout.getSizeInBytes() / 4 ];
+		final float[] dataForPrinting = new float[ pool.size() * Vector3Pool.layout.getSizeInBytes() / 4 ];
 		floatBuffer.rewind();
 		floatBuffer.get( dataForPrinting );
 		for ( int i = 0; i < dataForPrinting.length; ++i )

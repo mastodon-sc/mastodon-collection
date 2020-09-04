@@ -94,7 +94,7 @@ public class LabelSetsSerializerTest
 		for ( int i = 0; i < 20; ++ i )
 		{
 			// TODO: add RefSetImp.equals() and hashcode()
-			assertEquals( ( ( RefSetImp ) labelsets.getLabeledWith( i ) ).getIndexCollection(), ( ( RefSetImp ) rlabelsets.getLabeledWith( i ) ).getIndexCollection() );
+			assertEquals( ( ( RefSetImp< TestObject > ) labelsets.getLabeledWith( i ) ).getIndexCollection(), ( ( RefSetImp< TestObject > ) rlabelsets.getLabeledWith( i ) ).getIndexCollection() );
 		}
 	}
 }
