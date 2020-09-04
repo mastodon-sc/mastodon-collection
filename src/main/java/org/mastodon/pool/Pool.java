@@ -114,13 +114,19 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	@Override
 	public O getObject( final int index, final O obj )
 	{
-		if ( Options.DEBUG && ( index < 0 || index >= memPool.capacity ) )
-			throw new NoSuchElementException( "index=" + index + " capacity=" + memPool.capacity + ", refClass=" + getRefClass().getSimpleName() );
+		if ( Options.DEBUG )
+		{
+			if ( index < 0 || index >= memPool.capacity )
+				throw new NoSuchElementException( "index=" + index + " capacity=" + memPool.capacity + ", refClass=" + getRefClass().getSimpleName() );
+		}
 
 		obj.updateAccess( this, index );
 
-		if ( Options.DEBUG && memPool.isFree( obj.access, index ) )
+		if ( Options.DEBUG )
+		{
+			if ( memPool.isFree( obj.access, index ) )
 				throw new NoSuchElementException( "index=" + index + " is free, refClass=" + getRefClass().getSimpleName() );
+		}
 
 		return obj;
 	}
@@ -173,8 +179,11 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 			public O next()
 			{
 				final int index = pi.next();
-				if ( Options.DEBUG && ( index >= memPool.allocatedSize ) )
-					throw new NoSuchElementException();
+				if ( Options.DEBUG )
+				{
+					if ( index >= memPool.allocatedSize )
+						throw new NoSuchElementException();
+				}
 
 				obj.updateAccess( Pool.this, index );
 				return obj;
@@ -196,7 +205,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 
 	/**
 	 * Attributes and "permanent" {@link PropertyMap}s of this pool.
-	 * 
+	 *
 	 * @return the properties.
 	 */
 	protected Properties< O > getProperties()
@@ -206,7 +215,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 
 	/**
 	 * Add a {@link PropertyMap} to list of {@link Properties}.
-	 * 
+	 *
 	 * @param propertyMap
 	 *            the map to register.
 	 * @see #getProperties()
