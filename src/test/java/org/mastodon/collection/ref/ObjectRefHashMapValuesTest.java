@@ -126,7 +126,7 @@ public class ObjectRefHashMapValuesTest extends ObjectRefHashMapTest
 		assertTrue( "Could not remove an existing value.", removed );
 		assertEquals( "Value collection has not been shrinked by iterator.remove().", initSize - 1, values.size() );
 		assertEquals( "Corresponding map has not been shrinked by iterator.remove().", initSize - 1, map.size() );
-		assertFalse( "Mapping whose value has been removed should not be in the map.", map.containsKey( v1 ) );
+		assertFalse( "Mapping whose value has been removed should not be in the map.", map.containsKey( k2 ) );
 	}
 
 	@Test
