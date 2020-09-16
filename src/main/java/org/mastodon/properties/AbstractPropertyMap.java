@@ -22,7 +22,9 @@ public abstract class AbstractPropertyMap< O, T > extends AbstractProperty< O > 
 			propertyMaps.addPropertyMap( this );
 		}
 		else
-			System.err.println( "WARNING: Creating property map for a collection/pool that does not manage PropertyMaps!" );
+		{
+//			System.err.println( "WARNING: Creating property map for a collection/pool that does not manage PropertyMaps!" );
+		}
 	}
 
 	protected void tryRegisterPropertyMap( final RefCollection< O > collection )
@@ -30,7 +32,9 @@ public abstract class AbstractPropertyMap< O, T > extends AbstractProperty< O > 
 		if ( collection instanceof RefPoolBackedRefCollection )
 			tryRegisterPropertyMap( ( ( RefPoolBackedRefCollection< O > ) collection ).getRefPool() );
 		else
-			System.err.println( "WARNING: Creating property map for a collection/pool that does not manage PropertyMaps!" );
+		{
+//			System.err.println( "WARNING: Creating property map for a collection/pool that does not manage PropertyMaps!" );
+		}
 	}
 
 	protected void tryUnregisterPropertyMap()
