@@ -184,6 +184,8 @@ public abstract class MemPool< T extends MappedElement >
 		{
 			final int index = firstFreeIndex;
 			updateAccess( dataAccess, firstFreeIndex );
+			// Clear FREE_ELEMENT_MAGIC_NUMBER to protect against objects that do nothing in setToUninitializedState()
+			dataAccess.putIndex( 0, 0 );
 			firstFreeIndex = dataAccess.getIndex( 4 );
 			return index;
 		}
