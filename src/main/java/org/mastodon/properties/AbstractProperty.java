@@ -29,31 +29,39 @@
 package org.mastodon.properties;
 
 import java.util.ArrayList;
+import org.scijava.listeners.Listeners;
 
 public abstract class AbstractProperty< O > implements Property< O >
 {
-	private final ArrayList< BeforePropertyChangeListener< O > > beforeChangeListeners;
+	private Listeners.List< BeforePropertyChangeListener< O > > beforeChangeListeners;
 
-	private final ArrayList< PropertyChangeListener< O > > changeListeners;
+	private Listeners.List< PropertyChangeListener< O > > changeListeners;
 
 	private boolean emitEvents;
 
 	protected AbstractProperty()
 	{
-		beforeChangeListeners = new ArrayList<>();
-		changeListeners = new ArrayList<>();
+		beforeChangeListeners = new Listeners.List<>();
+		changeListeners = new Listeners.List<>();
 		emitEvents = true;
+	}
+
+	@Override
+	public Listeners< BeforePropertyChangeListener< O > > beforePropertyChangeListeners()
+	{
+		return beforeChangeListeners;
+	}
+
+	@Override
+	public Listeners< PropertyChangeListener< O > > propertyChangeListeners()
+	{
+		return changeListeners;
 	}
 
 	@Override
 	public boolean addBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener )
 	{
-		if ( ! beforeChangeListeners.contains( listener ) )
-		{
-			beforeChangeListeners.add( listener );
-			return true;
-		}
-		return false;
+		return beforeChangeListeners.add( listener );
 	}
 
 	@Override
@@ -65,12 +73,7 @@ public abstract class AbstractProperty< O > implements Property< O >
 	@Override
 	public boolean addPropertyChangeListener( final PropertyChangeListener< O > listener )
 	{
-		if ( ! changeListeners.contains( listener ) )
-		{
-			changeListeners.add( listener );
-			return true;
-		}
-		return false;
+		return changeListeners.add( listener );
 	}
 
 	@Override
@@ -94,14 +97,14 @@ public abstract class AbstractProperty< O > implements Property< O >
 	protected void notifyBeforePropertyChange( final O object )
 	{
 		if ( emitEvents )
-			for ( final BeforePropertyChangeListener< O > l : beforeChangeListeners )
+			for ( final BeforePropertyChangeListener< O > l : beforeChangeListeners.list )
 				l.beforePropertyChange( object );
 	}
 
 	protected void notifyPropertyChanged( final O object )
 	{
 		if ( emitEvents )
-			for ( final PropertyChangeListener< O > l : changeListeners )
+			for ( final PropertyChangeListener< O > l : changeListeners.list )
 				l.propertyChanged( object );
 	}
 }

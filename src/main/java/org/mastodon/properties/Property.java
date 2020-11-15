@@ -29,6 +29,7 @@
 package org.mastodon.properties;
 
 import org.mastodon.properties.undo.PropertyUndoRedoStack;
+import org.scijava.listeners.Listeners;
 
 /**
  * A property of objects of type {@code O} which listeners can subscribe to to
@@ -50,6 +51,10 @@ public interface Property< O >
 	 * @return whether a property is set for the specified object.
 	 */
 	public boolean isSet( O key );
+
+	Listeners< BeforePropertyChangeListener< O > > beforePropertyChangeListeners();
+
+	Listeners< PropertyChangeListener< O > > propertyChangeListeners();
 
 	/**
 	 * Register a {@link BeforePropertyChangeListener} that will be notified

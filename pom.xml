@@ -41,6 +41,10 @@
 			<artifactId>imglib2-algorithm</artifactId>
 			<!-- TODO: this is only for ConvexPolytope and HyperPlane. These will be moved to imglib2-roi. -->
 		</dependency>
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-listeners</artifactId>
+		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>
