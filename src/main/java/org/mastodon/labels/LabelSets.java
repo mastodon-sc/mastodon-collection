@@ -79,8 +79,8 @@ public class LabelSets< O, T > extends AbstractProperty< O >
 				super.beforeDeleteObject( obj );
 			}
 		};
-		backingProperty.addBeforePropertyChangeListener( this::beforePropertyChange );
-		backingProperty.addPropertyChangeListener( this::propertyChanged );
+		backingProperty.beforePropertyChangeListeners().add( this::beforePropertyChange );
+		backingProperty.propertyChangeListeners().add( this::propertyChanged );
 		mapping = new LabelMapping<>();
 		labelToObjects = new ConcurrentHashMap<>();
 		tmpObjRefs = new ConcurrentLinkedQueue<>();
