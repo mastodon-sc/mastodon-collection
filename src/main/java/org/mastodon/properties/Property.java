@@ -52,8 +52,31 @@ public interface Property< O >
 	 */
 	boolean isSet( O key );
 
+	/**
+	 * {@code BeforePropertyChangeListener}s can be added/removed here.
+	 * <p>
+	 * A {@link BeforePropertyChangeListener} will be notified
+	 * before the value of this property is changed. Specifically,
+	 * {@link BeforePropertyChangeListener#beforePropertyChange(Object)
+	 * beforePropertyChange} is triggered as the first step of
+	 * {@link PropertyMap#set(Object, Object)} and
+	 * {@link PropertyMap#remove(Object)}.
+	 *
+	 * @return list of {@code BeforePropertyChangeListener}s
+	 */
 	Listeners< BeforePropertyChangeListener< O > > beforePropertyChangeListeners();
 
+	/**
+	 * {@code PropertyChangeListener}s can be added/removed here.
+	 * <p>
+	 * A {@link PropertyChangeListener} will be notified when the
+	 * value of this property was changed. Specifically,
+	 * {@link PropertyChangeListener#propertyChanged(Object) propertyChanged} is
+	 * triggered as the last step of {@link PropertyMap#set(Object, Object)} and
+	 * {@link PropertyMap#remove(Object)}.
+	 *
+	 * @return list of {@code PropertyChangeListener}s
+	 */
 	Listeners< PropertyChangeListener< O > > propertyChangeListeners();
 
 	/**
