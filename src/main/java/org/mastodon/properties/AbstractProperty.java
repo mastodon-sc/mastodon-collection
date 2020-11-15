@@ -28,7 +28,6 @@
  */
 package org.mastodon.properties;
 
-import java.util.ArrayList;
 import org.scijava.listeners.Listeners;
 
 public abstract class AbstractProperty< O > implements Property< O >
@@ -56,30 +55,6 @@ public abstract class AbstractProperty< O > implements Property< O >
 	public Listeners< PropertyChangeListener< O > > propertyChangeListeners()
 	{
 		return changeListeners;
-	}
-
-	@Override
-	public boolean addBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener )
-	{
-		return beforeChangeListeners.add( listener );
-	}
-
-	@Override
-	public boolean removeBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener )
-	{
-		return beforeChangeListeners.remove( listener );
-	}
-
-	@Override
-	public boolean addPropertyChangeListener( final PropertyChangeListener< O > listener )
-	{
-		return changeListeners.add( listener );
-	}
-
-	@Override
-	public boolean removePropertyChangeListener( final PropertyChangeListener< O > listener )
-	{
-		return changeListeners.remove( listener );
 	}
 
 	@Override

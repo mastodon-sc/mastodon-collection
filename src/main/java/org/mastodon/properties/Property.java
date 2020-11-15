@@ -80,56 +80,40 @@ public interface Property< O >
 	Listeners< PropertyChangeListener< O > > propertyChangeListeners();
 
 	/**
-	 * Register a {@link BeforePropertyChangeListener} that will be notified
-	 * before the value of this property is changed. Specifically,
-	 * {@link BeforePropertyChangeListener#beforePropertyChange(Object)
-	 * beforePropertyChange} is triggered as the first step of
-	 * {@link PropertyMap#set(Object, Object)} and
-	 * {@link PropertyMap#remove(Object)}.
-	 *
-	 * @param listener
-	 *            the listener to register.
-	 * @return {@code true} if the listener was successfully registered.
-	 *         {@code false} if it was already registered.
+	 * @deprecated Use {@code beforePropertyChangeListeners().add(listener)}.
 	 */
-	boolean addBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener );
+	@Deprecated
+	default boolean addBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener )
+	{
+		return beforePropertyChangeListeners().add( listener );
+	}
 
 	/**
-	 * Removes the specified {@link BeforePropertyChangeListener} from the set of
-	 * listeners.
-	 *
-	 * @param listener
-	 *            the listener to remove.
-	 * @return {@code true} if the listener was present in the listeners of this
-	 *         model and was successfully removed.
+	 * @deprecated Use {@code beforePropertyChangeListeners().remove(listener)}.
 	 */
-	boolean removeBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener );
+	@Deprecated
+	default boolean removeBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener )
+	{
+		return beforePropertyChangeListeners().remove( listener );
+	}
 
 	/**
-	 * Register a {@link PropertyChangeListener} that will be notified when the
-	 * value of this property was changed. Specifically,
-	 * {@link PropertyChangeListener#propertyChanged(Object) propertyChanged} is
-	 * triggered as the last step of {@link PropertyMap#set(Object, Object)} and
-	 * {@link PropertyMap#remove(Object)}.
-	 *
-	 * @param listener
-	 *            the listener to register.
-	 * @return {@code true} if the listener was successfully registered.
-	 *         {@code false} if it was already registered.
+	 * @deprecated Use {@code propertyChangeListeners().add(listener)}.
 	 */
-	boolean addPropertyChangeListener( final PropertyChangeListener< O > listener );
+	@Deprecated
+	default boolean addPropertyChangeListener( final PropertyChangeListener< O > listener )
+	{
+		return propertyChangeListeners().add( listener );
+	}
 
 	/**
-	 * Removes the specified {@link PropertyChangeListener} from the set of
-	 * listeners.
-	 *
-	 * @param listener
-	 *            the listener to remove.
-	 * @return {@code true} if the listener was present in the listeners of this
-	 *         model and was successfully removed.
+	 * @deprecated Use {@code propertyChangeListeners().remove(listener)}.
 	 */
-	boolean removePropertyChangeListener( final PropertyChangeListener< O > listener );
-
+	@Deprecated
+	default boolean removePropertyChangeListener( final PropertyChangeListener< O > listener )
+	{
+		return propertyChangeListeners().remove( listener );
+	}
 
 	/**
 	 * Pause sending events to {@link BeforePropertyChangeListener}s and
