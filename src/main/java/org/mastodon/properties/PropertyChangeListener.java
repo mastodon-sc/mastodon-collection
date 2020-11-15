@@ -35,5 +35,5 @@ package org.mastodon.properties;
  */
 public interface PropertyChangeListener< O >
 {
-	public void propertyChanged( O object );
+	void propertyChanged( O object );
 }

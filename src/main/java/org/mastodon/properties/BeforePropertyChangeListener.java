@@ -35,5 +35,5 @@ package org.mastodon.properties;
  */
 public interface BeforePropertyChangeListener< O >
 {
-	public void beforePropertyChange( O object );
+	void beforePropertyChange( O object );
 }

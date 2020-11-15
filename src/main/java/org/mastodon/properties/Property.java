@@ -50,7 +50,7 @@ public interface Property< O >
 	 *            the object
 	 * @return whether a property is set for the specified object.
 	 */
-	public boolean isSet( O key );
+	boolean isSet( O key );
 
 	Listeners< BeforePropertyChangeListener< O > > beforePropertyChangeListeners();
 
@@ -69,7 +69,7 @@ public interface Property< O >
 	 * @return {@code true} if the listener was successfully registered.
 	 *         {@code false} if it was already registered.
 	 */
-	public boolean addBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener );
+	boolean addBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener );
 
 	/**
 	 * Removes the specified {@link BeforePropertyChangeListener} from the set of
@@ -80,7 +80,7 @@ public interface Property< O >
 	 * @return {@code true} if the listener was present in the listeners of this
 	 *         model and was successfully removed.
 	 */
-	public boolean removeBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener );
+	boolean removeBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener );
 
 	/**
 	 * Register a {@link PropertyChangeListener} that will be notified when the
@@ -94,7 +94,7 @@ public interface Property< O >
 	 * @return {@code true} if the listener was successfully registered.
 	 *         {@code false} if it was already registered.
 	 */
-	public boolean addPropertyChangeListener( final PropertyChangeListener< O > listener );
+	boolean addPropertyChangeListener( final PropertyChangeListener< O > listener );
 
 	/**
 	 * Removes the specified {@link PropertyChangeListener} from the set of
@@ -105,27 +105,27 @@ public interface Property< O >
 	 * @return {@code true} if the listener was present in the listeners of this
 	 *         model and was successfully removed.
 	 */
-	public boolean removePropertyChangeListener( final PropertyChangeListener< O > listener );
+	boolean removePropertyChangeListener( final PropertyChangeListener< O > listener );
 
 
 	/**
 	 * Pause sending events to {@link BeforePropertyChangeListener}s and
 	 * {@link PropertyChangeListener}s.
 	 */
-	public void pauseListeners();
+	void pauseListeners();
 
 	/**
 	 * Resume sending events to {@link BeforePropertyChangeListener}s and
 	 * {@link PropertyChangeListener}s.
 	 */
-	public void resumeListeners();
+	void resumeListeners();
 
 	/**
 	 * Unsupported.
-	 * 
+	 *
 	 * @return nothing. Thrown an exception.
 	 */
-	public default PropertyUndoRedoStack< O > createUndoRedoStack()
+	default PropertyUndoRedoStack< O > createUndoRedoStack()
 	{
 		throw new UnsupportedOperationException();
 	}
