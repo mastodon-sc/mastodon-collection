@@ -14,6 +14,8 @@ import org.mastodon.Ref;
  *
  * @param <O>
  *            recursive type of this {@link PoolObject}.
+ * @param <P>
+ *            the type of the pool.
  * @param <T>
  *            the MappedElement type, for example {@link ByteMappedElement}.
  *

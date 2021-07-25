@@ -8,7 +8,11 @@ import net.imglib2.neighborsearch.NearestNeighborSearch;
 
 /**
  * Implementation of {@link NearestNeighborSearch} search for kd-trees.
- *
+ * 
+ * @param <O>
+ *            the type of points.
+ * @param <T>
+ *            the type of mapping for the points.
  *
  * @author Tobias Pietzsch
  */

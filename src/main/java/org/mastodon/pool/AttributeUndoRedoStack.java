@@ -10,7 +10,9 @@ import org.mastodon.undo.ByteArrayUndoRedoStack.ByteArrayRef;
 
 /**
  * A {@link PropertyUndoRedoStack} to record {@link IntPropertyMap} changes.
- *
+ * 
+ * @param <O>
+ *            the type of object this attribute is defined for.
  * @author Tobias Pietzsch
  */
 public class AttributeUndoRedoStack< O extends PoolObject< O, ?, ? > > implements PropertyUndoRedoStack< O >

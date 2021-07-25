@@ -14,7 +14,12 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 /**
  * Incomplete!
+ * 
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
+ * @param <K>
+ *            the type of keys in the map.
+ * @param <V>
+ *            the type of values in the map.
  */
 public class RefObjectHashMap< K, V > implements RefObjectMap< K, V >
 {

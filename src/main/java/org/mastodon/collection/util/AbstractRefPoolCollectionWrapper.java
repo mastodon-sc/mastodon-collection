@@ -25,6 +25,8 @@ import org.mastodon.collection.ref.RefPoolBackedRefCollection;
  *
  * @param <O>
  *            the type of the pool object used in the wrapped {@link RefPool}.
+ * @param <P>
+ *            the type of the wrapped {@link RefPool}.
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */

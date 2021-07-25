@@ -15,6 +15,8 @@ import gnu.trove.list.array.TIntArrayList;
 /**
  * Min-heap priority queue for {@link Comparable} Ref objects
  *
+ * @param <O>
+ *            the type of objects in the queue.
  * @author Tobias Pietzsch
  */
 public class RefArrayPriorityQueueComparator< O > implements IntBackedRefCollection< O >, RefPoolBackedRefCollection< O >, Queue< O >

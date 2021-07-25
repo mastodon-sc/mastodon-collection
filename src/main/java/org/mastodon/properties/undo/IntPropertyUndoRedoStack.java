@@ -9,7 +9,9 @@ import gnu.trove.list.array.TIntArrayList;
 
 /**
  * A {@link PropertyUndoRedoStack} to record {@link IntPropertyMap} changes.
- *
+ * 
+ * @param <O>
+ *            the type of object this property is defined for.
  * @author Tobias Pietzsch
  */
 public class IntPropertyUndoRedoStack< O > implements PropertyUndoRedoStack< O >

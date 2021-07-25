@@ -26,7 +26,12 @@ import net.imglib2.RealLocalizable;
 
 /**
  * Implementation of incremental nearest neighbor search for kd-trees.
- *
+ * 
+ * @param <O>
+ *            type of objects stored in the tree.
+ * @param <T>
+ *            the {@link MappedElement} type of the created pool of nodes.
+ * 
  * @author Tobias Pietzsch
  */
 public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement >
@@ -546,12 +551,14 @@ public final class IncrementalNearestNeighborSearchOnKDTree< O extends RealLocal
 
 		/**
 		 * Inserts the specified element into this priority queue.
-		 *
+		 * 
+		 * @param obj
+		 *            the object to insert.
 		 * @return {@code true} (as specified by {@link Queue#offer})
 		 * @throws ClassCastException
 		 *             if the specified element cannot be compared with elements
-		 *             currently in this priority queue according to the priority
-		 *             queue's ordering
+		 *             currently in this priority queue according to the
+		 *             priority queue's ordering
 		 * @throws NullPointerException
 		 *             if the specified element is null
 		 */

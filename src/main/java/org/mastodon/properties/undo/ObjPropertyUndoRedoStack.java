@@ -9,7 +9,11 @@ import org.mastodon.properties.ObjPropertyMap;
 
 /**
  * A {@link PropertyUndoRedoStack} to record {@link ObjPropertyMap} changes.
- *
+ * 
+ * @param <O>
+ *            the type of points.
+ * @param <T>
+ *            the type of mapping for the points.
  * @author Tobias Pietzsch
  */
 public class ObjPropertyUndoRedoStack< O, T > implements PropertyUndoRedoStack< O >

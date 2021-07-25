@@ -11,7 +11,11 @@ import net.imglib2.RealLocalizable;
 
 /**
  * Implementation of incremental nearest neighbor search for kd-trees.
- *
+ * 
+ * @param <O>
+ *            type of objects stored in the tree.
+ * @param <T>
+ *            the {@link MappedElement} type of the created pool of nodes.
  * @author Tobias Pietzsch
  */
 public final class IncrementalNearestValidNeighborSearchOnKDTree< O extends RealLocalizable, T extends MappedElement >

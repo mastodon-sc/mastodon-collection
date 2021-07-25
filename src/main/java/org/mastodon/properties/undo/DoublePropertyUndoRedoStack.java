@@ -10,7 +10,9 @@ import gnu.trove.list.array.TDoubleArrayList;
 
 /**
  * A {@link PropertyUndoRedoStack} to record {@link IntPropertyMap} changes.
- *
+ * 
+ * @param <O>
+ *            the type of object this attribute is defined for.
  * @author Tobias Pietzsch
  */
 public class DoublePropertyUndoRedoStack< O > implements PropertyUndoRedoStack< O >

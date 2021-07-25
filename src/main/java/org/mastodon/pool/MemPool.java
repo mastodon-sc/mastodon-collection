@@ -280,6 +280,9 @@ public abstract class MemPool< T extends MappedElement >
 
 	/**
 	 * Iterator of the indices of allocated elements.
+	 * 
+	 * @param <T>
+	 *            the type mapping of objects.
 	 */
 	public interface PoolIterator< T extends MappedElement >
 	{

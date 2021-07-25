@@ -11,6 +11,13 @@ import org.mastodon.collection.RefSet;
 
 /**
  * Wraps a standard {@link Map} as a {@link RefRefMap}.
+ * 
+ * @param <K>
+ *            the type of keys in the map.
+ * @param <V>
+ *            the type of values in the map.
+ * @param <M>
+ *            the type of the map to wrap.
  */
 public abstract class RefRefMapWrapper< K, V, M extends Map< K, V > > implements RefRefMap< K, V >
 {
@@ -123,6 +130,11 @@ public abstract class RefRefMapWrapper< K, V, M extends Map< K, V > > implements
 
 	/**
 	 * Wraps a standard {@link Map} as a {@link RefRefMap}.
+	 * 
+	 * @param <K>
+	 *            the type of keys in the map.
+	 * @param <V>
+	 *            the type of values in the map.
 	 */
 	public static class FromMap< K, V > extends RefRefMapWrapper< K, V, Map< K, V > >
 	{
@@ -134,6 +146,11 @@ public abstract class RefRefMapWrapper< K, V, M extends Map< K, V > > implements
 
 	/**
 	 * Wraps a {@link ObjectRefMap} as a {@link RefRefMap}.
+	 * 
+	 * @param <K>
+	 *            the type of keys in the map.
+	 * @param <V>
+	 *            the type of values in the map.
 	 */
 	public static class FromObjectRefMap< K, V > extends RefRefMapWrapper< K, V, ObjectRefMap< K, V > >
 	{
@@ -181,6 +198,11 @@ public abstract class RefRefMapWrapper< K, V, M extends Map< K, V > > implements
 
 	/**
 	 * Wraps a {@link RefObjectMap} as a {@link RefRefMap}.
+	 * 
+	 * @param <K>
+	 *            the type of keys in the map.
+	 * @param <V>
+	 *            the type of values in the map.
 	 */
 	public static class FromRefObjectMap< K, V > extends RefRefMapWrapper< K, V, RefObjectMap< K, V > >
 	{

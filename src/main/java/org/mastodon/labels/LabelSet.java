@@ -9,10 +9,12 @@ import org.mastodon.properties.IntPropertyMap;
 /**
  * The {@link LabelSet} represents a labeling of an object with zero or more
  * labels of type T.
- *
+ * 
+ * @param <O>
+ *            the type of objects.
  * @param <T>
- *            the desired type of the labels, for instance {@link Integer}
- *            or {@link String}.
+ *            the desired type of the labels, for instance {@link Integer} or
+ *            {@link String}.
  *
  * @author Lee Kamentsky
  * @author Tobias Pietzsch

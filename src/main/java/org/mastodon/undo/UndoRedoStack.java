@@ -227,8 +227,11 @@ public class UndoRedoStack implements UndoPointMarker
 	interface Access
 	{
 		/**
-		 * Point this {@link Access} to the specified index of the {@link Stack}.
-		 * Do not confuse this with {@link #setTypeIndex(int)}!
+		 * Point this {@link Access} to the specified index of the
+		 * {@link Stack}. Do not confuse this with {@link #setTypeIndex(int)}!
+		 * 
+		 * @param index
+		 *            the index.
 		 */
 		void setIndex( int index );
 

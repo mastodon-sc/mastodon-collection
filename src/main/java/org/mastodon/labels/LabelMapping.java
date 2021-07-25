@@ -13,17 +13,16 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
 
 /**
- * The LabelMapping maps a set of labels of an object to an index value
- * which can be more compactly stored than the set of labels. It provides an
+ * The LabelMapping maps a set of labels of an object to an index value which
+ * can be more compactly stored than the set of labels. It provides an
  * {@link #intern(Set)} function that supplies a canonical object for each set
- * of labels, and functions
- * {@link #addLabelToSetAtIndex(Object, int)},
+ * of labels, and functions {@link #addLabelToSetAtIndex(Object, int)},
  * {@link #removeLabelFromSetAtIndex(Object, int)} for efficiently adding and
  * removing labels to the set at a given index value.
  *
  * @param <T>
- *            the desired type of the labels, for instance {@link Integer}
- *            or {@link String}.
+ *            the desired type of the labels, for instance {@link Integer} or
+ *            {@link String}.
  *
  * @author Lee Kamentsky
  * @author Tobias Pietzsch
@@ -63,15 +62,15 @@ public class LabelMapping< T >
 	private final ArrayList< TObjectIntMap< T > > addMapsByIndex;
 
 	/**
-	 * Lookup tables for removing labels. Assume that by removing label <em>L</em>
-	 * from label set <em>S</em> we obtain <em>S' = S &setminus; {L}</em>.
-	 * {@code subMapsByIndex} contains at index of set <em>S</em> a map from
-	 * <em>L</em> to index of <em>S'</em>.
+	 * Lookup tables for removing labels. Assume that by removing label
+	 * <em>L</em> from label set <em>S</em> we obtain <em>S' = S &setminus;
+	 * {L}</em>. {@code subMapsByIndex} contains at index of set <em>S</em> a
+	 * map from <em>L</em> to index of <em>S'</em>.
 	 *
 	 * <p>
 	 * When a new <em>(L,S)</em> combination occurs for the first time in
-	 * {@link #removeLabelFromSetAtIndex(Object, int)}, it is added to the lookup
-	 * table.
+	 * {@link #removeLabelFromSetAtIndex(Object, int)}, it is added to the
+	 * lookup table.
 	 */
 	private final ArrayList< TObjectIntMap< T > > subMapsByIndex;
 
@@ -85,12 +84,12 @@ public class LabelMapping< T >
 	 */
 	LabelMapping()
 	{
-		internedSets = new HashMap< Set< T >, InternedSet< T > >();
-		setsByIndex = new ArrayList< InternedSet< T > >();
-		addMapsByIndex = new ArrayList< TObjectIntMap< T > >();
-		subMapsByIndex = new ArrayList< TObjectIntMap< T > >();
+		internedSets = new HashMap<>();
+		setsByIndex = new ArrayList<>();
+		addMapsByIndex = new ArrayList<>();
+		subMapsByIndex = new ArrayList<>();
 
-		final HashSet< T > background = new HashSet< T >( 0 );
+		final HashSet< T > background = new HashSet<>( 0 );
 		theEmptySet = intern( background );
 
 		cachedDiffs = new TIntObjectHashMap<>();
@@ -189,8 +188,8 @@ public class LabelMapping< T >
 			if ( intIndex > MAX_NUM_LABEL_SETS )
 				throw new AssertionError( String.format( "Too many labels (or types of multiply-labeled pixels): %d maximum", intIndex ) );
 
-			final HashSet< T > srcCopy = new HashSet< T >( src );
-			interned = new InternedSet< T >( srcCopy, intIndex );
+			final HashSet< T > srcCopy = new HashSet<>( src );
+			interned = new InternedSet<>( srcCopy, intIndex );
 			setsByIndex.add( interned );
 			addMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
 			subMapsByIndex.add( new TObjectIntHashMap< T >( Constants.DEFAULT_CAPACITY, Constants.DEFAULT_LOAD_FACTOR, INT_NO_ENTRY_VALUE ) );
@@ -216,7 +215,7 @@ public class LabelMapping< T >
 			if ( i != INT_NO_ENTRY_VALUE )
 				return setsByIndex.get( i );
 
-			final HashSet< T > set = new HashSet< T >( setsByIndex.get( index ).set );
+			final HashSet< T > set = new HashSet<>( setsByIndex.get( index ).set );
 			set.add( label );
 			final InternedSet< T > interned = intern( set );
 			addMap.put( label, interned.index );
@@ -241,7 +240,7 @@ public class LabelMapping< T >
 			if ( i != INT_NO_ENTRY_VALUE )
 				return setsByIndex.get( i );
 
-			final HashSet< T > set = new HashSet< T >( setsByIndex.get( index ).set );
+			final HashSet< T > set = new HashSet<>( setsByIndex.get( index ).set );
 			set.remove( label );
 			final InternedSet< T > interned = intern( set );
 			subMap.put( label, interned.index );
@@ -280,7 +279,7 @@ public class LabelMapping< T >
 	// TODO: build only once (while adding labels).
 	public Set< T > getLabels()
 	{
-		final HashSet< T > result = new HashSet< T >();
+		final HashSet< T > result = new HashSet<>();
 		for ( final InternedSet< T > instance : setsByIndex )
 		{
 			for ( final T label : instance.set )
@@ -345,10 +344,13 @@ public class LabelMapping< T >
 		}
 	}
 
-
 	/**
 	 * Internals. Can be derived for implementing de/serialisation of the
 	 * {@link LabelMapping}.
+	 * 
+	 * @param <T>
+	 *            the desired type of the labels, for instance {@link Integer}
+	 *            or {@link String}.
 	 */
 	public static class SerialisationAccess< T >
 	{

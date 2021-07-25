@@ -10,7 +10,10 @@ import net.imglib2.RealLocalizable;
  * Iteration is implemented through the {@link RealCursor} interface, providing
  * access to the data, location and distance to the current nearest neighbor
  * until the iterator is forwarded or the next search is performed.
- *
+ * 
+ * @param <T>
+ *            the type of point.
+ * 
  * @author Tobias Pietzsch
  */
 public interface IncrementalNearestNeighborSearch< T > extends RealCursor< T >

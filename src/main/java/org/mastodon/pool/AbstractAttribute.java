@@ -7,6 +7,8 @@ import org.mastodon.properties.undo.PropertyUndoRedoStack;
 /**
  * Makes {@link PoolObject#access} visible to subclasses.
  *
+ * @param <O>
+ *            the type of object this attribute is defined for.
  * @author Tobias Pietzsch
  */
 public class AbstractAttribute< O extends PoolObject< O, ?, ? > >
