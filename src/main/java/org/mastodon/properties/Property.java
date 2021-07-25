@@ -80,42 +80,6 @@ public interface Property< O >
 	Listeners< PropertyChangeListener< O > > propertyChangeListeners();
 
 	/**
-	 * @deprecated Use {@code beforePropertyChangeListeners().add(listener)}.
-	 */
-	@Deprecated
-	default boolean addBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener )
-	{
-		return beforePropertyChangeListeners().add( listener );
-	}
-
-	/**
-	 * @deprecated Use {@code beforePropertyChangeListeners().remove(listener)}.
-	 */
-	@Deprecated
-	default boolean removeBeforePropertyChangeListener( final BeforePropertyChangeListener< O > listener )
-	{
-		return beforePropertyChangeListeners().remove( listener );
-	}
-
-	/**
-	 * @deprecated Use {@code propertyChangeListeners().add(listener)}.
-	 */
-	@Deprecated
-	default boolean addPropertyChangeListener( final PropertyChangeListener< O > listener )
-	{
-		return propertyChangeListeners().add( listener );
-	}
-
-	/**
-	 * @deprecated Use {@code propertyChangeListeners().remove(listener)}.
-	 */
-	@Deprecated
-	default boolean removePropertyChangeListener( final PropertyChangeListener< O > listener )
-	{
-		return propertyChangeListeners().remove( listener );
-	}
-
-	/**
 	 * Pause sending events to {@link BeforePropertyChangeListener}s and
 	 * {@link PropertyChangeListener}s.
 	 */
