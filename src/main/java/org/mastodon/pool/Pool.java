@@ -25,6 +25,7 @@ import org.mastodon.properties.PropertyMaps;
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
+@SuppressWarnings( "unused" )
 public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedElement > implements RefPool< O >, Iterable< O >, HasPropertyMaps< O >
 {
 	private final Class< O > poolObjectClass;

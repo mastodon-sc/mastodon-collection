@@ -3,7 +3,9 @@ package org.mastodon.pool;
 import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
+
 import org.mastodon.Options;
+
 import sun.misc.Unsafe;
 
 /**
@@ -12,7 +14,7 @@ import sun.misc.Unsafe;
  *
  * @author Tobias Pietzsch &lt;tobias.pietzsch@gmail.com&gt;
  */
-@SuppressWarnings( "restriction" )
+@SuppressWarnings( { "restriction", "unused" } )
 public class ByteUtils
 {
 	public static final int BYTE_SIZE = 1;
