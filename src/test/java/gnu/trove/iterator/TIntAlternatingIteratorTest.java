@@ -31,7 +31,6 @@ package gnu.trove.iterator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import gnu.trove.iterator.TIntAlternatingIterator;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 

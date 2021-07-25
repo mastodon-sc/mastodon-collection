@@ -30,8 +30,6 @@ package gnu.trove.map.hash;
 
 import org.junit.Test;
 
-import gnu.trove.map.hash.TIntIntHashMap;
-
 public class TIntIntHashMapTest
 {
 

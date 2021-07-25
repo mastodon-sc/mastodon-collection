@@ -43,7 +43,6 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mastodon.collection.ref.RefIntHashMap;
 import org.mastodon.pool.TestObject;
 import org.mastodon.pool.TestObjectPool;
 

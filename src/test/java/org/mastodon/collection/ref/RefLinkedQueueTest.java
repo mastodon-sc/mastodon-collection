@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mastodon.collection.ref.RefLinkedQueue;
 import org.mastodon.pool.TestObject;
 import org.mastodon.pool.TestObjectPool;
 
