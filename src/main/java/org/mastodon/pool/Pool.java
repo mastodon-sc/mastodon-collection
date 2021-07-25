@@ -1,3 +1,31 @@
+/*-
+ * #%L
+ * Mastodon Collections
+ * %%
+ * Copyright (C) 2015 - 2021 Tobias Pietzsch, Jean-Yves Tinevez
+ * %%
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ * #L%
+ */
 package org.mastodon.pool;
 
 import java.util.Iterator;
@@ -115,13 +143,19 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	@Override
 	public O getObject( final int index, final O obj )
 	{
-		if ( Options.DEBUG && ( index < 0 || index >= memPool.capacity ) )
-			throw new NoSuchElementException( "index=" + index + " capacity=" + memPool.capacity + ", refClass=" + getRefClass().getSimpleName() );
+		if ( Options.DEBUG )
+		{
+			if ( index < 0 || index >= memPool.capacity )
+				throw new NoSuchElementException( "index=" + index + " capacity=" + memPool.capacity + ", refClass=" + getRefClass().getSimpleName() );
+		}
 
 		obj.updateAccess( this, index );
 
-		if ( Options.DEBUG && memPool.isFree( obj.access, index ) )
+		if ( Options.DEBUG )
+		{
+			if ( memPool.isFree( obj.access, index ) )
 				throw new NoSuchElementException( "index=" + index + " is free, refClass=" + getRefClass().getSimpleName() );
+		}
 
 		return obj;
 	}
@@ -174,8 +208,11 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 			public O next()
 			{
 				final int index = pi.next();
-				if ( Options.DEBUG && ( index >= memPool.allocatedSize ) )
-					throw new NoSuchElementException();
+				if ( Options.DEBUG )
+				{
+					if ( index >= memPool.allocatedSize )
+						throw new NoSuchElementException();
+				}
 
 				obj.updateAccess( Pool.this, index );
 				return obj;
@@ -197,7 +234,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 
 	/**
 	 * Attributes and "permanent" {@link PropertyMap}s of this pool.
-	 * 
+	 *
 	 * @return the properties.
 	 */
 	protected Properties< O > getProperties()
@@ -207,7 +244,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 
 	/**
 	 * Add a {@link PropertyMap} to list of {@link Properties}.
-	 * 
+	 *
 	 * @param propertyMap
 	 *            the map to register.
 	 * @see #getProperties()

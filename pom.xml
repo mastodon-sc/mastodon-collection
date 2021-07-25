@@ -5,15 +5,15 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>28.0.0</version>
+		<version>30.0.0</version>
 	</parent>
 
 	<groupId>org.mastodon</groupId>
 	<artifactId>mastodon-collection</artifactId>
-	<version>1.0.0-beta-19-SNAPSHOT</version>
+	<version>1.0.0-beta-23-SNAPSHOT</version>
 
 	<name>Mastodon Collections</name>
-	<description>pool-objects, pools, and collections framework underlying mastodon graphs</description>
+	<description>Pool-objects, pools, and collections framework underlying mastodon graphs.</description>
 	<url>https://github.com/mastodon-sc/mastodon-collection</url>
 	<inceptionYear>2015</inceptionYear>
 	<organization>
@@ -40,6 +40,10 @@
 			<groupId>net.imglib2</groupId>
 			<artifactId>imglib2-algorithm</artifactId>
 			<!-- TODO: this is only for ConvexPolytope and HyperPlane. These will be moved to imglib2-roi. -->
+		</dependency>
+		<dependency>
+			<groupId>org.scijava</groupId>
+			<artifactId>scijava-listeners</artifactId>
 		</dependency>
 
 		<!-- Test dependencies -->
