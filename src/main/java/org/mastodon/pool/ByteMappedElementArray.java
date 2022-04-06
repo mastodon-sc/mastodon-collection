@@ -82,7 +82,7 @@ public class ByteMappedElementArray implements MappedElementArray< ByteMappedEle
 	@Override
 	public int maxSize()
 	{
-		return Integer.MAX_VALUE / bytesPerElement;
+		return (Integer.MAX_VALUE - 8) / bytesPerElement;
 	}
 
 	@Override
