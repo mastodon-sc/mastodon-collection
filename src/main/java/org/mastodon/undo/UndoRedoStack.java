@@ -64,6 +64,8 @@ public class UndoRedoStack implements UndoPointMarker
 
 	private final ConcurrentLinkedQueue< Element > tmpObjRefs;
 
+	private int savePointIndex = -1;
+
 	public UndoRedoStack( final int initialCapacity )
 	{
 		stack = new ByteStack( initialCapacity );
@@ -104,6 +106,16 @@ public class UndoRedoStack implements UndoPointMarker
 //		stack.releaseRef( ref );
 	}
 
+	public void setSavePoint()
+	{
+		savePointIndex = top;
+	}
+
+	public boolean isSavePoint()
+	{
+		return savePointIndex == top;
+	}
+
 	/**
 	 * Undo until the next undo-point.
 	 * <p>
@@ -113,6 +125,14 @@ public class UndoRedoStack implements UndoPointMarker
 	 */
 	public void undo()
 	{
+		/*
+		 * Kill save-point. If the user saves, make 1 undo, then make one
+		 * change, the 'top' value will be at the savePointIndex, but the model
+		 * would have changed. This prevents retrieving the save state in case
+		 * we do undo/redo in succession, but this is life.
+		 */
+		savePointIndex = -1;
+
 //		final Access ref = stack.createRef();
 		boolean first = true;
 		for ( int i = top - 1; i >= 0; --i )
