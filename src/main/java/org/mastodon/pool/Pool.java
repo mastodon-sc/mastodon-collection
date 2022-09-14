@@ -30,7 +30,6 @@ package org.mastodon.pool;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.mastodon.Options;
 import org.mastodon.RefPool;
@@ -60,7 +59,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 
 	private final MemPool< T > memPool;
 
-	private final ConcurrentLinkedQueue< O > tmpObjRefs;
+	private final ThreadLocalSoftReferencePool< O > tmpObjRefs;
 
 	private final PoolCollectionWrapper< O > asRefCollection;
 
@@ -86,7 +85,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	{
 		this.poolObjectClass = poolObjectClass;
 		this.memPool = memPoolFactory.createPool( initialCapacity, poolObjectLayout.getSizeInBytes(), freeElementPolicy );
-		this.tmpObjRefs = new ConcurrentLinkedQueue<>();
+		this.tmpObjRefs = new ThreadLocalSoftReferencePool<>();
 		this.asRefCollection = new PoolCollectionWrapper<>( this );
 		this.propertyMaps = new PropertyMaps<>();
 		this.properties = new Properties<>();
@@ -125,7 +124,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	{
 		if ( recycle )
 		{
-			final O obj = tmpObjRefs.poll();
+			final O obj = tmpObjRefs.get();
 			return obj == null ? createEmptyRef() : obj;
 		}
 		else
@@ -137,7 +136,7 @@ public abstract class Pool< O extends PoolObject< O, ?, T >, T extends MappedEle
 	@Override
 	public void releaseRef( final O obj )
 	{
-		tmpObjRefs.add( obj );
+		tmpObjRefs.put( obj );
 	}
 
 	@Override
