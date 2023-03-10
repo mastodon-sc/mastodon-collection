@@ -29,6 +29,7 @@
 package org.mastodon.collection;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * A {@link Map} whose values are object references. It provides variants of
@@ -145,4 +146,25 @@ public interface ObjectRefMap< K, V > extends Map< K, V >
 	 *         depending on concrete implementation.
 	 */
 	public V get( Object key, V ref );
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	default void forEach( BiConsumer< ? super K, ? super V > action )
+	{
+		V ref = createValueRef();
+		try
+		{
+			for ( K key : keySet() )
+			{
+				V value = get( key, ref );
+				action.accept( key, value );
+			}
+		}
+		finally
+		{
+			releaseValueRef( ref );
+		}
+	}
 }
