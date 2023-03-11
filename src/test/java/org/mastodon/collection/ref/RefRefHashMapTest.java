@@ -34,6 +34,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -215,5 +217,19 @@ public class RefRefHashMapTest extends RefRefHashMapAbstractTest
 	{
 		final OtherTestObject ref = map.createValueRef();
 		assertNotNull( "Created reference object is null.", ref );
+	}
+
+	@Test
+	public void testForEach()
+	{
+		Map<Integer, Integer> result = new HashMap<>();
+		// Use forEach to copy content from RefRefHashMap to java collections HashMap.
+		map.forEach( (key, value) -> result.put( key.getId(), value.getId() ) );
+		// Make sure the content is the same.
+		assertEquals( 4, result.size() );
+		assertEquals( v0.getId(), (int) result.get( k1.getId() ) );
+		assertEquals( v1.getId(), (int) result.get( k2.getId() ) );
+		assertEquals( v2.getId(), (int) result.get( k3.getId() ) );
+		assertEquals( v3.getId(), (int) result.get( k4.getId() ) );
 	}
 }

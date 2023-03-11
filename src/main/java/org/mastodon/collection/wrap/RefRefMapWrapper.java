@@ -30,6 +30,7 @@ package org.mastodon.collection.wrap;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 import org.mastodon.collection.ObjectRefMap;
 import org.mastodon.collection.RefCollection;
@@ -154,6 +155,12 @@ public abstract class RefRefMapWrapper< K, V, M extends Map< K, V > > implements
 	public V get( final Object key, final V ref )
 	{
 		return map.get( key );
+	}
+
+	@Override
+	public void forEach( BiConsumer< ? super K, ? super V > action )
+	{
+		map.forEach( action );
 	}
 
 	/**
