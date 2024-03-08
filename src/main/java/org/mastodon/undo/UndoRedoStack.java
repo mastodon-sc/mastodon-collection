@@ -183,6 +183,8 @@ public class UndoRedoStack implements UndoPointMarker
 	public void clear()
 	{
 		stack.clear();
+		end = 0;
+		top = 0;
 	}
 
 	/**
