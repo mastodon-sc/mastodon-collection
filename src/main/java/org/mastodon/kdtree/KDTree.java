@@ -31,10 +31,12 @@ package org.mastodon.kdtree;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.function.IntToDoubleFunction;
 
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefRefMap;
 import org.mastodon.collection.ref.RefRefHashMap;
+import org.mastodon.util.KthElement;
 import org.mastodon.pool.DoubleMappedElement;
 import org.mastodon.pool.DoubleMappedElementArray;
 import org.mastodon.pool.MappedElement;
@@ -294,7 +296,14 @@ public class KDTree<
 		if ( j > i )
 		{
 			final int k = i + ( j - i ) / 2;
-			kthElement( i, j, k, d, n1, n2, n3 );
+			final IntToDoubleFunction rankMethod = index -> {
+				getObject( index, n1 );
+				return n1.getDoublePosition( d );
+			};
+			final KthElement.Swap swapMethod = ( l, m ) -> {
+				getMemPool().swap( l, m );
+			};
+			KthElement.kthElement( i, j, k, rankMethod, swapMethod );
 
 			final int dChild = ( d + 1 == n ) ? 0 : d + 1;
 			final int left = makeNode( i, k - 1, dChild, n1, n2, n3 );
@@ -317,125 +326,6 @@ public class KDTree<
 		{
 			return -1;
 		}
-	}
-
-	/**
-	 * Partition a sublist of KDTreeNodes such that the k-th smallest value is
-	 * at position {@code k}, elements before the k-th are smaller or equal and
-	 * elements after the k-th are larger or equal. Elements are compared by
-	 * their coordinate in the specified dimension.s
-	 *
-	 * Note, that is is assumed that the {@link KDTreeNode}s are stored with
-	 * consecutive indices in the pool.
-	 *
-	 * @param i
-	 *            index of first element of the sublist
-	 * @param j
-	 *            index of last element of the sublist
-	 * @param k
-	 *            index for k-th smallest value. i &lt;= k &lt;= j.
-	 * @param compare_d
-	 *            dimension by which to compare.
-	 * @param pivot
-	 *            temporary {@link KDTreeNode} reference.
-	 * @param ti
-	 *            temporary {@link KDTreeNode} reference.
-	 * @param tj
-	 *            temporary {@link KDTreeNode} reference.
-	 */
-	private void kthElement( int i, int j, final int k, final int compare_d, final KDTreeNode< O, T > pivot, final KDTreeNode< O, T > ti, final KDTreeNode< O, T > tj )
-	{
-		while ( true )
-		{
-			final int pivotpos = partitionSubList( i, j, compare_d, pivot, ti, tj );
-			if ( pivotpos > k )
-			{
-				// partition lower half
-				j = pivotpos - 1;
-			}
-			else if ( pivotpos < k )
-			{
-				// partition upper half
-				i = pivotpos + 1;
-			}
-			else
-				break;
-		}
-	}
-
-	/**
-	 * Partition a sublist of KDTreeNodes by their coordinate in the specified
-	 * dimension.
-	 *
-	 * The element at index {@code j} is taken as the pivot value. The elements
-	 * {@code [i,j]} are reordered, such that all elements before the pivot are
-	 * smaller and all elements after the pivot are equal or larger than the
-	 * pivot. The index of the pivot element is returned.
-	 *
-	 * Note, that is is assumed that the {@link KDTreeNode}s are stored with
-	 * consecutive indices in the pool.
-	 *
-	 * @param i
-	 *            index of first element of the sublist
-	 * @param j
-	 *            index of last element of the sublist
-	 * @param compare_d
-	 *            dimension by which to order the sublist
-	 * @param pivot
-	 *            temporary {@link KDTreeNode} reference.
-	 * @param ti
-	 *            temporary {@link KDTreeNode} reference.
-	 * @param tj
-	 *            temporary {@link KDTreeNode} reference.
-	 * @return index of pivot element
-	 */
-	private int partitionSubList( int i, int j, final int compare_d, final KDTreeNode< O, T > pivot, final KDTreeNode< O, T > ti, final KDTreeNode< O, T > tj )
-	{
-		final int pivotIndex = j;
-		getObject( j--, pivot );
-		final double pivotPosition = pivot.getPosition( compare_d );
-
-		A: while ( true )
-		{
-			// move i forward while < pivot (and not at j)
-			while ( i <= j )
-			{
-				getObject( i, ti );
-				if ( ti.getPosition( compare_d ) >= pivotPosition )
-					break;
-				++i;
-			}
-			// now [i] is the place where the next value < pivot is to be
-			// inserted
-
-			if ( i > j )
-				break;
-
-			// move j backward while >= pivot (and not at i)
-			while ( true )
-			{
-				getObject( j, tj );
-				if ( tj.getPosition( compare_d ) < pivotPosition )
-				{
-					// swap [j] with [i]
-					getMemPool().swap( i++, j-- );
-					break;
-				}
-				else if ( j == i )
-				{
-					break A;
-				}
-				--j;
-			}
-		}
-
-		// we are done. put the pivot element here.
-		// check whether the element at iLastIndex is <
-		if ( i != pivotIndex )
-		{
-			getMemPool().swap( i, pivotIndex );
-		}
-		return i;
 	}
 
 	@Override
