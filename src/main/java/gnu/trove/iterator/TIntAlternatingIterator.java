@@ -28,14 +28,13 @@
  */
 package gnu.trove.iterator;
 
-import gnu.trove.iterator.TIntIterator;
 import gnu.trove.list.TIntList;
 
 /**
  * Iterate a sorted {@link TIntList} by starting at a given element and then
  * alternatingly going one element backward and forward.
  *
- * @author Jean-Yves Tinevez &lt;jeanyves.tinevez@gmail.com&gt;
+ * @author Jean-Yves Tinevez
  */
 public class TIntAlternatingIterator implements TIntIterator
 {

@@ -29,7 +29,6 @@
 package org.mastodon.util;
 
 import net.imglib2.RealLocalizable;
-import org.mastodon.util.DelegateEuclideanSpace;
 
 /**
  * A {@link RealLocalizable} backed by another {@link RealLocalizable}.
