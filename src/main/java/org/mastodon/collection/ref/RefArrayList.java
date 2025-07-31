@@ -28,6 +28,7 @@
  */
 package org.mastodon.collection.ref;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
@@ -605,5 +606,14 @@ public class RefArrayList< O > implements IntBackedRefCollection< O >, RefPoolBa
 		}
 		sb.append( "]" );
 		return sb.toString();
+	}
+
+	/**
+	 * Trims the capacity of this {@code RefArrayList} instance to be the
+	 * list's current size.  An application can use this operation to minimize
+	 * the storage of an {@code RefArrayList} instance.
+	 */
+	public void trimToSize() {
+		indices.trimToSize();
 	}
 }
