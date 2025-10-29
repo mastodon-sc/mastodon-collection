@@ -79,6 +79,11 @@ public class RefPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 		return map.get( key );
 	}
 
+	public T get( final O key, final T ref )
+	{
+		return map.get( key, ref );
+	}
+
 	@Override
 	public boolean isSet( final O key )
 	{
