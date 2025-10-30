@@ -28,6 +28,8 @@
  */
 package org.mastodon.properties;
 
+import java.util.function.Function;
+
 import org.mastodon.RefPool;
 import org.mastodon.collection.RefCollection;
 import org.mastodon.collection.RefMaps;
@@ -43,16 +45,18 @@ public class RefPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 {
 	private final RefRefMap< O, T > map;
 
-	public RefPropertyMap( final RefCollection< O > keyPool, final RefCollection< T > valuePool )
-	{
-		map = RefMaps.createRefRefMap( keyPool, valuePool );
-		tryRegisterPropertyMap( keyPool );
-	}
+	private final Function< T, T > createValue;
 
-	public RefPropertyMap( final RefPool< O > keyPool, final RefPool< T > valuePool )
+	public RefPropertyMap( final RefPool< O > keyPool,
+			final RefPool< T > valuePool,
+			final Function< T, T > createValue )
 	{
+		// TODO: For performance we might want to implement a
+		//  	 RefRefArrayMap (similar to IntRefArrayMap),
+		//  	 instead of the RefRefHashMap used currently.
 		map = new RefRefHashMap<>( keyPool, valuePool );
 		tryRegisterPropertyMap( keyPool );
+		this.createValue = createValue;
 	}
 
 	@Override
@@ -99,6 +103,26 @@ public class RefPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 	public RefRefMap< O, T > getMap()
 	{
 		return map;
+	}
+
+	public T createValueRef()
+	{
+		return map.createValueRef();
+	}
+
+	public void releaseValueRef( T ref )
+	{
+		map.releaseValueRef( ref );
+	}
+
+	public T createValue( T ref )
+	{
+		return createValue.apply( ref );
+	}
+
+	public T createValue()
+	{
+		return createValue( createValueRef() );
 	}
 
 	public void release()
