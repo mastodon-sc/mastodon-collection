@@ -31,13 +31,8 @@ package org.mastodon.properties;
 import java.util.function.Function;
 
 import org.mastodon.RefPool;
-import org.mastodon.collection.RefCollection;
-import org.mastodon.collection.RefMaps;
-import org.mastodon.collection.RefObjectMap;
 import org.mastodon.collection.RefRefMap;
-import org.mastodon.collection.ref.RefObjectHashMap;
-import org.mastodon.collection.ref.RefRefHashMap;
-import org.mastodon.properties.undo.ObjPropertyUndoRedoStack;
+import org.mastodon.collection.ref.RefRefArrayMap;
 import org.mastodon.properties.undo.PropertyUndoRedoStack;
 import org.mastodon.properties.undo.RefPropertyUndoRedoStack;
 
@@ -51,10 +46,7 @@ public class RefPropertyMap< O, T > extends AbstractPropertyMap< O, T >
 			final RefPool< T > valuePool,
 			final Function< T, T > createValue )
 	{
-		// TODO: For performance we might want to implement a
-		//  	 RefRefArrayMap (similar to IntRefArrayMap),
-		//  	 instead of the RefRefHashMap used currently.
-		map = new RefRefHashMap<>( keyPool, valuePool );
+		map = new RefRefArrayMap<>( keyPool, valuePool );
 		tryRegisterPropertyMap( keyPool );
 		this.createValue = createValue;
 	}
